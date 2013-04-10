@@ -47,16 +47,22 @@ public class jdemo {
 
 				Statement stmt = connection.createStatement();
 
-				ResultSet resultSet = stmt.executeQuery("Select 'hello world' from dummy");
+				//ResultSet resultSet = stmt.executeQuery("Select \"id\" from SYSTEM.CMU_FireFly");
 
-				resultSet.next();
+				//resultSet.next();
 
-				String hello = resultSet.getString(1);
+				//Integer hello = resultSet.getInt(1);
 
-				System.out.println(hello);
+				//System.out.println(hello);
+				PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO CMU_FireFly(\"id\", \"timestamp\", \"temp\") VALUES(?, ?, ?)");
+				preparedStatement.setInt(1, 11);
+				preparedStatement.setInt(2, 12);
+				preparedStatement.setInt(3, 13);
+				//stmt.executeQuery();
+				preparedStatement.executeUpdate();
 
 			} catch (SQLException e) {
-
+				System.err.println(e.getMessage());
 				System.err.println("Query failed!");
 
 			}

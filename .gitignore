@@ -3,3 +3,4 @@
 .settings/
 bin/**
 conf/database.properties
+.DS_Store
