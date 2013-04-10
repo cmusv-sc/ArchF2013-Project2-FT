@@ -2,5 +2,6 @@
 .classpath
 .settings/
 bin/**
-conf/database.properties
+src/main/conf/database.properties
+src/test/conf/database.properties
 .DS_Store

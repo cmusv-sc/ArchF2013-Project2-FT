@@ -16,7 +16,7 @@ public class jdemo {
 		String dbPassword = "";
     	try {
                //load a properties file
-    			prop.load(new FileInputStream("conf/database.properties"));
+    			prop.load(new FileInputStream("src/main/conf/database.properties"));
                
     			//get the property value and print it out
     			serverIP = prop.getProperty("serverip");
@@ -45,7 +45,7 @@ public class jdemo {
 
 				System.out.println("Connection to HANA successful!");
 
-				Statement stmt = connection.createStatement();
+				//Statement stmt = connection.createStatement();
 
 				//ResultSet resultSet = stmt.executeQuery("Select \"id\" from SYSTEM.CMU_FireFly");
 
