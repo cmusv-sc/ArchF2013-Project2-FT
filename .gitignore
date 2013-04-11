@@ -2,6 +2,21 @@
 .classpath
 .settings/
 bin/**
-src/main/conf/database.properties
-src/test/conf/database.properties
+conf/database.properties
 .DS_Store
+# Play! Framework
+logs
+project/project
+project/target
+.target
+target
+tmp
+.history
+dist
+/.idea
+/*.iml
+/out
+/.idea_modules
+/.classpath
+/.project
+/RUNNING_PID

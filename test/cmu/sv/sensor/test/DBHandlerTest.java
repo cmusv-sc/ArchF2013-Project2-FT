@@ -7,8 +7,8 @@ import java.io.FileNotFoundException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import cmu.sv.sensor.DBHandler;
-import cmu.sv.sensor.SensorReading;
+import models.cmu.sv.sensor.DBHandler;
+import models.cmu.sv.sensor.SensorReading;
 
 
 public class DBHandlerTest {
@@ -16,7 +16,7 @@ public class DBHandlerTest {
 	
 	@BeforeClass
 	public static void testSetup() throws FileNotFoundException{
-		dbHandler = new DBHandler(new FileInputStream("src/test/conf/database.properties"));
+		dbHandler = new DBHandler(new FileInputStream("conf/database.properties"));
 	}
 	
 	
@@ -32,7 +32,7 @@ public class DBHandlerTest {
 		dbHandler.addReading(1, 1, "Temperature", 450.0);
 		SensorReading reading = dbHandler.searchReading(1, 1);
 		
-		assertEquals("The deviceID of the reading should be the same", reading.getDeviceID(), 1);
+		assertEquals("The deviceID of the reading should be the same", reading.getDeviceId(), 1);
 		assertEquals("The timeStamp of the reading should be the same", reading.getTimeStamp(), 1);
 		assertEquals("The SensorType of the reading should be the same", reading.getSensorType(), "Temperature");
 		assertEquals("The Value of the reading should be the same", reading.getValue(), 450.0, 0.1f);
