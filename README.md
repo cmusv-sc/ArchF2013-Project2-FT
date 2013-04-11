@@ -9,7 +9,7 @@ Service:
 Usage:
 ------
 
- - Add Reading:
+- Add Reading:
     - **Method**: POST
     - **URL**: sensors/
     - **Data**: {deviceID: Int, timeStamp: Int, sensorType: String,  value: Double}
