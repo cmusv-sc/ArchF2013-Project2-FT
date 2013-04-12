@@ -30,10 +30,16 @@ public class DBHandler {
 			this.dbPassword = prop.getProperty("dbpassword");
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.err.println("Unable to read the database properties");
-			return;
+			//For heroku: Use local env instead 
+			this.serverIP = System.getenv("serverip");
+			this.serverPort = System.getenv("serverport");
+			this.dbUser = System.getenv("dbuser");
+			this.dbPassword = System.getenv("dbpassword");
+			
+			if(this.serverIP == "" || this.serverPort == "" || this.dbUser == "" || this.dbPassword == ""){
+				System.err.println("Unable to read the database properties");
+				return;
+			}
 		}
 	}
 	public boolean makeConnection(){
@@ -42,14 +48,19 @@ public class DBHandler {
 				return true;
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			//e1.printStackTrace();
+			
 		}
 		try { 
 		
 			this.connection = DriverManager.getConnection( "jdbc:sap://" + serverIP + ":" + serverPort + "/?autocommit=false",dbUser,dbPassword); 
+			//PreparedStatement preparedStatement = this.connection.prepareStatement("SET SCHEMA CMU");
+			//return preparedStatement.execute();
+			this.connection.setAutoCommit(true);
 			return true;
 
 		} catch (SQLException e) {
+			System.err.println(e.getMessage());
 			System.err.println("Connection Failed. User/Passwd Error?");
 			return false;
 
@@ -63,7 +74,7 @@ public class DBHandler {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		this.connection = null;
 		
@@ -72,32 +83,35 @@ public class DBHandler {
 		this.makeConnection();
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = this.connection.prepareStatement("INSERT INTO CMU_SENSOR( deviceID, timeStamp, sensorType, value) VALUES(?, ?, ?, ?)");
+			preparedStatement = this.connection.prepareStatement("INSERT INTO CMU.CMU_SENSOR( deviceID, timeStamp, sensorType, value) VALUES(?, ?, ?, ?)");
 			preparedStatement.setInt(1, deviceId);
 			preparedStatement.setInt(2, timeStamp);
 			preparedStatement.setString(3, sensorType);
 			preparedStatement.setDouble(4, value);
 			preparedStatement.executeUpdate();
+			this.closeConnection();
 			return true;
 		} catch (SQLException e) {
 			
-			e.printStackTrace();
+			//e.printStackTrace();
 			return false;
 		}
 		
 	}
 	
-	public boolean deleteReading(int deviceId, int timeStamp){
+	public boolean deleteReading(int deviceId, int timeStamp, String sensorType){
 		this.makeConnection();
 		PreparedStatement preparedStatement;
 		try{
-			preparedStatement = this.connection.prepareStatement("DELETE CMU_SENSOR WHERE deviceID=? AND timeStamp=?");
+			preparedStatement = this.connection.prepareStatement("DELETE FROM CMU.CMU_SENSOR WHERE deviceID=? AND timeStamp=? AND sensorType=?");
 			preparedStatement.setInt(1, deviceId);
 			preparedStatement.setInt(2, timeStamp);
+			preparedStatement.setString(3, sensorType);
 			preparedStatement.executeUpdate();
+			this.closeConnection();
 			return true;
 		}catch(SQLException e){
-			e.printStackTrace();
+			//e.printStackTrace();
 			return false;
 		}
 	}
@@ -105,19 +119,22 @@ public class DBHandler {
 		this.makeConnection();
 		PreparedStatement preparedStatement;
 		try{
-			preparedStatement = this.connection.prepareStatement("SELECT * FROM CMU_SENSOR WHERE deviceID=? AND timeStamp=?");
+			preparedStatement = this.connection.prepareStatement("SELECT * FROM CMU.CMU_SENSOR WHERE deviceID=? AND timeStamp=?");
 			preparedStatement.setInt(1, deviceId);
 			preparedStatement.setInt(2, timeStamp);
 			ResultSet resultSet = preparedStatement.executeQuery();
-			resultSet.next();
+			if(!resultSet.next()){
+				return null;
+			}
 			deviceId = resultSet.getInt(1);
 			timeStamp = resultSet.getInt(2);
 			String sensorType = resultSet.getString(3);
 			double value = resultSet.getDouble(4);
+			this.closeConnection();
 			return new SensorReading(deviceId, timeStamp, sensorType, value);
 			
 		}catch(SQLException e){
-			e.printStackTrace();
+			//e.printStackTrace();
 			return null;
 		}
 	}
