@@ -31,10 +31,10 @@ public class DBHandler {
 			
 		} catch (IOException e) {
 			//For heroku: Use local env instead 
-			this.serverIP = System.getenv("serverip");
-			this.serverPort = System.getenv("serverport");
-			this.dbUser = System.getenv("dbuser");
-			this.dbPassword = System.getenv("dbpassword");
+			this.serverIP = System.getenv("HANA_SERVER_IP");
+			this.serverPort = System.getenv("HANA_SERVER_PORT");
+			this.dbUser = System.getenv("HANA_USER");
+			this.dbPassword = System.getenv("HANA_PASSWORD");
 			
 			if(this.serverIP == "" || this.serverPort == "" || this.dbUser == "" || this.dbPassword == ""){
 				System.err.println("Unable to read the database properties");
