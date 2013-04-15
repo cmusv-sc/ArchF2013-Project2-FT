@@ -21,16 +21,14 @@ public class DBHandler {
 	
 	public DBHandler(String fileName){
 		//For heroku: Use local env instead
-		this.serverIP = System.getenv("serverip");
-		this.serverPort = System.getenv("serverport");
-		this.dbUser = System.getenv("dbuser");
-		this.dbPassword = System.getenv("dbpassword");
-		
-		System.err.println("ServerIP:" + this.serverIP);
-		System.err.println("ServerPort:" + this.serverPort);
-		System.err.println("dbUser:" + this.dbUser);
-		System.err.println("dbPassword:" + this.dbPassword);
-		if(this.serverIP == "" || this.serverPort == "" || this.dbUser == "" || this.dbPassword == ""){
+		if(System.getenv("serverip") != null){
+			this.serverIP = System.getenv("serverip");
+			this.serverPort = System.getenv("serverport");
+			this.dbUser = System.getenv("dbuser");
+			this.dbPassword = System.getenv("dbpassword");
+		}
+		else{
+
 			this.prop = new Properties();
 			try {
 				this.prop.load(new FileInputStream(fileName));

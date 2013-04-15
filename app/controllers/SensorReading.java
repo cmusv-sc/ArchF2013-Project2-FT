@@ -41,7 +41,9 @@ public class SensorReading extends Controller {
 			return internalServerError("database conf file not found");
 		}
 		models.cmu.sv.sensor.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp);
-		
+		if(reading == null){
+			return notFound("the record not exists");
+		}
 		
 		return ok(reading.getSensorType()+ ":" + String.valueOf( reading.getValue()));
 	}
