@@ -1,5 +1,8 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.codehaus.jackson.JsonNode;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -24,17 +27,23 @@ public class SensorReading extends Controller {
 			 return internalServerError("database conf file not found");
 		 }
 		 
-		// TODO parse Json File and add reading to server. 	 
-		 int deviceId = json.findPath("deviceId").getIntValue();
-		 int timeStamp = json.findPath("timeStamp").getIntValue();
-		 String sensorType = json.findPath("sensorType").getTextValue();
-		 double value = json.findPath("value").getDoubleValue();
-		 
-		 
-		 if (!dbHandler.addReading(deviceId, timeStamp, sensorType, value)){
-			 return internalServerError("record not saved");
+		// Parse JSON FIle 
+		 int deviceId = json.findPath("id").getIntValue();
+		 int timeStamp = json.findPath("timestamp").getIntValue();
+		 Iterator<String> it = json.getFieldNames();
+		 ArrayList<String> error = new ArrayList();
+		 while(it.hasNext()){
+			 String sensorType = it.next();
+			 double value = json.findPath(sensorType).getDoubleValue();
+			 if(!dbHandler.addReading(deviceId, timeStamp, sensorType, value)){
+				 error.add(sensorType);
+			 }
 		 }
-	    return ok("saved");
+		 if(error.size() == 0)
+			 return ok("saved");
+		 else{
+			 return ok("some not saved: " + error.toString());
+		 }
 	}
 	public static Result search(int deviceId, int timeStamp){
 		if(!testDBHandler()){
