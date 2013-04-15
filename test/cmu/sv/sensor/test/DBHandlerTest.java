@@ -16,7 +16,7 @@ public class DBHandlerTest {
 	
 	@BeforeClass
 	public static void testSetup() throws FileNotFoundException{
-		dbHandler = new DBHandler(new FileInputStream("conf/database.properties"));
+		dbHandler = new DBHandler("conf/database.properties");
 	}
 	
 	

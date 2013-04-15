@@ -19,28 +19,28 @@ public class DBHandler {
 	protected String dbPassword = "";
 	
 	
-	public DBHandler(FileInputStream fs){
-		this.prop = new Properties();
-		try {
+	public DBHandler(String fileName){
+		//For heroku: Use local env instead
+		this.serverIP = System.getenv("serverip");
+		this.serverPort = System.getenv("serverport");
+		this.dbUser = System.getenv("dbuser");
+		this.dbPassword = System.getenv("dbpassword");
+		
+		System.err.println("ServerIP:" + this.serverIP);
+		System.err.println("ServerPort:" + this.serverPort);
+		System.err.println("dbUser:" + this.dbUser);
+		System.err.println("dbPassword:" + this.dbPassword);
+		if(this.serverIP == "" || this.serverPort == "" || this.dbUser == "" || this.dbPassword == ""){
+			this.prop = new Properties();
+			try {
+				this.prop.load(new FileInputStream(fileName));
+				this.serverIP = prop.getProperty("serverip");
+				this.serverPort = prop.getProperty("serverport");
+				this.dbUser = prop.getProperty("dbuser");
+				this.dbPassword = prop.getProperty("dbpassword");
 			
-			this.prop.load(fs);
-			this.serverIP = prop.getProperty("serverip");
-			this.serverPort = prop.getProperty("serverport");
-			this.dbUser = prop.getProperty("dbuser");
-			this.dbPassword = prop.getProperty("dbpassword");
-			
-		} catch (Exception e) {
-			//For heroku: Use local env instead 
-			this.serverIP = System.getenv("serverip");
-			this.serverPort = System.getenv("serverport");
-			this.dbUser = System.getenv("dbuser");
-			this.dbPassword = System.getenv("dbpassword");
-			
-			System.err.println("ServerIP:" + this.serverIP);
-			System.err.println("ServerPort:" + this.serverPort);
-			System.err.println("dbUser:" + this.dbUser);
-			System.err.println("dbPassword:" + this.dbPassword);
-			if(this.serverIP == "" || this.serverPort == "" || this.dbUser == "" || this.dbPassword == ""){
+			} catch (Exception e) {
+				
 				System.err.println("Unable to read the database properties");
 				return;
 			}

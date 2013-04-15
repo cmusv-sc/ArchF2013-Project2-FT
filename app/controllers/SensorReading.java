@@ -1,9 +1,6 @@
 package controllers;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 import org.codehaus.jackson.JsonNode;
-
 import play.mvc.Controller;
 import play.mvc.Result;
 import models.cmu.sv.sensor.*;
@@ -13,13 +10,7 @@ public class SensorReading extends Controller {
 	private static DBHandler dbHandler = null;
 	private  static boolean testDBHandler(){
 		if(dbHandler == null){
-			 try {
-				 dbHandler = new DBHandler(new FileInputStream("conf/database.properties"));
-			 } 
-			 catch (FileNotFoundException e) {
-				 return false;
-				 
-			}
+			dbHandler = new DBHandler("conf/database.properties");
 		}
 		return true;
 	}
