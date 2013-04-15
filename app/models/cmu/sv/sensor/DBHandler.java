@@ -36,10 +36,10 @@ public class DBHandler {
 			this.dbUser = System.getenv("dbuser");
 			this.dbPassword = System.getenv("dbpassword");
 			
-			System.out.println("ServerIP:" + this.serverIP);
-			System.out.println("ServerPort:" + this.serverPort);
-			System.out.println("dbUser:" + this.dbUser);
-			System.out.println("dbPassword:" + this.dbPassword);
+			System.err.println("ServerIP:" + this.serverIP);
+			System.err.println("ServerPort:" + this.serverPort);
+			System.err.println("dbUser:" + this.dbUser);
+			System.err.println("dbPassword:" + this.dbPassword);
 			if(this.serverIP == "" || this.serverPort == "" || this.dbUser == "" || this.dbPassword == ""){
 				System.err.println("Unable to read the database properties");
 				return;
