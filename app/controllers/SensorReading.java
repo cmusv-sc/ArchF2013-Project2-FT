@@ -28,12 +28,13 @@ public class SensorReading extends Controller {
 		 }
 		 
 		// Parse JSON FIle 
-		 int deviceId = json.findPath("id").getIntValue();
-		 int timeStamp = json.findPath("timestamp").getIntValue();
+		 Long deviceId = Long.parseLong(json.findPath("id").getTextValue());
+		 Long timeStamp = json.findPath("timestamp").getLongValue();
 		 Iterator<String> it = json.getFieldNames();
-		 ArrayList<String> error = new ArrayList();
+		 ArrayList<String> error = new ArrayList<String>();
 		 while(it.hasNext()){
 			 String sensorType = it.next();
+			 if(sensorType == "id" || sensorType == "timestamp") continue;
 			 double value = json.findPath(sensorType).getDoubleValue();
 			 if(!dbHandler.addReading(deviceId, timeStamp, sensorType, value)){
 				 error.add(sensorType);
@@ -45,33 +46,16 @@ public class SensorReading extends Controller {
 			 return ok("some not saved: " + error.toString());
 		 }
 	}
-	public static Result search(int deviceId, int timeStamp){
+	public static Result search(Long deviceId, Long timeStamp, String sensorType){
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}
-		models.cmu.sv.sensor.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp);
+		models.cmu.sv.sensor.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
 		if(reading == null){
 			return notFound("the record not exists");
 		}
 		
 		return ok(reading.getSensorType()+ ":" + String.valueOf( reading.getValue()));
 	}
-	/*
-	public static void updateUser(Long id, User user) {
-	    User dbUser = User.findById(id);
-	    dbUser.updateDetails(user); // some model logic you would write to do a safe merge
-	    dbUser.save();
-	    user(id);
-	}
 
-	public static void deleteUser(Long id) {
-	    User.findById(id).delete();
-	    renderText("success");
-	}
-
-	public static void user(Long id)  {
-	    User user = User.findById(id)
-	    render(user);
-	}
-	*/
 }

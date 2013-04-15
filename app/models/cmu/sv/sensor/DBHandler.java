@@ -81,13 +81,13 @@ public class DBHandler {
 		this.connection = null;
 		
 	}
-	public boolean addReading(int deviceId, int timeStamp, String sensorType, double value){
+	public boolean addReading(Long deviceId, Long timeStamp, String sensorType, double value){
 		this.makeConnection();
 		PreparedStatement preparedStatement;
 		try {
 			preparedStatement = this.connection.prepareStatement("INSERT INTO CMU.CMU_SENSOR( deviceID, timeStamp, sensorType, value) VALUES(?, ?, ?, ?)");
-			preparedStatement.setInt(1, deviceId);
-			preparedStatement.setInt(2, timeStamp);
+			preparedStatement.setLong(1, deviceId);
+			preparedStatement.setLong(2, timeStamp);
 			preparedStatement.setString(3, sensorType);
 			preparedStatement.setDouble(4, value);
 			preparedStatement.executeUpdate();
@@ -101,13 +101,13 @@ public class DBHandler {
 		
 	}
 	
-	public boolean deleteReading(int deviceId, int timeStamp, String sensorType){
+	public boolean deleteReading(Long deviceID, Long timeStamp, String sensorType){
 		this.makeConnection();
 		PreparedStatement preparedStatement;
 		try{
 			preparedStatement = this.connection.prepareStatement("DELETE FROM CMU.CMU_SENSOR WHERE deviceID=? AND timeStamp=? AND sensorType=?");
-			preparedStatement.setInt(1, deviceId);
-			preparedStatement.setInt(2, timeStamp);
+			preparedStatement.setLong(1, deviceID);
+			preparedStatement.setLong(2, timeStamp);
 			preparedStatement.setString(3, sensorType);
 			preparedStatement.executeUpdate();
 			this.closeConnection();
@@ -117,20 +117,21 @@ public class DBHandler {
 			return false;
 		}
 	}
-	public SensorReading searchReading(int deviceId, int timeStamp){
+	public SensorReading searchReading(Long deviceId, Long timeStamp, String sensorType){
 		this.makeConnection();
 		PreparedStatement preparedStatement;
 		try{
-			preparedStatement = this.connection.prepareStatement("SELECT * FROM CMU.CMU_SENSOR WHERE deviceID=? AND timeStamp=?");
-			preparedStatement.setInt(1, deviceId);
-			preparedStatement.setInt(2, timeStamp);
+			preparedStatement = this.connection.prepareStatement("SELECT * FROM CMU.CMU_SENSOR WHERE deviceID=? AND timeStamp=? AND sensorType=?");
+			preparedStatement.setLong(1, deviceId);
+			preparedStatement.setLong(2, timeStamp);
+			preparedStatement.setString(3, sensorType);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			if(!resultSet.next()){
 				return null;
 			}
-			deviceId = resultSet.getInt(1);
-			timeStamp = resultSet.getInt(2);
-			String sensorType = resultSet.getString(3);
+			deviceId = resultSet.getLong(1);
+			timeStamp = resultSet.getLong(2);
+			sensorType = resultSet.getString(3);
 			double value = resultSet.getDouble(4);
 			this.closeConnection();
 			return new SensorReading(deviceId, timeStamp, sensorType, value);
