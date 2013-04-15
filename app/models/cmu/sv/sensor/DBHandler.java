@@ -29,13 +29,17 @@ public class DBHandler {
 			this.dbUser = prop.getProperty("dbuser");
 			this.dbPassword = prop.getProperty("dbpassword");
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			//For heroku: Use local env instead 
 			this.serverIP = System.getenv("serverip");
 			this.serverPort = System.getenv("serverport");
 			this.dbUser = System.getenv("dbuser");
 			this.dbPassword = System.getenv("dbpassword");
 			
+			System.out.println("ServerIP:" + this.serverIP);
+			System.out.println("ServerPort:" + this.serverPort);
+			System.out.println("dbUser:" + this.dbUser);
+			System.out.println("dbPassword:" + this.dbPassword);
 			if(this.serverIP == "" || this.serverPort == "" || this.dbUser == "" || this.dbPassword == ""){
 				System.err.println("Unable to read the database properties");
 				return;
