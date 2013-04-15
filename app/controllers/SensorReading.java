@@ -28,7 +28,7 @@ public class SensorReading extends Controller {
 		 }
 		 
 		// Parse JSON FIle 
-		 Long deviceId = Long.parseLong(json.findPath("id").getTextValue());
+		 String deviceId = json.findPath("id").getTextValue();
 		 Long timeStamp = json.findPath("timestamp").getLongValue();
 		 Iterator<String> it = json.getFieldNames();
 		 ArrayList<String> error = new ArrayList<String>();
@@ -46,7 +46,7 @@ public class SensorReading extends Controller {
 			 return ok("some not saved: " + error.toString());
 		 }
 	}
-	public static Result search(Long deviceId, Long timeStamp, String sensorType){
+	public static Result search(String deviceId, Long timeStamp, String sensorType){
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}

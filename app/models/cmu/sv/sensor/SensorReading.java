@@ -1,19 +1,19 @@
 package models.cmu.sv.sensor;
 
 public class SensorReading {
-	private Long deviceId;
+	private String deviceId;
 	private Long timeStamp;
 	private String sensorType;
 	private double value;
 	
-	public SensorReading(Long deviceId, Long timeStamp, String sensorType, double value){
+	public SensorReading(String deviceId, Long timeStamp, String sensorType, double value){
 		this.deviceId = deviceId;
 		this.timeStamp = timeStamp;
 		this.sensorType = sensorType;
 		this.value = value;
 	}
 	
-	public Long getDeviceId(){
+	public String getDeviceId(){
 		return deviceId;
 	}
 	
