@@ -31,7 +31,6 @@ public class DBHandler {
 			
 		} catch (IOException e) {
 			//For heroku: Use local env instead 
-			
 			this.serverIP = System.getenv("serverip");
 			this.serverPort = System.getenv("serverport");
 			this.dbUser = System.getenv("dbuser");
