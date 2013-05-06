@@ -36,7 +36,8 @@ public class SensorReading extends Controller {
 			 String sensorType = it.next();
 			 if(sensorType == "id" || sensorType == "timestamp") continue;
 			 double value = json.findPath(sensorType).getDoubleValue();
-			 if(!dbHandler.addReading(deviceId, timeStamp, sensorType, value)){
+			 models.cmu.sv.sensor.SensorReading reading = new models.cmu.sv.sensor.SensorReading(deviceId, timeStamp, sensorType, value); 
+			 if(!reading.save()){
 				 error.add(sensorType);
 			 }
 		 }
