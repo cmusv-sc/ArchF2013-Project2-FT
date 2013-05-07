@@ -17,7 +17,9 @@ public class SensorReading extends Controller {
 		}
 		return true;
 	}
-	
+	public static Result addAndPublish(){
+		return add();
+	}
 	public static Result add() {
 		JsonNode json = request().body().asJson();
 		 if(json == null) {
