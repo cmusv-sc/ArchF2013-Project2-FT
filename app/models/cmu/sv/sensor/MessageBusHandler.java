@@ -4,6 +4,7 @@ package models.cmu.sv.sensor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -95,21 +97,31 @@ public class MessageBusHandler {
 		} 
 		
 	}
+	private JSONObject addFieldToTopic(String fieldName, String fieldType){
+		JSONObject jsonMeta = new JSONObject();
+	    try {
+			jsonMeta.put("field", fieldName);
+			 jsonMeta.put("type", fieldType);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return jsonMeta;
+	}
 	public boolean addTopic(String topic){
 		String path = "catalog/topics";
 		HttpClient client = new DefaultHttpClient();
 		 HttpPost post = new HttpPost(serverUrl + path);
 		 try {
-		      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		      
+
 		      JSONObject topicObject = new JSONObject();
 		      topicObject.put("topic", topic);
 		      
-		      JSONObject jsonMeta = new JSONObject();
-		      jsonMeta.put("field", "value");
-		      jsonMeta.put("type", "Float");
 		      JSONArray jsonMetaArray = new JSONArray();
-		      jsonMetaArray.put(jsonMeta);
+		      jsonMetaArray.put(addFieldToTopic("value", "Float"));
+		      jsonMetaArray.put(addFieldToTopic("deviceId", "String"));
+		      jsonMetaArray.put(addFieldToTopic("timeStamp", "Integer"));
+		      		      
 		      topicObject.put("metadata", jsonMetaArray);
 		     
 		      StringEntity entity = new StringEntity(topicObject.toString(), HTTP.UTF_8);
@@ -140,33 +152,53 @@ public class MessageBusHandler {
 		}
 		 return false;
 	}
-	public void publish(){
+	private String createPublishData(SensorReading reading){
+		StringBuilder builder = new StringBuilder();
+		builder.append("deviceId:");
+		builder.append(reading.getDeviceId());
+		builder.append("|");
+		builder.append("timeStamp:");
+		builder.append(reading.getTimeStamp());
+		builder.append("|");
+		builder.append("value:");
+		builder.append(reading.getValue());
+		return builder.toString(); 
+	}
+	public boolean publish(SensorReading reading){
+		if(!isTopicExists(reading.getSensorType())){
+			addTopic(reading.getSensorType());
+		}
+		
+		String serverUrl = "http://message-peer2-soc.herokuapp.com/";
+		String path = "publish";
 		 HttpClient client = new DefaultHttpClient();
-		 HttpPost post = new HttpPost(serverUrl);
+		 URIBuilder builder;
+
 		 try {
-		      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-		      nameValuePairs.add(new BasicNameValuePair("topic", topic));
-		      nameValuePairs.add(new BasicNameValuePair("metaData", toJSON(metaData).toString()));
-		      nameValuePairs.add(new BasicNameValuePair("properties", toJSON(properties).toString()));
-		      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		      
-		      client.execute(post);
-		      /*
-		      HttpResponse response =client.execute(post); 
+			 builder = new URIBuilder(serverUrl + path);
+			 builder.addParameter("topic", reading.getSensorType()).addParameter("metaData", createPublishData(reading));
+			 System.err.println(builder.build().toString());
+			 
+			 HttpGet get = new HttpGet(builder.build());
+		     HttpResponse response =client.execute(get); 
 		      
 		      //Reading Content
+		     String output = "";
 		      String line = "";
 		      BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		      while ((line = rd.readLine()) != null) {
-		    	  System.out.println(line);
+		    	  output += line; 
 		      }
-		      */
-		      
+		      if(output.equals("published successfully")) return true;
 		 }
 		 catch(IOException e){
-			 
-		 }
-		 
+			 e.printStackTrace();
+		 } 
+		 catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 		 
 		 
 	}

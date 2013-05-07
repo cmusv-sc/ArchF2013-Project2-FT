@@ -11,7 +11,7 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # SensorReading
 GET		/sensors/:deviceId/:timeStamp/:sensorType		controllers.SensorReading.search(deviceId: String, timeStamp: Long, sensorType: String)
-POST	/sensors/				  			controllers.SensorReading.addAndPublish()
-POST	/sensors				  			controllers.SensorReading.addAndPublish()
-POST	/sensors_save/				  		controllers.SensorReading.add()
-POST	/sensors_save				  		controllers.SensorReading.add()
+POST	/sensors/				  			controllers.SensorReading.add(publish:Boolean =  true)
+POST	/sensors				  			controllers.SensorReading.add(publish:Boolean =  true)
+POST	/sensors_save/				  		controllers.SensorReading.add(publish:Boolean = false)
+POST	/sensors_save				  		controllers.SensorReading.add(publish:Boolean = false)

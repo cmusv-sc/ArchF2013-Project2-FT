@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 
 import models.cmu.sv.sensor.DBHandler;
 import models.cmu.sv.sensor.MessageBusHandler;
+import models.cmu.sv.sensor.SensorReading;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,5 +28,10 @@ public class MessageBusHandlerTest {
 	public void testAddTopic(){
 		assertEquals(true, handler.addTopic("test-topic"));
 	}
-
+	@Test
+	public void testPublishData(){
+		SensorReading reading = new SensorReading("test-Device", new Long(1), "test-topic", 1.0);
+		assertEquals(true, handler.publish(reading));
+		
+	}
 }

@@ -17,10 +17,8 @@ public class SensorReading extends Controller {
 		}
 		return true;
 	}
-	public static Result addAndPublish(){
-		return add();
-	}
-	public static Result add() {
+	
+	public static Result add(Boolean publish) {
 		JsonNode json = request().body().asJson();
 		 if(json == null) {
 			    return badRequest("Expecting Json data");
@@ -41,6 +39,13 @@ public class SensorReading extends Controller {
 			 models.cmu.sv.sensor.SensorReading reading = new models.cmu.sv.sensor.SensorReading(deviceId, timeStamp, sensorType, value); 
 			 if(!reading.save()){
 				 error.add(sensorType);
+			 }
+			 
+			 if(publish){
+				 MessageBusHandler mb = new MessageBusHandler();
+				 if(!mb.publish(reading)){
+					 error.add("publish failed");
+				 }
 			 }
 		 }
 		 if(error.size() == 0)
