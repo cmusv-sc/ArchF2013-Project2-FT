@@ -66,12 +66,12 @@ public class MessageBusHandler {
 		String path = "catalog/topics";
 		HttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(serverUrl + path);
-
+		StringBuilder builder = null;
 		try {
 			
 			HttpResponse response = client.execute(get);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
-			StringBuilder builder = new StringBuilder();
+			builder = new StringBuilder();
 			for (String line = null; (line = reader.readLine()) != null;) {
 			    builder.append(line).append("\n");
 			}
@@ -90,6 +90,7 @@ public class MessageBusHandler {
 			e.printStackTrace();
 			return false;
 		} catch (JSONException e) {
+			System.err.println(builder.toString());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
@@ -168,7 +169,7 @@ public class MessageBusHandler {
 			addTopic(reading.getSensorType());
 		}
 		
-		String serverUrl = "http://message-peer2-soc.herokuapp.com/";
+		String serverUrl = "http://message-peer-listener.herokuapp.com/";
 		String path = "publish";
 		 HttpClient client = new DefaultHttpClient();
 
@@ -177,7 +178,7 @@ public class MessageBusHandler {
 			 queryString = "?topic=" + URLEncoder.encode(reading.getSensorType(),"UTF-8") + "&metaData=" + queryString;
 			 
 			 ALogger log = play.Logger.of(MessageBusHandler.class);
-			 System.err.println(serverUrl+path+queryString);
+			 //System.err.println(serverUrl+path+queryString);
 			 HttpGet get = new HttpGet(serverUrl+path+queryString);
 		     HttpResponse response =client.execute(get); 
 		      
@@ -189,6 +190,7 @@ public class MessageBusHandler {
 		    	  output += line; 
 		      }
 		      if(output.equals("published successfully")) return true;
+		      System.err.println(output);
 		 }
 		 catch(IOException e){
 			 e.printStackTrace();
