@@ -165,17 +165,25 @@ public class MessageBusHandler {
 		return builder.toString(); 
 	}
 	public boolean publish(SensorReading reading){
+		return publish(reading, false);
+	}
+	public boolean publish(SensorReading reading, boolean isDemo){
 		if(!isTopicExists(reading.getSensorType())){
 			addTopic(reading.getSensorType());
 		}
+		String serverUrl;
+		if(isDemo){
+			serverUrl = "http://message-peer-listener.herokuapp.com/";
+		}
+		else{
+			serverUrl = "http://message-peer2.herokuapp.com/";
+		}
 		
-		String serverUrl = "http://message-peer-listener.herokuapp.com/";
 		String path = "publish";
 		 HttpClient client = new DefaultHttpClient();
 
 		 try {
-			 String queryString = URLEncoder.encode(createPublishData(reading),"UTF-8");
-			 queryString = "?topic=" + URLEncoder.encode(reading.getSensorType(),"UTF-8") + "&metaData=" + queryString;
+			 String queryString = "?topic=" + URLEncoder.encode(reading.getSensorType(),"UTF-8") + "&metaData=" + createPublishData(reading);
 			 
 			 ALogger log = play.Logger.of(MessageBusHandler.class);
 			 //System.err.println(serverUrl+path+queryString);
