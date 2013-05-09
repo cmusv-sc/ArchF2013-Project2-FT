@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.sql.*;
 
+import play.Logger.ALogger;
+import play.api.Logger;
+
 public class DBHandler {
 	protected Connection connection = null;
 	protected Properties prop = null;
@@ -94,7 +97,8 @@ public class DBHandler {
 			return true;
 		} catch (SQLException e) {
 			
-			e.printStackTrace();
+			ALogger log = play.Logger.of(DBHandler.class);
+			log.warn(e.getMessage());
 			return false;
 		}
 		
