@@ -15,7 +15,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
+import java.net.URLEncoder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -171,15 +171,14 @@ public class MessageBusHandler {
 		String serverUrl = "http://message-peer2-soc.herokuapp.com/";
 		String path = "publish";
 		 HttpClient client = new DefaultHttpClient();
-		 URIBuilder builder;
 
 		 try {
-			 builder = new URIBuilder(serverUrl + path);
-			 builder.addParameter("topic", reading.getSensorType()).addParameter("metaData", createPublishData(reading));
-			 //System.err.println(builder.build().toString());
+			 String queryString = URLEncoder.encode(createPublishData(reading),"UTF-8");
+			 queryString = "?topic=" + URLEncoder.encode(reading.getSensorType(),"UTF-8") + "&metaData=" + queryString;
+			 
 			 ALogger log = play.Logger.of(MessageBusHandler.class);
-			 log.info(builder.build().toURL().toString());
-			 HttpGet get = new HttpGet(builder.build());
+			 System.err.println(serverUrl+path+queryString);
+			 HttpGet get = new HttpGet(serverUrl+path+queryString);
 		     HttpResponse response =client.execute(get); 
 		      
 		      //Reading Content
@@ -194,10 +193,7 @@ public class MessageBusHandler {
 		 catch(IOException e){
 			 e.printStackTrace();
 		 } 
-		 catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		 
 		return false;
 		 
 		 
