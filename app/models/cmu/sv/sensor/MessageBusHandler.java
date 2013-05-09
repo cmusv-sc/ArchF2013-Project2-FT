@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import play.Logger.ALogger;
 import play.libs.F.Function;
 import play.mvc.*;
 
@@ -178,7 +179,8 @@ public class MessageBusHandler {
 			 builder = new URIBuilder(serverUrl + path);
 			 builder.addParameter("topic", reading.getSensorType()).addParameter("metaData", createPublishData(reading));
 			 //System.err.println(builder.build().toString());
-			 
+			 ALogger log = play.Logger.of(MessageBusHandler.class);
+			 log.info(builder.build().toURL().toString());
 			 HttpGet get = new HttpGet(builder.build());
 		     HttpResponse response =client.execute(get); 
 		      
