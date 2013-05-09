@@ -177,7 +177,7 @@ public class MessageBusHandler {
 		 try {
 			 builder = new URIBuilder(serverUrl + path);
 			 builder.addParameter("topic", reading.getSensorType()).addParameter("metaData", createPublishData(reading));
-			 System.err.println(builder.build().toString());
+			 //System.err.println(builder.build().toString());
 			 
 			 HttpGet get = new HttpGet(builder.build());
 		     HttpResponse response =client.execute(get); 
