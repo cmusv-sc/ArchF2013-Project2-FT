@@ -12,9 +12,7 @@ public class WorkFlowRunner {
 			this.handler = new MessageBusHandler();
 		}
 		
-		public boolean notifyVirtualDevice(double value){
-			Long timeStamp = new Date().getTime();
-			SensorReading reading = new SensorReading(this.virtualDeviceID, timeStamp, topic, value);
-			return handler.publish(reading);
+		public boolean notifyVirtualDevice(int value){
+			return handler.publishToListener(this.topic, value);
 		}
 }

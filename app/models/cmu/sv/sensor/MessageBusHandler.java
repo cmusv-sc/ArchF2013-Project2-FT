@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -164,31 +165,56 @@ public class MessageBusHandler {
 		builder.append(reading.getValue());
 		return builder.toString(); 
 	}
-	public boolean publish(SensorReading reading){
-		return publish(reading, false);
+	public boolean publishToListener(String topic, int value){
+		String url = "http://message-peer-listener.herokuapp.com/publish";
+		HttpClient client = new DefaultHttpClient();
+		
+		try {
+			url += "?topic=" + topic + "&metadata=" + URLEncoder.encode("id:WFRun|value:" + String.valueOf(value), "UTF-8");
+			System.out.println(url);
+			HttpGet get = new HttpGet(url);
+			
+		     HttpResponse response;
+			response = client.execute(get);
+			 String output = "";
+		      String line = "";
+		      BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+		      while ((line = rd.readLine()) != null) {
+		    	  output += line; 
+		      }
+		      if(output.equals("published successfully")) return true;
+		      System.err.println(output);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	    return false; 
+	      //Reading Content
+	    
 	}
-	public boolean publish(SensorReading reading, boolean isDemo){
+	public boolean publish(SensorReading reading){
 		if(!isTopicExists(reading.getSensorType())){
 			addTopic(reading.getSensorType());
 		}
-		String serverUrl;
-		if(isDemo){
-			serverUrl = "http://message-peer-listener.herokuapp.com/";
-		}
-		else{
-			serverUrl = "http://message-peer2.herokuapp.com/";
-		}
+		String serverUrl = "http://message-peer-listener.herokuapp.com/";
+		
+		
 		
 		String path = "publish";
 		 HttpClient client = new DefaultHttpClient();
 
 		 try {
-			 String queryString = "?topic=" + URLEncoder.encode(reading.getSensorType(),"UTF-8") + "&metaData=" + createPublishData(reading);
+			 
+			 String url = serverUrl + path + "?topic=" + URLEncoder.encode(reading.getSensorType(),"UTF-8") + "&metadata=" + URLEncoder.encode(createPublishData(reading), "UTF-8");
 			 
 			 ALogger log = play.Logger.of(MessageBusHandler.class);
 			 //System.err.println(serverUrl+path+queryString);
-			 HttpGet get = new HttpGet(serverUrl+path+queryString);
-		     HttpResponse response =client.execute(get); 
+			 System.out.println(url);
+			 HttpGet get = new HttpGet(url);
+		     HttpResponse response = client.execute(get); 
 		      
 		      //Reading Content
 		     String output = "";
