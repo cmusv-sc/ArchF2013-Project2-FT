@@ -4,9 +4,8 @@ package models.cmu.sv.sensor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,18 +15,14 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import java.net.URLEncoder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import play.Logger.ALogger;
-import play.libs.F.Function;
-import play.mvc.*;
 
 public class MessageBusHandler {
 	private static String serverUrl = "http://message-bus-soc.herokuapp.com/";
@@ -165,12 +160,12 @@ public class MessageBusHandler {
 		builder.append(reading.getValue());
 		return builder.toString(); 
 	}
-	public boolean publishToListener(String topic, int value){
+	public boolean publishToListener(String topic, String deviceID, int value){
 		String url = "http://message-peer-listener.herokuapp.com/publish";
 		HttpClient client = new DefaultHttpClient();
 		
 		try {
-			url += "?topic=" + topic + "&metadata=" + URLEncoder.encode("id:WFRun|value:" + String.valueOf(value), "UTF-8");
+			url += "?topic=" + topic + "&metadata=" + URLEncoder.encode("id:"+ deviceID + "|value:" + String.valueOf(value), "UTF-8");
 			System.out.println(url);
 			HttpGet get = new HttpGet(url);
 			

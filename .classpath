@@ -112,5 +112,6 @@
 	<classpathentry kind="lib" path="/Applications/play-2.1.0/framework/sbt/boot/scala-2.10.0/lib/scala-library.jar"/>
 	<classpathentry kind="lib" path="lib/apache-httpcomponents-httpclient.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-4.2.2.jar"/>
+	<classpathentry kind="lib" path="target/scala-2.10/classes_managed/views/html"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

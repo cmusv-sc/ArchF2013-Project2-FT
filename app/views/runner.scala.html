@@ -1,7 +1,48 @@
-@(message: String)
+@(deviceName: String, currentInterval: Integer)
 
-@main("Welcome to Play 2.0") {
-    
-    @play20.welcome(message, style = "Java")
-    
-}
+<html>
+<head>
+        <title>Work Flow Runner</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <style>
+        input[type='text']{
+        	font-size:14pt;
+        	height: 42px;
+        	width: 250px;
+        }
+        </style>
+</head>
+<body>
+	
+	<div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a href="#">Home</a></li>
+        </ul>
+        <h3 class="muted">Work Flow Runner</h3>
+      </div>
+
+      <hr>
+
+      <div class="jumbotron">
+        <h1>The virtual device[@deviceName] is being monitored</h1>
+        <p class="lead">
+        	Here are the current Analysis:
+        	<ul>
+        		<li>Status: Dangerous! </li>
+        	</ul>
+        </p>
+        <hr>
+        <input type="text" id="interval" placeholder="Current Interval: @(currentInterval) Seconds"><br/>
+        <a class="btn btn-large btn-success" href="#" id="changeInterval">Change Report Interval</a>
+      </div>
+
+      <hr>
+
+      
+
+    </div> <!-- /container -->
+</body>
+</html>

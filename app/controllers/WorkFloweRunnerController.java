@@ -1,14 +1,13 @@
 package controllers;
 
-import play.*;
-import play.mvc.*;
-
-import views.html.*;
+import play.mvc.Controller;
+import play.mvc.Result;
+import views.html.runner;
 
 
 public class WorkFloweRunnerController  extends Controller  {
 	public static Result index() {
 		   
-		 return ok(runner.render("Your new application is ready."));
+		 return ok(runner.render("test",5));
 	  }
 }

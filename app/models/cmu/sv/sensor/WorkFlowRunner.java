@@ -1,11 +1,11 @@
 package models.cmu.sv.sensor;
 
-import java.util.Date;
 
 public class WorkFlowRunner {
 		private String virtualDeviceID;
 		private String topic;
-		private MessageBusHandler handler; 
+		private MessageBusHandler handler;
+		
 		public WorkFlowRunner(String virtualDeviceID, String topic){
 			this.virtualDeviceID = virtualDeviceID;
 			this.topic = topic;
@@ -13,6 +13,7 @@ public class WorkFlowRunner {
 		}
 		
 		public boolean notifyVirtualDevice(int value){
-			return handler.publishToListener(this.topic, value);
+			return handler.publishToListener(this.topic, this.virtualDeviceID, value);
 		}
+		
 }

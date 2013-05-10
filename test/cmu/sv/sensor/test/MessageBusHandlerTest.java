@@ -1,10 +1,6 @@
 package cmu.sv.sensor.test;
 
-import static org.junit.Assert.*;
-
-import java.io.FileNotFoundException;
-
-import models.cmu.sv.sensor.DBHandler;
+import static org.junit.Assert.assertEquals;
 import models.cmu.sv.sensor.MessageBusHandler;
 import models.cmu.sv.sensor.SensorReading;
 
