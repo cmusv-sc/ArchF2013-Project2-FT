@@ -91,6 +91,10 @@ public class MessageBusHandler {
 			e.printStackTrace();
 			return false;
 		} 
+		catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
 		
 	}
 	private JSONObject addFieldToTopic(String fieldName, String fieldType){
@@ -146,6 +150,9 @@ public class MessageBusHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		 catch(Exception e){
+			 e.printStackTrace();
+		 }
 		 return false;
 	}
 	private String createPublishData(SensorReading reading){
@@ -221,7 +228,7 @@ public class MessageBusHandler {
 		      if(output.equals("published successfully")) return true;
 		      System.err.println(output);
 		 }
-		 catch(IOException e){
+		 catch(Exception e){
 			 e.printStackTrace();
 		 } 
 		 
