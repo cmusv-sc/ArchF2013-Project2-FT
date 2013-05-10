@@ -82,6 +82,20 @@ public class DBHandler {
 		this.connection = null;
 		
 	}
+	public ResultSet runQuery(String sql){
+		this.makeConnection();
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = this.connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			this.closeConnection();
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
 	public boolean addReading(String deviceId, Long timeStamp, String sensorType, double value){
 		this.makeConnection();
 		PreparedStatement preparedStatement;
@@ -118,6 +132,17 @@ public class DBHandler {
 			//e.printStackTrace();
 			return false;
 		}
+	}
+	public Connection getConnection(){
+		try {
+			if(connection == null || connection.isClosed()){
+				this.makeConnection();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			this.makeConnection();
+		}
+		return this.connection;
 	}
 	public SensorReading searchReading(String deviceId, Long timeStamp, String sensorType){
 		this.makeConnection();

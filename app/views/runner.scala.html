@@ -1,4 +1,4 @@
-@(deviceName: String, currentInterval: Integer)
+@(deviceName: String, currentAlert: Integer, interval: Integer)
 
 <html>
 <head>
@@ -6,6 +6,7 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <script src="@routes.Assets.at("javascripts/jquery-1.9.1.min.js")"></script>
         <style>
         input[type='text']{
         	font-size:14pt;
@@ -13,6 +14,36 @@
         	width: 250px;
         }
         </style>
+        <script>
+        $(window).load(function(){
+        	setTimeout("getNewValue();", @(interval * 1000) );
+        	$("#changeInterval").click(function(){
+        		console.log( parseInt($("#interval").val()));
+        		$.ajax({
+        			url: "/workflow/",
+        			contentType: "application/json",
+        			method: "POST",
+        			dataType: "text",
+        			data: JSON.stringify({"interval": parseInt($("#interval").val())}),
+        			success: function(result){
+        				console.log(result);
+        				$("#result").text("Successfully change interval");
+        			}
+        			
+        		});
+        		
+        	});
+        });
+       	function getNewValue(){
+       		console.log("update");
+       		$.ajax({
+    			url: "/workflow.json",
+    			success: function(result){
+    				$("#alertNumber").text(result);	
+    			}
+       		});
+       	}
+        </script>
 </head>
 <body>
 	
@@ -31,12 +62,13 @@
         <p class="lead">
         	Here are the current Analysis:
         	<ul>
-        		<li>Status: Dangerous! </li>
+        		<li>Number of alerts: <span id="alertNumber">@currentAlert</span>  </li>
         	</ul>
         </p>
         <hr>
-        <input type="text" id="interval" placeholder="Current Interval: @(currentInterval) Seconds"><br/>
+        <input type="text" id="interval" placeholder="? Seconds"><br/>
         <a class="btn btn-large btn-success" href="#" id="changeInterval">Change Report Interval</a>
+        <span id="result"></span>
       </div>
 
       <hr>

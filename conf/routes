@@ -17,5 +17,6 @@ POST	/sensors_save/				  		controllers.SensorReading.add(publish:Boolean = false
 POST	/sensors_save				  		controllers.SensorReading.add(publish:Boolean = false)
 
 # WorkFlow
-GET		/workflow/							controllers.WorkFloweRunnerController.index()
-GET		/workflow							controllers.WorkFloweRunnerController.index()
+POST	/workflow/							controllers.WorkFloweRunnerController.changeInterval()
+GET		/workflow/							controllers.WorkFloweRunnerController.index(format:String = "html")
+GET		/workflow.json						controllers.WorkFloweRunnerController.index(format:String = "json")

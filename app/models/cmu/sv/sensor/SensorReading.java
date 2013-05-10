@@ -1,5 +1,7 @@
 package models.cmu.sv.sensor;
 
+import java.sql.ResultSet;
+
 public class SensorReading {
 	private static DBHandler dbHandler = null;
 	private String deviceId;
@@ -7,7 +9,11 @@ public class SensorReading {
 	private String sensorType;
 	private double value;
 	
-	
+	public SensorReading(){
+		dbHandler = new DBHandler("conf/database.properties");
+		
+		
+	}
 	public SensorReading(String deviceId, Long timeStamp, String sensorType, double value){
 		this.deviceId = deviceId;
 		this.timeStamp = timeStamp;
@@ -25,6 +31,13 @@ public class SensorReading {
 	
 	public String getSensorType(){
 		return sensorType;
+	}
+	
+	public ResultSet executeSQL(String sql){
+		if(dbHandler == null){
+			dbHandler = new DBHandler("conf/database.properties");
+		}
+		return dbHandler.runQuery(sql);
 	}
 	
 	public double getValue(){
