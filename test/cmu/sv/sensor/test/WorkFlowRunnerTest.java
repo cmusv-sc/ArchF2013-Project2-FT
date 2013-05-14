@@ -16,7 +16,7 @@ public class WorkFlowRunnerTest {
 	@Test
 	public void testNotify() {
 		WorkFlowRunner runner = new WorkFlowRunner("WFRun", "virtual_device", "Interval");
-		assertEquals("Notify should be success", true, runner.notifyVirtualDevice(1));
+		assertEquals("Notify should be success", true, runner.notifyVirtualDevice(20));
 	}
 	
 	
