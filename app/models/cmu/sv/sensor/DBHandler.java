@@ -109,7 +109,7 @@ public class DBHandler {
 			this.closeConnection();
 			return true;
 		} catch (SQLException e) {
-			
+			System.err.println(e.getMessage());
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;

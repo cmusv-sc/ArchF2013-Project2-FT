@@ -51,9 +51,12 @@ public class SensorReading extends Controller {
 				 }
 			 }
 		 }
-		 if(error.size() == 0)
-			 return ok("saved");
+		 if(error.size() == 0){
+			 System.out.println("saved");
+             return ok("saved");
+         }
 		 else{
+			 System.out.println("some not saved: " + error.toString());
 			 return ok("some not saved: " + error.toString());
 		 }
 	}
