@@ -66,7 +66,6 @@ public class SensorReading extends Controller {
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}
-		System.out.println("SensorType: " + sensorType);
 		models.cmu.sv.sensor.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
 		if(reading == null){
 			return notFound("no reading found");
@@ -106,5 +105,32 @@ public class SensorReading extends Controller {
 		return ok(ret);
 	}
 
-	
+	public static Result lastReadingFromAllDevices(Long timeStamp, String sensorType, String format) {
+		if(!testDBHandler()){
+			return internalServerError("database conf file not found");
+		}
+		ArrayList<models.cmu.sv.sensor.SensorReading> readings = dbHandler.lastReadingFromAllDevices(timeStamp, sensorType);
+		if(readings == null || readings.isEmpty()){
+			return notFound("no reading found");
+		}
+		String ret = new String();
+		if (format.equals("json"))
+		{			
+			for (models.cmu.sv.sensor.SensorReading reading : readings) {
+				if (ret.isEmpty())
+					ret += "[";
+				else				
+					ret += ',';			
+				ret += reading.toJSONString();
+			}
+			ret += "]";			
+		} else {
+			for (models.cmu.sv.sensor.SensorReading reading : readings) {
+				if (!ret.isEmpty())
+					ret += '\n';
+				ret += reading.toCSVString();
+			}
+		}
+		return ok(ret);
+	}
 }

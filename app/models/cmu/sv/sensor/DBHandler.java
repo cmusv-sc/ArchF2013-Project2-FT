@@ -172,7 +172,8 @@ public class DBHandler {
 	}
 
 	public ArrayList<SensorReading> searchReading(String deviceId, Long startTime, long endTime, String sensorType){		
-		this.makeConnection();		
+		this.makeConnection();
+		System.out.println(deviceId + "," + startTime + "," + endTime + "," + sensorType);
 		PreparedStatement preparedStatement;
 		try{
 			preparedStatement = this.connection.prepareStatement("SELECT \"TIMESTAMP\", \"VALUE\" FROM \"CMU\".\"CMU_SENSOR\"" 
@@ -186,7 +187,6 @@ public class DBHandler {
 			while(resultSet.next()){
 				Long rs_timeStamp = resultSet.getLong(1);
 				double rs_value = resultSet.getDouble(2);
-				System.out.println(rs_timeStamp + ", " + rs_value);
 				readings.add(new SensorReading(deviceId, rs_timeStamp, sensorType, rs_value));
 			}
 			System.out.println(readings.size() + " reading(s) fetched");
@@ -203,20 +203,20 @@ public class DBHandler {
 		this.makeConnection();
 		PreparedStatement preparedStatement;
 		try{
-			preparedStatement = this.connection.prepareStatement("SELECT \"DEVICEID\", \"TIMESTAMP\", \"VALUE\" FROM" +
-				"(SELECT * FROM \"CMU\".\"CMU_SENSOR\" AS a" + 
+			preparedStatement = this.connection.prepareStatement("SELECT \"DEVICEID\", \"TIMESTAMP\", \"VALUE\" FROM " +
+				"(SELECT * FROM \"CMU\".\"CMU_SENSOR\" AS a " + 
 				"INNER JOIN " +
 				"(SELECT " +
 				"\"DEVICEID\" as device_id," +
-				"max(\"TIMESTAMP\") as max_timestamp" +
-				"FROM \"CMU\".\"CMU_SENSOR\"" +
-				"WHERE \"SENSORTYPE\" = ?" + // 1st parameter - sensorType
-				"AND SECONDS_BETWEEN(add_seconds(TO_TIMESTAMP (\'1970-01-01 00:00:00\'), \"TIMESTAMP\" / 1000), ?) <= 60" + // 2nd parameter - timeStamp
+				"max(\"TIMESTAMP\") as max_timestamp " +
+				"FROM \"CMU\".\"CMU_SENSOR\" " +
+				"WHERE \"SENSORTYPE\" = ? " + // 1st parameter - sensorType
+				"AND SECONDS_BETWEEN(add_seconds(TO_TIMESTAMP (\'1970-01-01 00:00:00\'), \"TIMESTAMP\" / 1000), ?) <= 60 " + // 2nd parameter - timeStamp
 				"GROUP BY \"DEVICEID\"" +
-				") b"+
-				"ON"+
-				"a.\"DEVICEID\" = b.device_id and" +
-				"a.\"TIMESTAMP\" = b.max_timestamp" +
+				") b "+
+				"ON "+
+				"a.\"DEVICEID\" = b.device_id AND " +
+				"a.\"TIMESTAMP\" = b.max_timestamp " +
 				"WHERE a.\"SENSORTYPE\" = ?)"); // 3rd parameter - sensorType
 			preparedStatement.setString(1, sensorType);
 			preparedStatement.setLong(2, timeStamp);
