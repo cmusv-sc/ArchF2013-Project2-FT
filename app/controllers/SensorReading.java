@@ -85,14 +85,24 @@ public class SensorReading extends Controller {
 			return notFound("no reading found");
 		}
 		String ret = new String();
-		for (models.cmu.sv.sensor.SensorReading reading : readings) {
-			if (ret.isEmpty())
-				ret += "[";
-			else				
-				ret += ',';			
-			ret += format.equals("json") ? reading.toJSONString() : reading.toCSVString();
+		if (format.equals("json"))
+		{			
+			for (models.cmu.sv.sensor.SensorReading reading : readings) {
+				if (ret.isEmpty())
+					ret += "[";
+				else				
+					ret += ',';			
+				ret += reading.toJSONString();
+			}
+			ret += "]";			
+		} else {
+			for (models.cmu.sv.sensor.SensorReading reading : readings) {
+				if (!ret.isEmpty())
+					ret += '\n';
+				ret += reading.toCSVString();
+			}
 		}
-		ret += "]";
+
 		return ok(ret);
 	}
 
