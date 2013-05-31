@@ -14,7 +14,7 @@ import play.mvc.Result;
 
 public class SensorReading extends Controller {
 	private static DBHandler dbHandler = null;
-	private  static boolean testDBHandler(){
+	private static boolean testDBHandler(){
 		if(dbHandler == null){
 			dbHandler = new DBHandler("conf/database.properties");
 		}
@@ -30,7 +30,7 @@ public class SensorReading extends Controller {
 			 return internalServerError("database conf file not found");
 		 }
 		 
-		// Parse JSON FIle 
+		 // Parse JSON FIle 
 		 String deviceId = json.findPath("id").getTextValue();
 		 Long timeStamp = json.findPath("timestamp").getLongValue();
 		 Iterator<String> it = json.getFieldNames();
@@ -60,16 +60,41 @@ public class SensorReading extends Controller {
 			 return ok("some not saved: " + error.toString());
 		 }
 	}
-	public static Result search(String deviceId, Long timeStamp, String sensorType){
+	
+	// search reading at a specific timestamp
+	public static Result searchAtTime(String deviceId, Long timeStamp, String sensorType, String format){
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}
+		System.out.println("SensorType: " + sensorType);
 		models.cmu.sv.sensor.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
 		if(reading == null){
-			return notFound("the record not exists");
+			return notFound("no reading found");
 		}
-		
-		return ok(reading.getSensorType()+ ":" + String.valueOf( reading.getValue()));
+		String ret = format.equals("json") ? reading.toJSONString() : reading.toCSVString(); 
+		return ok(ret);
 	}
 
+	// search readings of time range [startTime, endTime]
+	public static Result searchInTimeRange(String deviceId, Long startTime, long endTime, String sensorType, String format){
+		if(!testDBHandler()){
+			return internalServerError("database conf file not found");
+		}
+		ArrayList<models.cmu.sv.sensor.SensorReading> readings = dbHandler.searchReading(deviceId, startTime, endTime, sensorType);
+		if(readings == null || readings.isEmpty()){
+			return notFound("no reading found");
+		}
+		String ret = new String();
+		for (models.cmu.sv.sensor.SensorReading reading : readings) {
+			if (ret.isEmpty())
+				ret += "[";
+			else				
+				ret += ',';			
+			ret += format.equals("json") ? reading.toJSONString() : reading.toCSVString();
+		}
+		ret += "]";
+		return ok(ret);
+	}
+
+	
 }

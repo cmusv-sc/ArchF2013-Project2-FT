@@ -1,5 +1,7 @@
 package models.cmu.sv.sensor;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -144,6 +146,7 @@ public class DBHandler {
 		}
 		return this.connection;
 	}
+	
 	public SensorReading searchReading(String deviceId, Long timeStamp, String sensorType){
 		this.makeConnection();
 		PreparedStatement preparedStatement;
@@ -163,12 +166,40 @@ public class DBHandler {
 			this.closeConnection();
 			return new SensorReading(rs_deviceId, rs_timeStamp, rs_sensorType, rs_value);			
 		}catch(SQLException e){
-			//e.printStackTrace();
+			e.printStackTrace();
 			return null;
 		}
 	}
+
+	public ArrayList<SensorReading> searchReading(String deviceId, Long startTime, long endTime, String sensorType){		
+		this.makeConnection();		
+		PreparedStatement preparedStatement;
+		try{
+			preparedStatement = this.connection.prepareStatement("SELECT \"TIMESTAMP\", \"VALUE\" FROM \"CMU\".\"CMU_SENSOR\"" 
+					+ " WHERE \"DEVICEID\" = ? AND \"TIMESTAMP\" >= ? AND \"TIMESTAMP\" <= ? AND \"SENSORTYPE\" = ? ORDER BY \"TIMESTAMP\" DESC");	
+			preparedStatement.setString(1, deviceId);
+			preparedStatement.setLong(2, startTime);
+			preparedStatement.setLong(3, endTime);
+			preparedStatement.setString(4, sensorType);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			ArrayList<SensorReading> readings = new ArrayList<SensorReading>();
+			while(resultSet.next()){
+				Long rs_timeStamp = resultSet.getLong(1);
+				double rs_value = resultSet.getDouble(2);
+				System.out.println(rs_timeStamp + ", " + rs_value);
+				readings.add(new SensorReading(deviceId, rs_timeStamp, sensorType, rs_value));
+			}
+			System.out.println(readings.size() + " reading(s) fetched");
+			this.closeConnection();
+			return readings;			
+		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	
-	public SensorReading lastReadingFromAllDevices(Long timeStamp, String sensorType){
+	public ArrayList<SensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType){
 		this.makeConnection();
 		PreparedStatement preparedStatement;
 		try{
@@ -191,16 +222,18 @@ public class DBHandler {
 			preparedStatement.setLong(2, timeStamp);
 			preparedStatement.setString(1, sensorType);
 			ResultSet resultSet = preparedStatement.executeQuery();
-			if(!resultSet.next()){
-				return null;
+			ArrayList<SensorReading> readings = new ArrayList<SensorReading>();
+			while(resultSet.next()){
+				String rs_deviceId = resultSet.getString(1);
+				Long rs_timeStamp = resultSet.getLong(2);
+				double rs_value = resultSet.getDouble(3);
+				readings.add(new SensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
 			}
-			String rs_deviceId = resultSet.getString(1);
-			Long rs_timeStamp = resultSet.getLong(2);
-			double rs_value = resultSet.getDouble(3);						
-			this.closeConnection();
-			return new SensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value);			
+			System.out.println(readings.size() + " reading(s) fetched");
+			this.closeConnection();			
+			return readings;			
 		}catch(SQLException e){
-			//e.printStackTrace();
+			e.printStackTrace();
 			return null;
 		}
 	}	
