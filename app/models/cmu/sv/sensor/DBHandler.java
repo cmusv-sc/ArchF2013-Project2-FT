@@ -1,7 +1,6 @@
 package models.cmu.sv.sensor;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -211,16 +210,18 @@ public class DBHandler {
 				"max(\"TIMESTAMP\") as max_timestamp " +
 				"FROM \"CMU\".\"CMU_SENSOR\" " +
 				"WHERE \"SENSORTYPE\" = ? " + // 1st parameter - sensorType
-				"AND SECONDS_BETWEEN(add_seconds(TO_TIMESTAMP (\'1970-01-01 00:00:00\'), \"TIMESTAMP\" / 1000), ?) <= 60 " + // 2nd parameter - timeStamp
+				"AND ? / 1000 - \"TIMESTAMP\" / 1000 >= 0 " + // 2nd parameter - timeStamp
+				"AND ? / 1000 - \"TIMESTAMP\" / 1000 <= 60 " + // 3rd parameter - timeStamp
 				"GROUP BY \"DEVICEID\"" +
 				") b "+
 				"ON "+
 				"a.\"DEVICEID\" = b.device_id AND " +
 				"a.\"TIMESTAMP\" = b.max_timestamp " +
-				"WHERE a.\"SENSORTYPE\" = ?)"); // 3rd parameter - sensorType
+				"WHERE a.\"SENSORTYPE\" = ?)"); // 4th parameter - sensorType
 			preparedStatement.setString(1, sensorType);
 			preparedStatement.setLong(2, timeStamp);
-			preparedStatement.setString(1, sensorType);
+			preparedStatement.setLong(3, timeStamp);
+			preparedStatement.setString(4, sensorType);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			ArrayList<SensorReading> readings = new ArrayList<SensorReading>();
 			while(resultSet.next()){
@@ -228,7 +229,7 @@ public class DBHandler {
 				Long rs_timeStamp = resultSet.getLong(2);
 				double rs_value = resultSet.getDouble(3);
 				readings.add(new SensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
-			}
+			}			
 			System.out.println(readings.size() + " reading(s) fetched");
 			this.closeConnection();			
 			return readings;			
