@@ -66,6 +66,7 @@ public class SensorReading extends Controller {
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
 		models.cmu.sv.sensor.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
 		if(reading == null){
 			return notFound("no reading found");
@@ -79,6 +80,7 @@ public class SensorReading extends Controller {
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
 		ArrayList<models.cmu.sv.sensor.SensorReading> readings = dbHandler.searchReading(deviceId, startTime, endTime, sensorType);
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
@@ -109,6 +111,7 @@ public class SensorReading extends Controller {
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
 		ArrayList<models.cmu.sv.sensor.SensorReading> readings = dbHandler.lastReadingFromAllDevices(timeStamp, sensorType);
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
