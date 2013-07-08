@@ -202,6 +202,7 @@ public class DBHandler {
 		this.makeConnection();
 		PreparedStatement preparedStatement;
 		try{
+			long startTime = System.nanoTime();
 			preparedStatement = this.connection.prepareStatement("SELECT \"DEVICEID\", \"TIMESTAMP\", \"VALUE\" FROM " +
 				"(SELECT * FROM \"CMU\".\"CMU_SENSOR\" AS a " + 
 				"INNER JOIN " +
@@ -223,14 +224,18 @@ public class DBHandler {
 			preparedStatement.setLong(3, timeStamp);
 			preparedStatement.setString(4, sensorType);
 			ResultSet resultSet = preparedStatement.executeQuery();
-			ArrayList<SensorReading> readings = new ArrayList<SensorReading>();
+			long finishQueryTime = System.nanoTime();
+			ArrayList<SensorReading> readings = new ArrayList<SensorReading>();			
 			while(resultSet.next()){
 				String rs_deviceId = resultSet.getString(1);
 				Long rs_timeStamp = resultSet.getLong(2);
 				double rs_value = resultSet.getDouble(3);
 				readings.add(new SensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
-			}			
-			System.out.println(readings.size() + " reading(s) fetched");
+			}
+			long finishProcessTime = System.nanoTime();
+			System.out.println(readings.size() + " reading(s) fetched in last_readings_from_all_devices." + 
+					" queryTime=" + (finishQueryTime - startTime) / 1000000 + 
+					"ms. processTime=" + (finishProcessTime - finishQueryTime)  / 1000000 + "ms.");
 			this.closeConnection();			
 			return readings;			
 		}catch(SQLException e){
