@@ -24,7 +24,7 @@ public class WorkFlowRunner {
 		
 		public int computeThreshold(){
 			DBHandler dbHandler = new DBHandler("conf/database.properties");
-			dbHandler.makeConnection();
+			//dbHandler.makeConnection();
 			int numAlert = 0;
 			try {
 				CallableStatement statement = dbHandler.getConnection().prepareCall("CALL CMU.check_body_temperature_threshold(?)");
