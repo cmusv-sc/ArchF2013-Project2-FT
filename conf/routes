@@ -8,6 +8,11 @@ GET     /                           controllers.Application.index()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
+#DEVICE
+GET     /get_devices          controllers.Device.getDevice(format: String = "csv")
+GET     /get_devices/json     controllers.Device.getDevice(format: String = "json")
+POST    /device               controllers.Device.add()
+POST    /device/              controllers.Device.add()
 
 # SensorReading
 GET		/sensors/:deviceId/:timeStamp/:sensorType			controllers.SensorReading.searchAtTime(deviceId: String, timeStamp: Long, sensorType: String, format: String = "csv")

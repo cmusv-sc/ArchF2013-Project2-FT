@@ -75,6 +75,55 @@ public class DBHandler {
 		return resultSet;
 	}
 	
+	public boolean addDevice(String deviceId, String deviceType, String deviceAgent, String deviceLocation){
+		Connection connection = getConnection();
+		if (connection == null) return false;
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = connection.prepareStatement("INSERT INTO CMU.DEVICE(DEVICEID, DEVICETYPE, DEVICEAGENT, LOCATION) VALUES(?, ?, ?, ?)");
+			preparedStatement.setString(1, deviceId);
+			preparedStatement.setString(2, deviceType);
+			preparedStatement.setString(3, deviceAgent);
+			preparedStatement.setString(4, deviceLocation);
+			preparedStatement.executeUpdate();
+			connection.close();
+			//System.out.println("Connection closed.");
+			return true;
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			ALogger log = play.Logger.of(DBHandler.class);
+			log.warn(e.getMessage());
+			return false;
+		}	
+	}
+	
+	public ArrayList<Device> getDevice(String format){
+		try{
+			Connection connection = getConnection();
+			if (connection == null) return null;
+			PreparedStatement preparedStatement;
+			preparedStatement = connection.prepareStatement("SELECT \"DEVICEID\", \"DEVICETYPE\", \"DEVICEAGENT\", \"LOCATION\" FROM CMU.DEVICE");	
+			ResultSet resultSet = preparedStatement.executeQuery();
+			if(!resultSet.next()){
+				return null;
+			}
+			ArrayList<Device> devices = new ArrayList<Device>();			
+			while(resultSet.next()){			
+				String rs_deviceId = resultSet.getString(1);
+				String rs_deviceType = resultSet.getString(2);
+				String rs_deviceAgent = resultSet.getString(3);
+				String rs_location = resultSet.getString(4);
+				devices.add(new Device(rs_deviceId, rs_deviceType, rs_deviceAgent, rs_location));
+			}
+			connection.close();
+			//System.out.println("Connection closed.");
+			return devices;			
+		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}	
+	
 	public boolean addReading(String deviceId, Long timeStamp, String sensorType, double value){
 		Connection connection = getConnection();
 		if (connection == null) return false;
@@ -172,7 +221,6 @@ public class DBHandler {
 		}
 	}
 
-	
 	public ArrayList<SensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType){
 		try{
 			Connection connection = getConnection();

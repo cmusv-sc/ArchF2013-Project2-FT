@@ -135,5 +135,5 @@ public class SensorReading extends Controller {
 			}
 		}
 		return ok(ret);
-	}
+	}	
 }
