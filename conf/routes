@@ -21,6 +21,7 @@ GET 	/sensors/:deviceId/:startTime/:endTime/:sensorType	controllers.SensorReadin
 GET 	/sensors/:deviceId/:startTime/:endTime/:sensorType/json	controllers.SensorReading.searchInTimeRange(deviceId: String, startTime: Long, endTime: Long, sensorType: String, format: String = "json")
 GET		/last_readings_from_all_devices/:timeStamp/:sensorType	controllers.SensorReading.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "csv")
 GET		/last_readings_from_all_devices/:timeStamp/:sensorType/json	controllers.SensorReading.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "json")
+POST    /sql_query                          controllers.SensorReading.sql_query()
 POST	/sensors/				  			controllers.SensorReading.add(publish:Boolean = false)
 POST	/sensors				  			controllers.SensorReading.add(publish:Boolean = false)
 POST	/sensors_save/				  		controllers.SensorReading.add(publish:Boolean = false)

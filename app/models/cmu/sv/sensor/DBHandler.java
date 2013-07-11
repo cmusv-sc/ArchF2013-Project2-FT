@@ -58,21 +58,42 @@ public class DBHandler {
 		return connection;
 	}
 	
-	public ResultSet runQuery(String sql) {
+	public String runQuery(String sql, int number_of_result_columns) {
 		Connection connection = getConnection();
 		if (connection == null) return null;
+		// limit maximum of 1000 records if limit is not specified in the sql 
+		if (!sql.toLowerCase().contains(" limit ")) {
+			if (sql.trim().endsWith(";")) {
+				sql = sql.trim();
+				sql = sql.substring(0, sql.length() - 1);
+			}
+			sql += " LIMIT 1000";
+		}
 		ResultSet resultSet = null;
+		String resultStr = "";
 		try {
-			PreparedStatement preparedStatement;
-			preparedStatement = connection.prepareStatement(sql);
+			System.out.println("Execute the sql on db: " + sql);
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
 			resultSet = preparedStatement.executeQuery();
+			if(resultSet == null){
+				resultStr = "no result found";
+			} else {			
+				while(resultSet.next()){
+					for (int i = 1; i <= number_of_result_columns; i++) {
+						resultStr += resultSet.getString(i);
+						if (i < number_of_result_columns)
+							resultStr += ", ";
+					}
+					resultStr += "\n";
+				}
+			}
 			connection.close();
 			//System.out.println("Connection closed.");
 		}
 		catch(SQLException e){
 			e.printStackTrace();
 		}
-		return resultSet;
+		return resultStr;
 	}
 	
 	public boolean addDevice(String deviceId, String deviceType, String deviceAgent, String deviceLocation){

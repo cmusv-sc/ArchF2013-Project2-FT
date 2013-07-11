@@ -1,7 +1,5 @@
 package models.cmu.sv.sensor;
 
-import java.sql.ResultSet;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,11 +56,11 @@ public class SensorReading {
 		return jsonString;
 	}
 	
-	public ResultSet executeSQL(String sql){
+	public String executeSQL(String sql, int number_of_result_columns){
 		if(dbHandler == null){
 			dbHandler = new DBHandler("conf/database.properties");
 		}
-		return dbHandler.runQuery(sql);
+		return dbHandler.runQuery(sql, number_of_result_columns);
 	}
 
 	public boolean save(){

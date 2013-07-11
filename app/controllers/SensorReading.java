@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import models.cmu.sv.sensor.DBHandler;
 import models.cmu.sv.sensor.MessageBusHandler;
+//import models.cmu.sv.sensor.SensorReading;
 
 import org.codehaus.jackson.JsonNode;
 
@@ -59,6 +60,28 @@ public class SensorReading extends Controller {
 			 System.out.println("some not saved: " + error.toString());
 			 return ok("some not saved: " + error.toString());
 		 }
+	}
+	
+	// query for readings
+	public static Result sql_query(){
+		String resultStr = "";
+		
+		if(!testDBHandler()){
+			return internalServerError("database conf file not found");
+		}
+		try {
+			response().setHeader("Access-Control-Allow-Origin", "*");
+			JsonNode sql_json = request().body().asJson();
+			if (sql_json == null) {
+				return badRequest("Expect sql in valid json");
+			}
+			String sql = sql_json.findPath("sql").getTextValue();
+			int number_of_result_columns = sql_json.findPath("number_of_result_columns").getIntValue();			
+			resultStr = dbHandler.runQuery(sql, number_of_result_columns);
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return ok(resultStr);		
 	}
 	
 	// search reading at a specific timestamp

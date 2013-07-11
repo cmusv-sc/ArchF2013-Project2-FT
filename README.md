@@ -11,9 +11,9 @@ Usage:
 
 Note: all TimeStamps are in Unix epoch time format to millisecond
 
-- **Add sensor reading**
+- **Add sensor readings**
     - **Method**: POST
-    - **URL**: http://cmu-sensor-network.herokuapp.com/sensors/
+    - **URL**: http://cmu-sensor-network.herokuapp.com/sensors
     - **Data**: {"id": <"device id in string">, "timestamp": <"timestamp in int">, <"sensor type in string">: <"sensor value in double">} 
         <br/> Note: more than one sensor type:sensor value pairs can be included in the json.
     - **Example**: Post this json-formatted reading data to the URL - {"id":"test", "timestamp": 1373566898000, "temp": 123}
@@ -29,7 +29,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond
         (uri is the device id)
     - **Sample result (in json)**: {"device_type":"Firefly_v3","device_location":"B23.216","device_agent":"SensorAndrew2","uri":"10170202"}
 
-- **Get Sensor Reading at a specific time**
+- **Get sensor readings at a specific time**
     - **Method**: GET
     - **URL (return csv format)**: http://cmu-sensor-network.herokuapp.com/sensors/<"DeviceID">/<"TimeStampValue">/<"SensorTypeValue">
     - **URL (return json format)**: http://cmu-sensor-network.herokuapp.com/sensors/<"DeviceID">/<"TimeStamp">/<"SensorType">/json
@@ -37,7 +37,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond
     <br/>("temp" stands for temperature sensor)
     - **Sample result**: 10170102,1368568896000,temp,518.0
 
-- **Get Sensor Readings in a time range**
+- **Get sensor readings in a time range**
     - **Method**: GET
     - **URL (return csv format)**: http://cmu-sensor-network.herokuapp.com/sensors/<"DeviceID">/<"StartTime">/<"EndTime">/<"SensorType">
     - **URL (return json format)**: http://cmu-sensor-network.herokuapp.com/sensors/<"DeviceID">/<"StartTime">/<"EndTime">/<"SensorType">/json
