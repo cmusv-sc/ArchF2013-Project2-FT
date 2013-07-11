@@ -12,7 +12,7 @@ Usage:
 - Add Sensor Reading:
     - **Method**: POST
     - **URL**: sensors/
-    - **Data**: {deviceID: Int, timeStamp: Int, sensorType: String,  value: Double}
+    - **Data** (in json format): {deviceID: String, timeStamp: Int, sensorType: String,  value: Double}
 
 - Get Device:
     - **Method**: GET
