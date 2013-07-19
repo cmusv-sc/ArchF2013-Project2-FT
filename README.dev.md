@@ -1,7 +1,7 @@
-CMU Sensor Service Platform
-============
+CMU Sensor Data and Service Platform (SDSP)
+===========================================
 
-- built on Java play framework
+- SDSP is built on the "Java play" framework.
 
 - models package
     - defines the underlying framework of the classes so the user can see how the data is represented
