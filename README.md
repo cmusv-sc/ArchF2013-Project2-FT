@@ -1,5 +1,8 @@
-CMU Sensor Service Platform
+HANAPlatform
 ============
+
+SAP HANA-based Sensor Data and Service Platform
+
 
 Service URL:
 --------
