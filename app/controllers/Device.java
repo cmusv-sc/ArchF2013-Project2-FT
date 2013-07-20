@@ -87,20 +87,19 @@ public class Device extends Controller {
 		String ret = new String();
 		if (format.equals("json"))
 		{
+			String sensorTypesStr = "";
 			for (String sensorType : sensorTypes) {
-				if (ret.isEmpty())
-					ret += "{";
-				else				
-					ret += ',';
-				ret += sensorType;
+				if (!sensorTypesStr.isEmpty())
+					sensorTypesStr += ',';
+				sensorTypesStr += sensorType;
 			}
-			ret += "}";
+			ret = "{\"device_type\":\"" + deviceType + "\", \"sensor_type\":\"" + sensorTypesStr + "\"}";
 		} else {
 			for (String sensorType : sensorTypes) {
 				if (!ret.isEmpty())
 					ret += '\n';
 				else
-					ret += "SensorTypes\n";
+					ret += "sensor_types\n";
 				ret += sensorType;
 			}
 		}
