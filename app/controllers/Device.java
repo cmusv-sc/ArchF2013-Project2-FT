@@ -46,7 +46,7 @@ public class Device extends Controller {
 			return internalServerError("database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		ArrayList<models.cmu.sv.sensor.Device> devices = dbHandler.getDevice(format);
+		ArrayList<models.cmu.sv.sensor.Device> devices = dbHandler.getDevice();
 		if(devices == null || devices.isEmpty()){
 			return notFound("no devices found");
 		}
@@ -73,4 +73,38 @@ public class Device extends Controller {
 		return ok(ret);
 	}
 
+	public static Result getSensorType(String deviceType, String format) {
+		if(!testDBHandler()){
+			return internalServerError("database conf file not found");
+		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		// case insensitive search. device types in the database are in lower case
+		deviceType = deviceType.toLowerCase();
+		ArrayList<String> sensorTypes = dbHandler.getSensorType(deviceType);
+		if(sensorTypes == null || sensorTypes.isEmpty()){
+			return notFound("No sensor type found for " + deviceType);
+		}
+		String ret = new String();
+		if (format.equals("json"))
+		{
+			for (String sensorType : sensorTypes) {
+				if (ret.isEmpty())
+					ret += "{";
+				else				
+					ret += ',';
+				ret += sensorType;
+			}
+			ret += "}";
+		} else {
+			for (String sensorType : sensorTypes) {
+				if (!ret.isEmpty())
+					ret += '\n';
+				else
+					ret += "SensorTypes\n";
+				ret += sensorType;
+			}
+		}
+		return ok(ret);
+	}	
+	
 }

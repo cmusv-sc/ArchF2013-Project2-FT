@@ -158,5 +158,36 @@ public class SensorReading extends Controller {
 			}
 		}
 		return ok(ret);
+	}
+	
+	public static Result lastestReadingFromAllDevices(String sensorType, String format) {
+		if(!testDBHandler()){
+			return internalServerError("database conf file not found");
+		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		ArrayList<models.cmu.sv.sensor.SensorReading> readings = dbHandler.lastestReadingFromAllDevices(sensorType);
+		if(readings == null || readings.isEmpty()){
+			return notFound("no reading found");
+		}
+		String ret = new String();
+		if (format.equals("json"))
+		{			
+			for (models.cmu.sv.sensor.SensorReading reading : readings) {
+				if (ret.isEmpty())
+					ret += "[";
+				else				
+					ret += ',';			
+				ret += reading.toJSONString();
+			}
+			ret += "]";			
+		} else {
+			for (models.cmu.sv.sensor.SensorReading reading : readings) {
+				if (!ret.isEmpty())
+					ret += '\n';
+				ret += reading.toCSVString();
+			}
+		}
+		return ok(ret);
 	}	
+		
 }

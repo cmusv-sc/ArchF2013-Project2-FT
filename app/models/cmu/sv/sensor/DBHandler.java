@@ -48,7 +48,7 @@ public class DBHandler {
 			//PreparedStatement preparedStatement = this.connection.prepareStatement("SET SCHEMA CMU");
 			//return preparedStatement.execute();
 			connection.setAutoCommit(true);
-			System.out.println("DB connection to " + serverIP + " established.");			
+			//System.out.println("DB connection to " + serverIP + " established.");			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.err.println(e.getMessage());
@@ -118,16 +118,13 @@ public class DBHandler {
 		}	
 	}
 	
-	public ArrayList<Device> getDevice(String format){
+	public ArrayList<Device> getDevice(){
 		try{
 			Connection connection = getConnection();
 			if (connection == null) return null;
 			PreparedStatement preparedStatement;
 			preparedStatement = connection.prepareStatement("SELECT \"DEVICEID\", \"DEVICETYPE\", \"DEVICEAGENT\", \"LOCATION\" FROM CMU.DEVICE");	
 			ResultSet resultSet = preparedStatement.executeQuery();
-			if(!resultSet.next()){
-				return null;
-			}
 			ArrayList<Device> devices = new ArrayList<Device>();			
 			while(resultSet.next()){			
 				String rs_deviceId = resultSet.getString(1);
@@ -139,6 +136,28 @@ public class DBHandler {
 			connection.close();
 			//System.out.println("Connection closed.");
 			return devices;			
+		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}	
+	
+	public ArrayList<String> getSensorType(String deviceType){
+		try{
+			Connection connection = getConnection();
+			if (connection == null) return null;
+			PreparedStatement preparedStatement;
+			preparedStatement = connection.prepareStatement("SELECT \"SENSOR_TYPE\" FROM CMU.SENSOR_TYPE WHERE DEVICE_TYPE=?");
+			preparedStatement.setString(1, deviceType);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			ArrayList<String> sensorTypes = new ArrayList<String>();			
+			while(resultSet.next()){			
+				String rs_sensorType = resultSet.getString(1);
+				sensorTypes.add(new String(rs_sensorType));
+			}
+			connection.close();
+			//System.out.println("Connection closed.");
+			return sensorTypes;
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
@@ -290,5 +309,48 @@ public class DBHandler {
 		}
 	}	
 	
+	public ArrayList<SensorReading> lastestReadingFromAllDevices(String sensorType){
+		try{
+			Connection connection = getConnection();
+			if (connection == null) return null;
+			PreparedStatement preparedStatement;			
+			long startTime = System.nanoTime();
+			preparedStatement = connection.prepareStatement("SELECT \"DEVICEID\", \"TIMESTAMP\", \"VALUE\" FROM " +
+				"(SELECT * FROM \"CMU\".\"CMU_SENSOR\" AS a " + 
+				"INNER JOIN " +
+				"(SELECT " +
+				"\"DEVICEID\" as device_id," +
+				"max(\"TIMESTAMP\") as max_timestamp " +
+				"FROM \"CMU\".\"CMU_SENSOR\" " +
+				"WHERE \"SENSORTYPE\" = ? " + // 1st parameter - sensorType
+				"GROUP BY \"DEVICEID\"" +
+				") b "+
+				"ON "+
+				"a.\"DEVICEID\" = b.device_id AND " +
+				"a.\"TIMESTAMP\" = b.max_timestamp " +
+				"WHERE a.\"SENSORTYPE\" = ?)"); // 2nd parameter - sensorType
+			preparedStatement.setString(1, sensorType);
+			preparedStatement.setString(2, sensorType);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			long finishQueryTime = System.nanoTime();
+			ArrayList<SensorReading> readings = new ArrayList<SensorReading>();			
+			while(resultSet.next()){
+				String rs_deviceId = resultSet.getString(1);
+				Long rs_timeStamp = resultSet.getLong(2);
+				double rs_value = resultSet.getDouble(3);
+				readings.add(new SensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
+			}
+			long finishProcessTime = System.nanoTime();
+			System.out.println(readings.size() + " reading(s) fetched in lastest_readings_from_all_devices." + 
+					" queryTime=" + (finishQueryTime - startTime) / 1000000 + 
+					"ms. processTime=" + (finishProcessTime - finishQueryTime)  / 1000000 + "ms.");
+			connection.close();
+			//System.out.println("Connection closed.");
+			return readings;			
+		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}	
 	
 }
