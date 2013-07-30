@@ -98,7 +98,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 - **Get the latest readings at specific time from all devices**
     - **Method**: GET
     - **Semantics**:
-        - **TimeStamp**: Time to get the last readings. The query returns the latest readings up to 60 seconds before this time.
+        - **TimeStamp**: Time to get the last readings. The query returns the latest readings up to 210 seconds before this time.
         - **SensorType**: Type of the sensor (temperature, CO2, etc.)
         - **ResultFormat**: either json or csv
     - **URL**: http://cmu-sensor-network.herokuapp.com/last_readings_from_all_devices/<"TimeStamp">/<"sensorType">/<"ResultFormat">
@@ -119,7 +119,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Semantics**:
         - **SensorType**: Type of the sensor (temperature, CO2, etc.)
         - **ResultFormat**: either json or csv
-        - Note: the difference between this API and last_readings_from_all_devices given the current timestamp is that this API returns the last reading from each device even if it's more than 60 seconds old.
+        - Note: the difference between this API and last_readings_from_all_devices given the current timestamp is that this API returns the last reading from each device even if it's more than 210 seconds old.
     - **URL**: http://cmu-sensor-network.herokuapp.com/lastest_readings_from_all_devices/<"sensorType">/<"ResultFormat">
     - **Sample csv request**: http://cmu-sensor-network.herokuapp.com/lastest_readings_from_all_devices/temp/csv     
     - **Sample csv result**: (device_id,timestamp,sensor_type,value) </br>

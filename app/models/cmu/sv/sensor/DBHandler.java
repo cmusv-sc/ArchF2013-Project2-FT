@@ -276,7 +276,7 @@ public class DBHandler {
 				"FROM \"CMU\".\"CMU_SENSOR\" " +
 				"WHERE \"SENSORTYPE\" = ? " + // 1st parameter - sensorType
 				"AND ? / 1000 - \"TIMESTAMP\" / 1000 >= 0 " + // 2nd parameter - timeStamp
-				"AND ? / 1000 - \"TIMESTAMP\" / 1000 <= 60 " + // 3rd parameter - timeStamp
+				"AND ? / 1000 - \"TIMESTAMP\" / 1000 <= 210 " + // 3rd parameter - timeStamp
 				"GROUP BY \"DEVICEID\"" +
 				") b "+
 				"ON "+
