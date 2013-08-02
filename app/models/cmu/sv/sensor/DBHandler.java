@@ -261,6 +261,10 @@ public class DBHandler {
 		}
 	}
 
+	// Currently this method is for heatmap etc application that requires all readings from all devices, to 
+	// avoid network traffic. However, this method may not be scalable when the number of devices keeps on
+	// increase.
+	// TODO: Consider publisher/subscriber pattern to refind this set of queries.
 	public ArrayList<SensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType){
 		try{
 			Connection connection = getConnection();
