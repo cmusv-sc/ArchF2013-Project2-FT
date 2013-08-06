@@ -73,8 +73,10 @@ public class DBHandler {
 		String resultStr = "";
 		try {
 			System.out.println("Execute the sql on db: " + sql);
+			long startQueryTime = System.nanoTime();
 			PreparedStatement preparedStatement = connection.prepareStatement(sql);
 			resultSet = preparedStatement.executeQuery();
+			long finishQueryTime = System.nanoTime();
 			if(resultSet == null){
 				resultStr = "no result found";
 			} else {			
@@ -89,6 +91,8 @@ public class DBHandler {
 			}
 			connection.close();
 			//System.out.println("Connection closed.");
+			System.out.println("run query execution time=" + (finishQueryTime - startQueryTime) / 1000000 + 
+					"ms.");			
 		}
 		catch(SQLException e){
 			e.printStackTrace();
@@ -238,6 +242,7 @@ public class DBHandler {
 			if (connection == null) return null;
 			System.out.println("Search reading " + deviceId + "," + startTime + "," + endTime + "," + sensorType);
 			PreparedStatement preparedStatement;
+			long startQueryTime = System.nanoTime();
 			preparedStatement = connection.prepareStatement("SELECT \"TIMESTAMP\", \"VALUE\" FROM \"CMU\".\"CMU_SENSOR\"" 
 					+ " WHERE \"DEVICEID\" = ? AND \"TIMESTAMP\" >= ? AND \"TIMESTAMP\" <= ? AND \"SENSORTYPE\" = ? ORDER BY \"TIMESTAMP\" DESC");	
 			preparedStatement.setString(1, deviceId);
@@ -245,15 +250,17 @@ public class DBHandler {
 			preparedStatement.setLong(3, endTime);
 			preparedStatement.setString(4, sensorType);
 			ResultSet resultSet = preparedStatement.executeQuery();
+			long finishQueryTime = System.nanoTime();
 			ArrayList<SensorReading> readings = new ArrayList<SensorReading>();
 			while(resultSet.next()){
 				Long rs_timeStamp = resultSet.getLong(1);
 				double rs_value = resultSet.getDouble(2);
 				readings.add(new SensorReading(deviceId, rs_timeStamp, sensorType, rs_value));
 			}
-			System.out.println(readings.size() + " reading(s) fetched");
 			connection.close();
-			//System.out.println("Connection closed.");
+			System.out.println(readings.size() + " reading(s) fetched in searchReading." + 
+					" queryTime=" + (finishQueryTime - startQueryTime) / 1000000 + 
+					"ms.");
 			return readings;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -296,10 +303,9 @@ public class DBHandler {
 				double rs_value = resultSet.getDouble(3);
 				readings.add(new SensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
 			}
-			long finishProcessTime = System.nanoTime();
 			System.out.println(readings.size() + " reading(s) fetched in last_readings_from_all_devices." + 
 					" queryTime=" + (finishQueryTime - startTime) / 1000000 + 
-					"ms. processTime=" + (finishProcessTime - finishQueryTime)  / 1000000 + "ms.");
+					"ms.");
 			connection.close();
 			//System.out.println("Connection closed.");
 			return readings;			
@@ -340,10 +346,9 @@ public class DBHandler {
 				double rs_value = resultSet.getDouble(3);
 				readings.add(new SensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
 			}
-			long finishProcessTime = System.nanoTime();
 			System.out.println(readings.size() + " reading(s) fetched in lastest_readings_from_all_devices." + 
 					" queryTime=" + (finishQueryTime - startTime) / 1000000 + 
-					"ms. processTime=" + (finishProcessTime - finishQueryTime)  / 1000000 + "ms.");
+					"ms.");
 			connection.close();
 			//System.out.println("Connection closed.");
 			return readings;			
