@@ -20,6 +20,7 @@ public class DBHandler {
 	protected String dbPassword = "";
 		
 	public DBHandler(String fileName){
+		System.out.println(fileName);
 		//For heroku: Use local env instead
 		if(System.getenv("serverip") != null){
 			this.serverIP = System.getenv("serverip");
@@ -42,8 +43,9 @@ public class DBHandler {
 	}
 	
 	public Connection getConnection(){
-		Connection connection;
+		Connection connection = null;
 		try { 		
+			Class.forName("com.sap.db.jdbc.Driver");
 			connection = DriverManager.getConnection( "jdbc:sap://" + serverIP + ":" + serverPort + "/?autocommit=false?reconnect=true",dbUser,dbPassword); 
 			//PreparedStatement preparedStatement = this.connection.prepareStatement("SET SCHEMA CMU");
 			//return preparedStatement.execute();
@@ -54,6 +56,9 @@ public class DBHandler {
 			System.err.println(e.getMessage());
 			System.err.println("Connection Failed. User/Passwd Error?");
 			return null;
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		return connection;
 	}

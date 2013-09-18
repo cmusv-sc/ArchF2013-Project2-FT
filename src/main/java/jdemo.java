@@ -2,18 +2,21 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
+import com.sap.db.jdbc.Driver;
 
 public class jdemo {
 
 	public static void main(String[] argv) {
+	    Class.forName ("com.sap.db.jdbc");
 
 		Connection connection = null;
 		//load properties
 		Properties prop = new Properties();
-		String serverIP = "";
-		String serverPort = "";
-		String dbUser= "";
-		String dbPassword = "";
+		String serverIP = "10.0.1.5";
+		String serverPort = "30015";
+		String dbUser= "hdbadm";
+		String dbPassword = "cmuHANA0413";
+    	/*
     	try {
                //load a properties file
     			prop.load(new FileInputStream("src/main/conf/database.properties"));
@@ -28,12 +31,14 @@ public class jdemo {
     		ex.printStackTrace();
     		return ;
         }
+        */
 		try { 
 			connection = DriverManager.getConnection( "jdbc:sap://" + serverIP + ":" + serverPort + "/?autocommit=false",dbUser,dbPassword); 
 
 		} catch (SQLException e) {
 
 			System.err.println("Connection Failed. User/Passwd Error?");
+			System.err.println(e);
 
 			return;
 
