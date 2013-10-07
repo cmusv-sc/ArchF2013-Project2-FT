@@ -152,8 +152,8 @@ public class SensorReading extends Controller {
 		return ok(ret);
 	}
 
-	// search readings of time range [startTime, endTime]
-	public static Result searchInTimeRange(String deviceId, Long startTime, long endTime, String sensorType, String format){
+	// search readings of timestamp range [startTime, endTime]
+	public static Result searchInTimestampRange(String deviceId, Long startTime, long endTime, String sensorType, String format){
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}
@@ -178,6 +178,64 @@ public class SensorReading extends Controller {
 				if (!ret.isEmpty())
 					ret += '\n';
 				ret += reading.toCSVString();
+			}
+		}
+
+		return ok(ret);
+	}
+
+	// search readings of time range [startTime, endTime]
+	public static Result searchInTimeRange(String deviceId, String startTime, String endTime, String sensorType, String format){
+		if (!ISO8601.equals(getDateFormat())) {
+			Long startTimestamp = null;
+			Long endTimestamp = null;
+			try {
+				startTimestamp = Long.parseLong(startTime, 10);
+				endTimestamp = Long.parseLong(endTime, 10);
+			} catch(NumberFormatException ex) {
+				return badRequest("Date format or value is incorrect, please check APIs!");
+			}
+			if (null == startTimestamp && null == endTimestamp) {
+				return badRequest("Date format or value is incorrect, please check APIs!");
+			}
+			return searchInTimestampRange(deviceId, startTimestamp, endTimestamp, sensorType, format);
+		} 
+		if(!testDBHandler()){
+			return internalServerError("database conf file not found");
+		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		Long startTimestamp = null;
+		Long endTimestamp = null;
+		try {
+			startTimestamp = convertTimeToTimestamp(startTime);
+			endTimestamp = convertTimeToTimestamp(endTime);
+		} catch(ParseException ex) {
+			return badRequest("Date format or value is incorrect, please check APIs!");
+		}
+		ArrayList<models.cmu.sv.sensor.SensorReading> readings = dbHandler.searchReading(deviceId, startTimestamp, endTimestamp, sensorType);
+		if(readings == null || readings.isEmpty()){
+			return notFound("no reading found");
+		}
+		String ret = new String();
+		if (format.equals("json"))
+		{			
+			for (models.cmu.sv.sensor.SensorReading reading : readings) {
+				if (ret.isEmpty())
+					ret += "[";
+				else				
+					ret += ',';			
+				String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
+				ret += Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
+				//ret += reading.toJSONString();
+			}
+			ret += "]";			
+		} else {
+			for (models.cmu.sv.sensor.SensorReading reading : readings) {
+				if (!ret.isEmpty())
+					ret += '\n';
+				String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
+				ret += Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
+				//ret += reading.toCSVString();
 			}
 		}
 
