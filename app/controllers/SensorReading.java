@@ -226,30 +226,39 @@ public class SensorReading extends Controller {
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
 		}
-		String ret = new String();
+//		String ret = new String();
+		StringBuilder strBuilder = new StringBuilder();
 		if (format.equals("json"))
 		{			
 			for (models.cmu.sv.sensor.SensorReading reading : readings) {
-				if (ret.isEmpty())
-					ret += "[";
+				//if (ret.isEmpty())
+				if (strBuilder.length() == 0)
+					//ret += "[";
+					strBuilder.append("[");
 				else				
-					ret += ',';			
-				String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
-				ret += Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
+					//ret += ',';			
+					strBuilder.append(",");
 				//ret += reading.toJSONString();
+				String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
+				//ret += Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
+				strBuilder.append(Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue()));
 			}
-			ret += "]";			
+			//ret += "]";			
+			strBuilder.append("]");			
 		} else {
 			for (models.cmu.sv.sensor.SensorReading reading : readings) {
-				if (!ret.isEmpty())
-					ret += '\n';
+				//if (!ret.isEmpty())
+				if (strBuilder.length() != 0)
+					//ret += '\n';
+					strBuilder.append("\n");
 				String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
-				ret += Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
+//				ret += Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
 				//ret += reading.toCSVString();
+				strBuilder.append(Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue()));
 			}
 		}
 
-		return ok(ret);
+		return ok(strBuilder.toString());
 	}
 
 	public static Result lastReadingFromAllDevices(Long timeStamp, String sensorType, String format) {
