@@ -108,26 +108,36 @@ public class SensorReading extends Controller {
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
 		}
-		String ret = new String();
+		//String ret = new String();
+		StringBuilder strBuilder = new StringBuilder();
 		if (format.equals("json"))
 		{			
 			for (models.cmu.sv.sensor.SensorReading reading : readings) {
-				if (ret.isEmpty())
-					ret += "[";
+				//if (ret.isEmpty())
+				if (strBuilder.length() == 0)
+					//ret += "[";
+					strBuilder.append("[");
 				else				
-					ret += ',';			
-				ret += reading.toJSONString();
+					//ret += ',';			
+					strBuilder.append(",");
+				//ret += reading.toJSONString();
+				strBuilder.append(reading.toJSONString());
 			}
-			ret += "]";			
+			//ret += "]";			
+			strBuilder.append("]");			
 		} else {
 			for (models.cmu.sv.sensor.SensorReading reading : readings) {
-				if (!ret.isEmpty())
-					ret += '\n';
-				ret += reading.toCSVString();
+				//if (!ret.isEmpty())
+				if (strBuilder.length() != 0)
+					//ret += '\n';
+					strBuilder.append("\n");
+				//ret += reading.toCSVString();
+				strBuilder.append(reading.toCSVString());
 			}
 		}
 
-		return ok(ret);
+		//return ok(ret);
+		return ok(strBuilder.toString());
 	}
 
 	public static Result lastReadingFromAllDevices(Long timeStamp, String sensorType, String format) {
