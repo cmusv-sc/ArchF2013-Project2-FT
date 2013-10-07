@@ -56,14 +56,8 @@ public class DBHandler {
 			System.err.println(e.getMessage());
 			System.err.println("Connection Failed. User/Passwd Error?");
 			return null;
-<<<<<<< HEAD
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-=======
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
->>>>>>> 39398e0c12d11da0d812e78068694260238b247f
 		}
 		return connection;
 	}
