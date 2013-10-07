@@ -20,6 +20,7 @@ public class DBHandler {
 	protected String dbPassword = "";
 		
 	public DBHandler(String fileName){
+		System.out.println(fileName);
 		//For heroku: Use local env instead
 		if(System.getenv("serverip") != null){
 			this.serverIP = System.getenv("serverip");
@@ -55,8 +56,14 @@ public class DBHandler {
 			System.err.println(e.getMessage());
 			System.err.println("Connection Failed. User/Passwd Error?");
 			return null;
+<<<<<<< HEAD
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+=======
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+>>>>>>> 39398e0c12d11da0d812e78068694260238b247f
 		}
 		return connection;
 	}
@@ -271,6 +278,10 @@ public class DBHandler {
 		}
 	}
 
+	// Currently this method is for heatmap etc application that requires all readings from all devices, to 
+	// avoid network traffic. However, this method may not be scalable when the number of devices keeps on
+	// increase.
+	// TODO: Consider publisher/subscriber pattern to refind this set of queries.
 	public ArrayList<SensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType){
 		try{
 			Connection connection = getConnection();

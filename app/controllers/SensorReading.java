@@ -2,10 +2,15 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.*;
 
 import models.cmu.sv.sensor.DBHandler;
 import models.cmu.sv.sensor.MessageBusHandler;
 //import models.cmu.sv.sensor.SensorReading;
+import helper.Utils;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.sql.Timestamp;
 
 import org.codehaus.jackson.JsonNode;
 
@@ -15,6 +20,7 @@ import play.mvc.Result;
 
 public class SensorReading extends Controller {
 	private static DBHandler dbHandler = null;
+	private static final String ISO8601 = "ISO8601";
 	private static boolean testDBHandler(){
 		if(dbHandler == null){
 			dbHandler = new DBHandler("conf/database.properties");
@@ -85,7 +91,7 @@ public class SensorReading extends Controller {
 	}
 	
 	// search reading at a specific timestamp
-	public static Result searchAtTime(String deviceId, Long timeStamp, String sensorType, String format){
+	public static Result searchAtTimestamp(String deviceId, Long timeStamp, String sensorType, String format){
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}
@@ -95,6 +101,54 @@ public class SensorReading extends Controller {
 			return notFound("no reading found");
 		}
 		String ret = format.equals("json") ? reading.toJSONString() : reading.toCSVString(); 
+		return ok(ret);
+	}
+
+	private static Long convertTimeToTimestamp(String timeString) throws ParseException{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy'T'HH:mm:ss");
+		Long result = null;
+		Date date = dateFormat.parse(timeString);
+		System.out.println(date);
+		Timestamp timestamp = new Timestamp(date.getTime());
+		result = timestamp.getTime();
+		System.out.println(result);
+		return result;
+	}
+
+	// search reading at a specific readable time 
+	public static Result searchAtTime(String deviceId, String time, String sensorType, String format){
+		if (!ISO8601.equals(getDateFormat())) {
+			Long timestamp = null;
+			try {
+				timestamp = Long.parseLong(time, 10);
+			} catch(NumberFormatException ex) {
+				return badRequest("Date format or value is incorrect, please check APIs!");
+			}
+			if (null == timestamp) {
+				return badRequest("Date format or value is incorrect, please check APIs!");
+			}
+			return searchAtTimestamp(deviceId, timestamp, sensorType, format);
+		} 
+
+		if(!testDBHandler()){
+			return internalServerError("database conf file not found");
+		}
+
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		Long timeStamp = null;
+		try {
+			timeStamp = convertTimeToTimestamp(time);
+		} catch(ParseException ex) {
+			return badRequest("Date format or value is incorrect, please check APIs!");
+		}
+		models.cmu.sv.sensor.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
+		if(reading == null){
+			return notFound("no reading found");
+		}
+		String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
+		String ret = format.equals("json") ? 
+			Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue()):
+			Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
 		return ok(ret);
 	}
 
@@ -144,6 +198,7 @@ public class SensorReading extends Controller {
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}
+
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		ArrayList<models.cmu.sv.sensor.SensorReading> readings = dbHandler.lastReadingFromAllDevices(timeStamp, sensorType);
 		if(readings == null || readings.isEmpty()){
@@ -169,11 +224,23 @@ public class SensorReading extends Controller {
 		}
 		return ok(ret);
 	}
-	
+
+	private static String getDateFormat() {
+		String dateFormat = null;
+		final Map<String,String[]> entries = request().queryString();
+		if (!entries.isEmpty() && entries.containsKey("dateformat")) {
+			dateFormat = entries.get("dateformat")[0];
+		}
+		return dateFormat;
+
+	}	
 	public static Result lastestReadingFromAllDevices(String sensorType, String format) {
 		if(!testDBHandler()){
 			return internalServerError("database conf file not found");
 		}
+
+		String dateFormat = getDateFormat();
+
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		ArrayList<models.cmu.sv.sensor.SensorReading> readings = dbHandler.lastestReadingFromAllDevices(sensorType);
 		if(readings == null || readings.isEmpty()){
@@ -187,7 +254,13 @@ public class SensorReading extends Controller {
 					ret += "[";
 				else				
 					ret += ',';			
-				ret += reading.toJSONString();
+				if (ISO8601.equals(dateFormat)) {
+					String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
+					String jsonString = Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
+					ret += jsonString;
+				} else {
+				 	ret += reading.toJSONString();
+				}
 			}
 			ret += "]";			
 		} else {
