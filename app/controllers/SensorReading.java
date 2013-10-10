@@ -27,47 +27,48 @@ public class SensorReading extends Controller {
 		}
 		return true;
 	}
-	
+
 	public static Result add(Boolean publish) {
 		JsonNode json = request().body().asJson();
-		 if(json == null) {
-			    return badRequest("Expecting Json data");
-		 } 
-		 if(!testDBHandler()){
-			 return internalServerError("database conf file not found");
-		 }
-		 
-		 // Parse JSON FIle 
-		 String deviceId = json.findPath("id").getTextValue();
-		 Long timeStamp = json.findPath("timestamp").getLongValue();
-		 Iterator<String> it = json.getFieldNames();
-		 ArrayList<String> error = new ArrayList<String>();
-		 while(it.hasNext()){
-			 String sensorType = it.next();
-			 if(sensorType == "id" || sensorType == "timestamp") continue;
-			 double value = json.findPath(sensorType).getDoubleValue();
-			 models.cmu.sv.sensor.SensorReading reading = new models.cmu.sv.sensor.SensorReading(deviceId, timeStamp, sensorType, value); 
-			 if(!reading.save()){
-				 error.add(sensorType);
-			 }
-			 
-			 if(publish){
-				 MessageBusHandler mb = new MessageBusHandler();
-				 if(!mb.publish(reading)){
-					 error.add("publish failed");
-				 }
-			 }
-		 }
-		 if(error.size() == 0){
-			 System.out.println("saved");
-             return ok("saved");
-         }
-		 else{
-			 System.out.println("some not saved: " + error.toString());
-			 return ok("some not saved: " + error.toString());
-		 }
+		if(json == null) {              
+			return badRequest("Expecting Json data");
+		}
+		if(!testDBHandler()){           
+			return internalServerError("database conf file not found");
+		}
+		
+		// Parse JSON FIle
+		String deviceId = json.findPath("id").getTextValue();
+		Long timeStamp = json.findPath("timestamp").getLongValue();
+		Iterator<String> it = json.getFieldNames();
+		ArrayList<String> error = new ArrayList<String>();
+		while(it.hasNext()){            
+			String sensorType = it.next();  
+			if(sensorType == "id" || sensorType == "timestamp") continue;
+			double value = json.findPath(sensorType).getDoubleValue();
+			models.cmu.sv.sensor.SensorReading reading = new models.cmu.sv.sensor.SensorReading(deviceId, timeStamp, sensorType, value);  
+			if(!reading.save()){            
+				error.add(sensorType);          
+			}
+
+			if(publish){                    
+				MessageBusHandler mb = new MessageBusHandler();
+				if(!mb.publish(reading)){       
+					error.add("publish failed");    
+				}                               
+			}
+		}
+		if(error.size() == 0){          
+			System.out.println("saved");    
+			return ok("saved");             
+		}
+		else{
+			System.out.println("some not saved: " + error.toString());
+			return ok("some not saved: " + error.toString());
+		}
 	}
-	
+
+
 	// query for readings
 	public static Result sql_query(){
 		String resultStr = "";

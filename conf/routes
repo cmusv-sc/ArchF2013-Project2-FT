@@ -37,6 +37,12 @@ POST	/sensors				  			controllers.SensorReading.add(publish:Boolean = false)
 POST	/sensors_save/				  		controllers.SensorReading.add(publish:Boolean = false)
 POST	/sensors_save				  		controllers.SensorReading.add(publish:Boolean = false)
 
+#Metadata
+POST	/add_sensor_type				  controllers.MetadataController.addSensorType()
+POST	/add_sensor				  controllers.MetadataController.addSensor()
+POST	/add_device_type 			controllers.MetadataController.addDeviceType()
+POST	/add_device 			controllers.MetadataController.addDevice()
+
 # WorkFlow
 POST	/workflow/							controllers.WorkFlowRunnerController.changeInterval()
 GET		/workflow/							controllers.WorkFlowRunnerController.index(format:String = "html")
