@@ -12,9 +12,9 @@ public class jdemo {
 		Connection connection = null;
 		//load properties
 		Properties prop = new Properties();
-		String serverIP = "10.0.1.5";
+		String serverIP = "209.129.244.23";
 		String serverPort = "30015";
-		String dbUser= "hdbadm";
+		String dbUser= "system";
 		String dbPassword = "cmuHANA0413";
     	/*
     	try {

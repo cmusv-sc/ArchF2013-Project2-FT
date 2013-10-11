@@ -26,16 +26,32 @@ public class Device {
 		return deviceId;
 	}
 	
+	public void setDeviceId(String id){
+		this.deviceId = id;
+	}
+	
 	public String getDeviceType(){
 		return deviceType;
+	}
+	
+	public void setDeviceType(String type){
+		this.deviceType = type;
 	}
 	
 	public String getDeviceAgent(){
 		return deviceAgent;
 	}
+	
+	public void setDeviceAgent(String agent){
+		this.deviceAgent = agent;
+	}
 		
 	public String getDeviceLocation(){
 		return deviceLocation;
+	}
+	
+	public void setDeviceLocation(String location){
+		this.deviceLocation = location;
 	}
 		
 	public String getCSVHeader() {

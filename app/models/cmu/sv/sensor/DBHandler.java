@@ -1,13 +1,15 @@
 package models.cmu.sv.sensor;
 
-import java.util.ArrayList;
-import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import play.Logger.ALogger;
 
@@ -18,6 +20,8 @@ public class DBHandler {
 	protected String serverPort = "";
 	protected String dbUser = "";
 	protected String dbPassword = "";
+	
+	private ApplicationContext context;
 		
 	public DBHandler(String fileName){
 		System.out.println(fileName);
@@ -28,17 +32,18 @@ public class DBHandler {
 			this.dbUser = System.getenv("dbuser");
 			this.dbPassword = System.getenv("dbpassword");
 		} else{
-			this.prop = new Properties();
-			try {
-				this.prop.load(new FileInputStream(fileName));
-				this.serverIP = prop.getProperty("serverip");
-				this.serverPort = prop.getProperty("serverport");
-				this.dbUser = prop.getProperty("dbuser");
-				this.dbPassword = prop.getProperty("dbpassword");			
-			} catch (Exception e) {				
-				System.err.println("Unable to read the database properties");
-				return;
-			}
+//			this.prop = new Properties();
+//			try {
+//				this.prop.load(new FileInputStream(fileName));
+//				this.serverIP = prop.getProperty("serverip");
+//				this.serverPort = prop.getProperty("serverport");
+//				this.dbUser = prop.getProperty("dbuser");
+//				this.dbPassword = prop.getProperty("dbpassword");			
+//			} catch (Exception e) {				
+//				System.err.println("Unable to read the database properties");
+//				return;
+//			}
+			context = new ClassPathXmlApplicationContext("application-context.xml");
 		}
 	}
 	
@@ -46,7 +51,7 @@ public class DBHandler {
 		Connection connection = null;
 		try { 		
 			Class.forName("com.sap.db.jdbc.Driver");
-			connection = DriverManager.getConnection( "jdbc:sap://" + serverIP + ":" + serverPort + "/?autocommit=false?reconnect=true",dbUser,dbPassword); 
+			connection = DriverManager.getConnection( "jdbc:sap://" + serverIP + ":" + serverPort + "/?autocommit=false",dbUser,dbPassword); 
 			//PreparedStatement preparedStatement = this.connection.prepareStatement("SET SCHEMA CMU");
 			//return preparedStatement.execute();
 			connection.setAutoCommit(true);
@@ -128,27 +133,31 @@ public class DBHandler {
 	}
 	
 	public ArrayList<Device> getDevice(){
-		try{
-			Connection connection = getConnection();
-			if (connection == null) return null;
-			PreparedStatement preparedStatement;
-			preparedStatement = connection.prepareStatement("SELECT \"DEVICEID\", \"DEVICETYPE\", \"DEVICEAGENT\", \"LOCATION\" FROM CMU.DEVICE");	
-			ResultSet resultSet = preparedStatement.executeQuery();
-			ArrayList<Device> devices = new ArrayList<Device>();			
-			while(resultSet.next()){			
-				String rs_deviceId = resultSet.getString(1);
-				String rs_deviceType = resultSet.getString(2);
-				String rs_deviceAgent = resultSet.getString(3);
-				String rs_location = resultSet.getString(4);
-				devices.add(new Device(rs_deviceId, rs_deviceType, rs_deviceAgent, rs_location));
-			}
-			connection.close();
-			//System.out.println("Connection closed.");
-			return devices;			
-		}catch(SQLException e){
-			e.printStackTrace();
-			return null;
-		}
+//		try{
+//			Connection connection = getConnection();
+//			if (connection == null) return null;
+//			PreparedStatement preparedStatement;
+//			preparedStatement = connection.prepareStatement("SELECT \"DEVICEID\", \"DEVICETYPE\", \"DEVICEAGENT\", \"LOCATION\" FROM CMU.DEVICE");	
+//			ResultSet resultSet = preparedStatement.executeQuery();
+//			ArrayList<Device> devices = new ArrayList<Device>();			
+//			while(resultSet.next()){			
+//				String rs_deviceId = resultSet.getString(1);
+//				String rs_deviceType = resultSet.getString(2);
+//				String rs_deviceAgent = resultSet.getString(3);
+//				String rs_location = resultSet.getString(4);
+//				devices.add(new Device(rs_deviceId, rs_deviceType, rs_deviceAgent, rs_location));
+//			}
+//			connection.close();
+//			//System.out.println("Connection closed.");
+//			return devices;			
+//		}catch(SQLException e){
+//			e.printStackTrace();
+//			return null;
+//		}
+		
+		DeviceDaoImplementation deviceDaoImplementation = 
+				(DeviceDaoImplementation) context.getBean("deviceDaoImplementation");
+		return deviceDaoImplementation.getAllDevices();
 	}	
 	
 	public ArrayList<String> getSensorType(String deviceType){
