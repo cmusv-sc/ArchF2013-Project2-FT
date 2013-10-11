@@ -61,9 +61,8 @@ public class DBHandler {
 			System.err.println(e.getMessage());
 			System.err.println("Connection Failed. User/Passwd Error?");
 			return null;
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 		return connection;
 	}
@@ -109,7 +108,101 @@ public class DBHandler {
 		}
 		return resultStr;
 	}
+
+	public boolean addDeviceType(String deviceTypeName, String manufacturer, String version, String userDefinedFields) {
+		Connection connection = getConnection();
+		if (connection == null) 
+			return false;
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = connection.prepareStatement("INSERT INTO CMU.NEW_DEVICE_TYPES(DEVICE_TYPE_NAME, MANUFACTURER, VERSION, USER_DEFINED_FIELDS) VALUES(?,?,?,?)");
+			preparedStatement.setString(1, deviceTypeName);
+			preparedStatement.setString(2, manufacturer);
+			preparedStatement.setString(3, version);
+			preparedStatement.setString(4, userDefinedFields);		
+			preparedStatement.executeUpdate();
+			connection.close();
+			//System.out.println("Connection closed.");
+			return true;
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			ALogger log = play.Logger.of(DBHandler.class);
+			log.warn(e.getMessage());
+			return false;
+		} 
+	}
+
+	public boolean addDeviceNew(String deviceType,String  deviceAgent,String networkAddress,String locationDescription,String latitude,String longitude,String altitude,String positionFormatSystem,String userDefinedFields) {
+		Connection connection = getConnection();
+		if (connection == null) 
+			return false;
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = connection.prepareStatement("INSERT INTO CMU.NEW_DEVICES(DEVICE_TYPE,DEVICE_AGENT, NETWORK_ADDRESS, LOCATION_DESCRIPTION, LATITUDE, LONGITUDE, ALTITUDE, POSITION_FORMAT_SYSTEM, USER_DEFINED_FIELDS) VALUES(?,?,?,?,?,?,?,?,?)");
+			preparedStatement.setString(1, deviceType);
+			preparedStatement.setString(2, deviceAgent);
+			preparedStatement.setString(3, networkAddress);
+			preparedStatement.setString(4, locationDescription);
+			preparedStatement.setString(5, latitude);
+			preparedStatement.setString(6, longitude);
+			preparedStatement.setString(7, altitude);
+			preparedStatement.setString(8, positionFormatSystem);
+			preparedStatement.setString(9, userDefinedFields);		
+			preparedStatement.executeUpdate();
+			connection.close();
+			//System.out.println("Connection closed.");
+			return true;
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			ALogger log = play.Logger.of(DBHandler.class);
+			log.warn(e.getMessage());
+			return false;
+		} 
+	}
+
+	public boolean addSensorType(String sensorType, String userDefinedFields) {
+		Connection connection = getConnection();
+		if (connection == null) 
+			return false;
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = connection.prepareStatement("INSERT INTO CMU.NEW_SENSOR_TYPES(SENSOR_CATEGORY, USER_DEFINED_FIELDS) VALUES(?,?)");
+			preparedStatement.setString(1, sensorType);
+			preparedStatement.setString(2, userDefinedFields);		
+			preparedStatement.executeUpdate();
+			connection.close();
+			//System.out.println("Connection closed.");
+			return true;
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			ALogger log = play.Logger.of(DBHandler.class);
+			log.warn(e.getMessage());
+			return false;
+		} 
+	}
 	
+	public boolean addSensor(String printName, String sensorType, String deviceId, String userDefinedFields) {
+		Connection connection = getConnection();
+		if (connection == null) 
+			return false;
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = connection.prepareStatement("INSERT INTO CMU.NEW_SENSORS(PRINT_NAME, SENSOR_TYPE, DEVICE, USER_DEFINED_FIELDS) VALUES(?,?,?,?)");
+			preparedStatement.setString(1, printName);
+			preparedStatement.setString(2, sensorType);
+			preparedStatement.setString(3, deviceId);
+			preparedStatement.setString(4, userDefinedFields);		
+			preparedStatement.executeUpdate();
+			connection.close();
+			//System.out.println("Connection closed."); return true;
+			return true;
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			ALogger log = play.Logger.of(DBHandler.class);
+			log.warn(e.getMessage());
+			return false;
+		} 
+	}
 	public boolean addDevice(String deviceId, String deviceType, String deviceAgent, String deviceLocation){
 		Connection connection = getConnection();
 		if (connection == null) return false;
