@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.io.FileInputStream;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -24,7 +25,7 @@ public class DBHandler {
 	private ApplicationContext context;
 		
 	public DBHandler(String fileName){
-		System.out.println(fileName);
+		//System.out.println(fileName);
 		//For heroku: Use local env instead
 		if(System.getenv("serverip") != null){
 			this.serverIP = System.getenv("serverip");
@@ -32,17 +33,17 @@ public class DBHandler {
 			this.dbUser = System.getenv("dbuser");
 			this.dbPassword = System.getenv("dbpassword");
 		} else{
-//			this.prop = new Properties();
-//			try {
-//				this.prop.load(new FileInputStream(fileName));
-//				this.serverIP = prop.getProperty("serverip");
-//				this.serverPort = prop.getProperty("serverport");
-//				this.dbUser = prop.getProperty("dbuser");
-//				this.dbPassword = prop.getProperty("dbpassword");			
-//			} catch (Exception e) {				
-//				System.err.println("Unable to read the database properties");
-//				return;
-//			}
+			this.prop = new Properties();
+			try {
+				this.prop.load(new FileInputStream(fileName));
+				this.serverIP = prop.getProperty("serverip");
+				this.serverPort = prop.getProperty("serverport");
+				this.dbUser = prop.getProperty("dbuser");
+				this.dbPassword = prop.getProperty("dbpassword");			
+			} catch (Exception e) {				
+				System.err.println("Unable to read the database properties");
+				return;
+			}
 			context = new ClassPathXmlApplicationContext("application-context.xml");
 		}
 	}
