@@ -23,5 +23,12 @@
       <property name="dataSource"  ref="dataSource" />
       <property name="jdbcTemplate"  ref="jdbcTemplate" />    
    </bean>
+   
+   <!-- Definition for sensorReadingDaoImplementation bean -->
+   <bean id="sensorReadingDaoImplementation" 
+      class="models.cmu.sv.sensor.SensorReadingDaoImplementation">
+      <property name="dataSource"  ref="dataSource" />
+      <property name="jdbcTemplate"  ref="jdbcTemplate" />    
+   </bean>
       
 </beans>

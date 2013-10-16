@@ -106,6 +106,12 @@ public class DBHandler {
 		}
 		catch(SQLException e){
 			e.printStackTrace();
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return resultStr;
 	}
@@ -130,7 +136,13 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
-		} 
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public boolean addDeviceNew(String deviceType,String  deviceAgent,String networkAddress,String locationDescription,String latitude,String longitude,String altitude,String positionFormatSystem,String userDefinedFields) {
@@ -158,7 +170,13 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
-		} 
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public boolean addSensorType(String sensorType, String userDefinedFields) {
@@ -179,7 +197,13 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
-		} 
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public boolean addSensor(String printName, String sensorType, String deviceId, String userDefinedFields) {
@@ -202,7 +226,13 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
-		} 
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	public boolean addDevice(String deviceId, String deviceType, String deviceAgent, String deviceLocation){
 		Connection connection = getConnection();
@@ -223,7 +253,13 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
-		}	
+		}	finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public ArrayList<Device> getDevice(){
@@ -255,8 +291,8 @@ public class DBHandler {
 	}	
 	
 	public ArrayList<String> getSensorType(String deviceType){
+		Connection connection = getConnection();
 		try{
-			Connection connection = getConnection();
 			if (connection == null) return null;
 			PreparedStatement preparedStatement;
 			preparedStatement = connection.prepareStatement("SELECT \"SENSOR_TYPE\" FROM CMU.SENSOR_TYPE WHERE DEVICE_TYPE=?");
@@ -273,6 +309,12 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}	
 	
@@ -295,6 +337,12 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}
@@ -315,12 +363,18 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
+		}finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	public SensorReading searchReading(String deviceId, Long timeStamp, String sensorType){
+		Connection connection = getConnection();
 		try{
-			Connection connection = getConnection();
 			if (connection == null) return null;
 			PreparedStatement preparedStatement;
 			preparedStatement = connection.prepareStatement("SELECT * FROM CMU.CMU_SENSOR WHERE deviceID=? AND timeStamp<=? AND sensorType=? ORDER BY timeStamp DESC LIMIT 1");	
@@ -341,12 +395,18 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public ArrayList<SensorReading> searchReading(String deviceId, Long startTime, long endTime, String sensorType){		
+		Connection connection = getConnection();
 		try{
-			Connection connection = getConnection();
 			if (connection == null) return null;
 			System.out.println("Search reading " + deviceId + "," + startTime + "," + endTime + "," + sensorType);
 			PreparedStatement preparedStatement;
@@ -373,6 +433,12 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -381,8 +447,8 @@ public class DBHandler {
 	// increase.
 	// TODO: Consider publisher/subscriber pattern to refind this set of queries.
 	public ArrayList<SensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType){
+		Connection connection = getConnection();
 		try{
-			Connection connection = getConnection();
 			if (connection == null) return null;
 			PreparedStatement preparedStatement;			
 			long startTime = System.nanoTime();
@@ -424,12 +490,18 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}	
 	
 	public ArrayList<SensorReading> lastestReadingFromAllDevices(String sensorType){
+		Connection connection = getConnection();
 		try{
-			Connection connection = getConnection();
 			if (connection == null) return null;
 			PreparedStatement preparedStatement;			
 			long startTime = System.nanoTime();
@@ -467,6 +539,12 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}	
 	

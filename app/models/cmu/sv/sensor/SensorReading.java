@@ -6,6 +6,22 @@ import org.json.JSONObject;
 public class SensorReading {
 	private static DBHandler dbHandler = null;
 	private String deviceId;
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	public void setTimeStamp(Long timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+	public void setSensorType(String sensorType) {
+		this.sensorType = sensorType;
+	}
+
+	public void setValue(double value) {
+		this.value = value;
+	}
+
 	private Long timeStamp;
 	private String sensorType;
 	private double value;
