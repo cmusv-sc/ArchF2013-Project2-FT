@@ -1,13 +1,15 @@
 package models.cmu.sv.sensor;
 
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
-import java.io.FileInputStream;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -323,11 +325,14 @@ public class DBHandler {
 		if (connection == null) return false;
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = connection.prepareStatement("INSERT INTO CMU.CMU_SENSOR(deviceID, timeStamp, sensorType, value) VALUES(?, ?, ?, ?)");
+			Date date= new java.util.Date();
+			Timestamp ts = new Timestamp(date.getTime());
+			preparedStatement = connection.prepareStatement("INSERT INTO CMU.CMU_SENSOR(deviceID, timeStamp, sensorType, value, einstein_timestamp) VALUES(?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, deviceId);
 			preparedStatement.setLong(2, timeStamp);
 			preparedStatement.setString(3, sensorType);
 			preparedStatement.setDouble(4, value);
+			preparedStatement.setTimestamp(5, ts);
 			preparedStatement.executeUpdate();
 			connection.close();
 			//System.out.println("Connection closed.");
