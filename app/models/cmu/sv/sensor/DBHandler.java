@@ -326,13 +326,15 @@ public class DBHandler {
 		PreparedStatement preparedStatement;
 		try {
 			Date date= new java.util.Date();
-			Timestamp ts = new Timestamp(date.getTime());
-			preparedStatement = connection.prepareStatement("INSERT INTO CMU.CMU_SENSOR(deviceID, timeStamp, sensorType, value, einstein_timestamp) VALUES(?, ?, ?, ?, ?)");
+			Timestamp einsteinTimestampts = new Timestamp(date.getTime());
+			Timestamp maxwellTimestamp = new Timestamp(timeStamp);
+			preparedStatement = connection.prepareStatement("INSERT INTO CMU.CMU_SENSOR(deviceID, timeStamp, sensorType, value, einstein_timestamp) VALUES(?, ?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, deviceId);
 			preparedStatement.setLong(2, timeStamp);
 			preparedStatement.setString(3, sensorType);
 			preparedStatement.setDouble(4, value);
-			preparedStatement.setTimestamp(5, ts);
+			preparedStatement.setTimestamp(5, einsteinTimestampts);
+			preparedStatement.setTimestamp(6, maxwellTimestamp);
 			preparedStatement.executeUpdate();
 			connection.close();
 			//System.out.println("Connection closed.");
