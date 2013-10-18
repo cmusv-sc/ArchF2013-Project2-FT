@@ -328,7 +328,7 @@ public class DBHandler {
 			Date date= new java.util.Date();
 			Timestamp einsteinTimestampts = new Timestamp(date.getTime());
 			Timestamp maxwellTimestamp = new Timestamp(timeStamp);
-			preparedStatement = connection.prepareStatement("INSERT INTO CMU.CMU_SENSOR(deviceID, timeStamp, sensorType, value, einstein_timestamp) VALUES(?, ?, ?, ?, ?, ?)");
+			preparedStatement = connection.prepareStatement("INSERT INTO CMU.CMU_SENSOR(deviceID, timeStamp, sensorType, value, einstein_timestamp, maxwell_timestamp) VALUES(?, ?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, deviceId);
 			preparedStatement.setLong(2, timeStamp);
 			preparedStatement.setString(3, sensorType);
