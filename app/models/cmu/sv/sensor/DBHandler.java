@@ -1,13 +1,18 @@
 package models.cmu.sv.sensor;
 
-import java.util.ArrayList;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import play.Logger.ALogger;
 
@@ -18,9 +23,11 @@ public class DBHandler {
 	protected String serverPort = "";
 	protected String dbUser = "";
 	protected String dbPassword = "";
+	
+	private ApplicationContext context;
 		
 	public DBHandler(String fileName){
-		System.out.println(fileName);
+		//System.out.println(fileName);
 		//For heroku: Use local env instead
 		if(System.getenv("serverip") != null){
 			this.serverIP = System.getenv("serverip");
@@ -39,6 +46,7 @@ public class DBHandler {
 				System.err.println("Unable to read the database properties");
 				return;
 			}
+			context = new ClassPathXmlApplicationContext("application-context.xml");
 		}
 	}
 	
@@ -46,7 +54,7 @@ public class DBHandler {
 		Connection connection = null;
 		try { 		
 			Class.forName("com.sap.db.jdbc.Driver");
-			connection = DriverManager.getConnection( "jdbc:sap://" + serverIP + ":" + serverPort + "/?autocommit=false?reconnect=true",dbUser,dbPassword); 
+			connection = DriverManager.getConnection( "jdbc:sap://" + serverIP + ":" + serverPort + "/?autocommit=false",dbUser,dbPassword); 
 			//PreparedStatement preparedStatement = this.connection.prepareStatement("SET SCHEMA CMU");
 			//return preparedStatement.execute();
 			connection.setAutoCommit(true);
@@ -100,6 +108,12 @@ public class DBHandler {
 		}
 		catch(SQLException e){
 			e.printStackTrace();
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return resultStr;
 	}
@@ -124,7 +138,13 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
-		} 
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public boolean addDeviceNew(String deviceType,String  deviceAgent,String networkAddress,String locationDescription,String latitude,String longitude,String altitude,String positionFormatSystem,String userDefinedFields) {
@@ -152,7 +172,13 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
-		} 
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public boolean addSensorType(String sensorType, String userDefinedFields) {
@@ -173,7 +199,13 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
-		} 
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public boolean addSensor(String printName, String sensorType, String deviceId, String userDefinedFields) {
@@ -196,7 +228,13 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
-		} 
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	public boolean addDevice(String deviceId, String deviceType, String deviceAgent, String deviceLocation){
 		Connection connection = getConnection();
@@ -217,36 +255,46 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
-		}	
+		}	finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public ArrayList<Device> getDevice(){
-		try{
-			Connection connection = getConnection();
-			if (connection == null) return null;
-			PreparedStatement preparedStatement;
-			preparedStatement = connection.prepareStatement("SELECT \"DEVICEID\", \"DEVICETYPE\", \"DEVICEAGENT\", \"LOCATION\" FROM CMU.DEVICE");	
-			ResultSet resultSet = preparedStatement.executeQuery();
-			ArrayList<Device> devices = new ArrayList<Device>();			
-			while(resultSet.next()){			
-				String rs_deviceId = resultSet.getString(1);
-				String rs_deviceType = resultSet.getString(2);
-				String rs_deviceAgent = resultSet.getString(3);
-				String rs_location = resultSet.getString(4);
-				devices.add(new Device(rs_deviceId, rs_deviceType, rs_deviceAgent, rs_location));
-			}
-			connection.close();
-			//System.out.println("Connection closed.");
-			return devices;			
-		}catch(SQLException e){
-			e.printStackTrace();
-			return null;
-		}
+//		try{
+//			Connection connection = getConnection();
+//			if (connection == null) return null;
+//			PreparedStatement preparedStatement;
+//			preparedStatement = connection.prepareStatement("SELECT \"DEVICEID\", \"DEVICETYPE\", \"DEVICEAGENT\", \"LOCATION\" FROM CMU.DEVICE");	
+//			ResultSet resultSet = preparedStatement.executeQuery();
+//			ArrayList<Device> devices = new ArrayList<Device>();			
+//			while(resultSet.next()){			
+//				String rs_deviceId = resultSet.getString(1);
+//				String rs_deviceType = resultSet.getString(2);
+//				String rs_deviceAgent = resultSet.getString(3);
+//				String rs_location = resultSet.getString(4);
+//				devices.add(new Device(rs_deviceId, rs_deviceType, rs_deviceAgent, rs_location));
+//			}
+//			connection.close();
+//			//System.out.println("Connection closed.");
+//			return devices;			
+//		}catch(SQLException e){
+//			e.printStackTrace();
+//			return null;
+//		}
+		
+		DeviceDaoImplementation deviceDaoImplementation = 
+				(DeviceDaoImplementation) context.getBean("deviceDaoImplementation");
+		return deviceDaoImplementation.getAllDevices();
 	}	
 	
 	public ArrayList<String> getSensorType(String deviceType){
+		Connection connection = getConnection();
 		try{
-			Connection connection = getConnection();
 			if (connection == null) return null;
 			PreparedStatement preparedStatement;
 			preparedStatement = connection.prepareStatement("SELECT \"SENSOR_TYPE\" FROM CMU.SENSOR_TYPE WHERE DEVICE_TYPE=?");
@@ -263,6 +311,12 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}	
 	
@@ -271,11 +325,14 @@ public class DBHandler {
 		if (connection == null) return false;
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = connection.prepareStatement("INSERT INTO CMU.CMU_SENSOR(deviceID, timeStamp, sensorType, value) VALUES(?, ?, ?, ?)");
+			Date date= new java.util.Date();
+			Timestamp ts = new Timestamp(date.getTime());
+			preparedStatement = connection.prepareStatement("INSERT INTO CMU.CMU_SENSOR(deviceID, timeStamp, sensorType, value, einstein_timestamp) VALUES(?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, deviceId);
 			preparedStatement.setLong(2, timeStamp);
 			preparedStatement.setString(3, sensorType);
 			preparedStatement.setDouble(4, value);
+			preparedStatement.setTimestamp(5, ts);
 			preparedStatement.executeUpdate();
 			connection.close();
 			//System.out.println("Connection closed.");
@@ -285,6 +342,12 @@ public class DBHandler {
 			ALogger log = play.Logger.of(DBHandler.class);
 			log.warn(e.getMessage());
 			return false;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}
@@ -305,12 +368,18 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
+		}finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	public SensorReading searchReading(String deviceId, Long timeStamp, String sensorType){
+		Connection connection = getConnection();
 		try{
-			Connection connection = getConnection();
 			if (connection == null) return null;
 			PreparedStatement preparedStatement;
 			preparedStatement = connection.prepareStatement("SELECT * FROM CMU.CMU_SENSOR WHERE deviceID=? AND timeStamp<=? AND sensorType=? ORDER BY timeStamp DESC LIMIT 1");	
@@ -331,12 +400,18 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public ArrayList<SensorReading> searchReading(String deviceId, Long startTime, long endTime, String sensorType){		
+		Connection connection = getConnection();
 		try{
-			Connection connection = getConnection();
 			if (connection == null) return null;
 			System.out.println("Search reading " + deviceId + "," + startTime + "," + endTime + "," + sensorType);
 			PreparedStatement preparedStatement;
@@ -363,6 +438,12 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -371,8 +452,8 @@ public class DBHandler {
 	// increase.
 	// TODO: Consider publisher/subscriber pattern to refind this set of queries.
 	public ArrayList<SensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType){
+		Connection connection = getConnection();
 		try{
-			Connection connection = getConnection();
 			if (connection == null) return null;
 			PreparedStatement preparedStatement;			
 			long startTime = System.nanoTime();
@@ -414,12 +495,18 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}	
 	
 	public ArrayList<SensorReading> lastestReadingFromAllDevices(String sensorType){
+		Connection connection = getConnection();
 		try{
-			Connection connection = getConnection();
 			if (connection == null) return null;
 			PreparedStatement preparedStatement;			
 			long startTime = System.nanoTime();
@@ -457,6 +544,12 @@ public class DBHandler {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}	
 	
