@@ -3,8 +3,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 
-import models.cmu.sv.sensor.DBHandler;
-import models.cmu.sv.sensor.SensorReading;
+import models.DBHandler;
+import models.SensorReading;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

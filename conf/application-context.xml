@@ -12,23 +12,23 @@
       <property name="password" value="cmuHANA0413"/>
    </bean>
    
-   <bean id="jdbcTemplate"
-      class="org.springframework.jdbc.core.JdbcTemplate">
-      <property name="dataSource" ref="dataSource" />
+   <bean id="simpleJdbcTemplate"
+      class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+      <constructor-arg>
+      	<ref bean="dataSource"/>
+      </constructor-arg>
    </bean>
 
    <!-- Definition for deviceDaoImplementation bean -->
    <bean id="deviceDaoImplementation" 
-      class="models.cmu.sv.sensor.DeviceDaoImplementation">
-      <property name="dataSource"  ref="dataSource" />
-      <property name="jdbcTemplate"  ref="jdbcTemplate" />    
+      class="models.dao.DeviceDaoImplementation">
+      <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
    </bean>
    
    <!-- Definition for sensorReadingDaoImplementation bean -->
    <bean id="sensorReadingDaoImplementation" 
-      class="models.cmu.sv.sensor.SensorReadingDaoImplementation">
-      <property name="dataSource"  ref="dataSource" />
-      <property name="jdbcTemplate"  ref="jdbcTemplate" />    
+      class="models.dao.SensorReadingDaoImplementation">
+      <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
    </bean>
       
 </beans>

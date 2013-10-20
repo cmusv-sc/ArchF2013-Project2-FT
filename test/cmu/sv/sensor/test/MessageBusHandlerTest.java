@@ -1,8 +1,8 @@
 package cmu.sv.sensor.test;
 
 import static org.junit.Assert.assertEquals;
-import models.cmu.sv.sensor.MessageBusHandler;
-import models.cmu.sv.sensor.SensorReading;
+import models.MessageBusHandler;
+import models.SensorReading;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

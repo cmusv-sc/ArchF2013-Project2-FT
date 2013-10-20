@@ -1,10 +1,8 @@
 package controllers;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.*;
 
-import models.cmu.sv.sensor.DBHandler;
-import models.cmu.sv.sensor.MessageBusHandler;
+import models.DBHandler;
+import models.MessageBusHandler;
 //import models.cmu.sv.sensor.SensorReading;
 import helper.Utils;
 import java.text.SimpleDateFormat;
@@ -183,7 +181,7 @@ public class MetadataController extends Controller {
 			return internalServerError("database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		models.cmu.sv.sensor.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
+		models.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
 		if(reading == null){
 			return notFound("no reading found");
 		}

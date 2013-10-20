@@ -2,7 +2,7 @@ package cmu.sv.sensor.test;
 
 import static org.junit.Assert.*;
 
-import models.cmu.sv.sensor.WorkFlowRunner;
+import models.WorkFlowRunner;
 
 import org.junit.Test;
 
