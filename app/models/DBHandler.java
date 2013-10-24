@@ -483,6 +483,53 @@ public class DBHandler {
 		}
 	}	
 	
-	
+	public ArrayList<SensorReading> lastestReadingFromAllDevices(String sensorType){
+        Connection connection = getConnection();
+        try{
+                if (connection == null) return null;
+                PreparedStatement preparedStatement;                        
+                long startTime = System.nanoTime();
+                preparedStatement = connection.prepareStatement("SELECT \"DEVICEID\", \"TIMESTAMP\", \"VALUE\" FROM " +
+                        "(SELECT * FROM \"CMU\".\"CMU_SENSOR\" AS a " + 
+                        "INNER JOIN " +
+                        "(SELECT " +
+                        "\"DEVICEID\" as device_id," +
+                        "max(\"TIMESTAMP\") as max_timestamp " +
+                        "FROM \"CMU\".\"CMU_SENSOR\" " +
+                        "WHERE \"SENSORTYPE\" = ? " + // 1st parameter - sensorType
+                        "GROUP BY \"DEVICEID\"" +
+                        ") b "+
+                        "ON "+
+                        "a.\"DEVICEID\" = b.device_id AND " +
+                        "a.\"TIMESTAMP\" = b.max_timestamp " +
+                        "WHERE a.\"SENSORTYPE\" = ?)"); // 2nd parameter - sensorType
+                preparedStatement.setString(1, sensorType);
+                preparedStatement.setString(2, sensorType);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                long finishQueryTime = System.nanoTime();
+                ArrayList<SensorReading> readings = new ArrayList<SensorReading>();                        
+                while(resultSet.next()){
+                        String rs_deviceId = resultSet.getString(1);
+                        Long rs_timeStamp = resultSet.getLong(2);
+                        double rs_value = resultSet.getDouble(3);
+                        readings.add(new SensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
+                }
+                System.out.println(readings.size() + " reading(s) fetched in lastest_readings_from_all_devices." + 
+                                " queryTime=" + (finishQueryTime - startTime) / 1000000 + 
+                                "ms.");
+                connection.close();
+                //System.out.println("Connection closed.");
+                return readings;                        
+        }catch(SQLException e){
+                e.printStackTrace();
+                return null;
+        } finally {
+                try {
+                        connection.close();
+                } catch (SQLException e) {
+                        e.printStackTrace();
+                }
+        }
+}
 	
 }
