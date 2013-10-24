@@ -37,8 +37,10 @@ public class DBHandler {
 				this.serverPort = prop.getProperty("serverport");
 				this.dbUser = prop.getProperty("dbuser");
 				this.dbPassword = prop.getProperty("dbpassword");			
-			} catch (Exception e) {				
+			} catch (Exception e) {			
+				e.printStackTrace();
 				System.err.println("Unable to read the database properties");
+				
 				return;
 			}
 		}
