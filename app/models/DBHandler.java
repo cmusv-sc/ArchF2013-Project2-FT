@@ -497,7 +497,6 @@ public class DBHandler {
                         "max(\"TIMESTAMP\") as max_timestamp " +
                         "FROM \"CMU\".\"CMU_SENSOR\" " +
                         "WHERE \"SENSORTYPE\" = ? " + // 1st parameter - sensorType
-                        "AND \"DEVICEID\" IN (SELECT \"DEVICEID\" FROM \"CMU\".\"DEVICE\") " +
                         "GROUP BY \"DEVICEID\"" +
                         ") b "+
                         "ON "+

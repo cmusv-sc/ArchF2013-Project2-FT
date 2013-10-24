@@ -46,11 +46,11 @@ public class Device {
 		this.deviceAgent = agent;
 	}
 		
-	public String getDeviceLocation(){
+	public String getLocation(){
 		return deviceLocation;
 	}
 	
-	public void setDeviceLocation(String location){
+	public void setLocation(String location){
 		this.deviceLocation = location;
 	}
 		
