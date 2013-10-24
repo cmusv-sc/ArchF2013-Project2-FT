@@ -309,31 +309,32 @@ public class SensorReadingController extends Controller {
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
 		}
-		String ret = new String();
+		StringBuilder sb = new StringBuilder();
 		if (format.equals("json"))
 		{			
 			for (models.SensorReading reading : readings) {
-				if (ret.isEmpty())
-					ret += "[";
-				else				
-					ret += ',';			
+				if (sb.length() == 0) 
+					sb.append("[");
+				else		
+					sb.append(",");
 				if (ISO8601.equals(dateFormat)) {
 					String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
 					String jsonString = Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
-					ret += jsonString;
+					sb.append(jsonString);
 				} else {
-				 	ret += reading.toJSONString();
+				 	sb.append(reading.toJSONString());
 				}
 			}
-			ret += "]";			
+			sb.append("]");
 		} else {
 			for (models.SensorReading reading : readings) {
-				if (!ret.isEmpty())
-					ret += '\n';
-				ret += reading.toCSVString();
+				if (sb.length() > 0) {
+					sb.append('\n');
+				}
+				sb.append(reading.toCSVString());
 			}
 		}
-		return ok(ret);
+		return ok(sb.toString());
 	}	
 		
 }
