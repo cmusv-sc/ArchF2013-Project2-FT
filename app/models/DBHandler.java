@@ -1,6 +1,7 @@
 package models;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -31,8 +32,10 @@ public class DBHandler {
 			this.dbPassword = System.getenv("dbpassword");
 		} else{
 			this.prop = new Properties();
+			FileInputStream fs = null;
 			try {
-				this.prop.load(new FileInputStream(fileName));
+				fs = new FileInputStream(fileName);
+				this.prop.load(fs);
 				this.serverIP = prop.getProperty("serverip");
 				this.serverPort = prop.getProperty("serverport");
 				this.dbUser = prop.getProperty("dbuser");
@@ -40,8 +43,14 @@ public class DBHandler {
 			} catch (Exception e) {			
 				e.printStackTrace();
 				System.err.println("Unable to read the database properties");
-				
-				return;
+			} finally {
+				if (fs != null) {
+					try {
+						fs.close();
+					} catch(IOException e) {
+						
+					}
+				}
 			}
 		}
 	}
