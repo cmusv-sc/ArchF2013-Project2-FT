@@ -43,17 +43,33 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 
 	@Override
 	public List<SensorReading> lastestReadingFromAllDevices(String sensorType) {
-		final String SQL = "SELECT DEVICEID, TIMESTAMP, VALUE FROM " +
-			"(SELECT * FROM CMU.CMU_SENSOR AS a " + 
-			"INNER JOIN " +
-			"(SELECT " +
-			"DEVICEID as device_id," +
-			"max(TIMESTAMP) as max_timestamp " +
-			"FROM CMU.CMU_SENSOR " +
-			"WHERE SENSORTYPE = ? " + // 1st parameter - sensorType
-			"GROUP BY DEVICEID" +
-			") b "+
-			"ON a.DEVICEID = b.device_id AND a.TIMESTAMP = b.max_timestamp WHERE a.SENSORTYPE = ?)";
+//		final String SQL = "SELECT DEVICEID, TIMESTAMP, VALUE FROM " +
+//			"(SELECT * FROM CMU.CMU_SENSOR AS a " + 
+//			"INNER JOIN " +
+//			"(SELECT " +
+//			"DEVICEID as device_id," +
+//			"max(TIMESTAMP) as max_timestamp " +
+//			"FROM CMU.CMU_SENSOR " +
+//			"WHERE SENSORTYPE = ? " + // 1st parameter - sensorType
+//			"GROUP BY DEVICEID" +
+//			") b "+
+//			"ON a.DEVICEID = b.device_id AND a.TIMESTAMP = b.max_timestamp WHERE a.SENSORTYPE = ?)";
+		
+		final String SQL ="SELECT \"DEVICEID\", \"TIMESTAMP\", \"VALUE\" FROM " +
+        "(SELECT * FROM \"CMU\".\"CMU_SENSOR\" AS a " + 
+        "INNER JOIN " +
+        "(SELECT " +
+        "\"DEVICEID\" as device_id," +
+        "max(\"TIMESTAMP\") as max_timestamp " +
+        "FROM \"CMU\".\"CMU_SENSOR\" " +
+        "WHERE \"SENSORTYPE\" = ? " + // 1st parameter - sensorType
+        "GROUP BY \"DEVICEID\"" +
+        ") b "+
+        "ON "+
+        "a.\"DEVICEID\" = b.device_id AND " +
+        "a.\"TIMESTAMP\" = b.max_timestamp " +
+        "WHERE a.\"SENSORTYPE\" = ?)";
+		
 		List<SensorReading> sensorReadings = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), sensorType, sensorType);
 		return sensorReadings;
 	}
