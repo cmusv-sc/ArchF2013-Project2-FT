@@ -300,7 +300,9 @@ public class SensorReadingController extends Controller {
 
 	}	
 	public static Result lastestReadingFromAllDevices(String sensorType, String format) {
-	
+		if(!testDBHandler()){
+			return internalServerError("database conf file not found");
+		}
 		String dateFormat = getDateFormat();
 
 		response().setHeader("Access-Control-Allow-Origin", "*");
