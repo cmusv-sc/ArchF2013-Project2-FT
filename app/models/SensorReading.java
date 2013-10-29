@@ -53,6 +53,10 @@ public class SensorReading {
 		return value;
 	}
 		
+	public String getCSVHeader() {
+		return "device_id,timestamp,sensor_type,value\n";
+	}
+	
 	public String toCSVString() {
 		return deviceId + "," + timeStamp + "," + sensorType + "," + String.valueOf(value);
 	}

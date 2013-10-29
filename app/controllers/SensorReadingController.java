@@ -121,7 +121,15 @@ public class SensorReadingController extends Controller {
 		if(reading == null){
 			return notFound("no reading found");
 		}
-		String ret = format.equals("json") ? reading.toJSONString() : reading.toCSVString(); 
+		
+		String ret = null;
+		
+		if (format.equals("csv")) {
+			ret = reading.getCSVHeader();
+			ret += reading.toCSVString();
+		} else {
+			ret = reading.toJSONString();
+		}
 		return ok(ret);
 	}
 
@@ -167,9 +175,16 @@ public class SensorReadingController extends Controller {
 			return notFound("no reading found");
 		}
 		String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
-		String ret = format.equals("json") ? 
-			Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue()):
-			Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
+//		String ret = format.equals("json") ? 
+//			Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue()):
+//			Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
+		String ret = null;
+		if (format.equals("csv")) {
+			ret = reading.getCSVHeader();
+			ret += Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
+		} else {
+			ret = Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
+		}
 		return ok(ret);
 	}
 
@@ -196,6 +211,8 @@ public class SensorReadingController extends Controller {
 			for (models.SensorReading reading : readings) {
 				if (strBuilder.length() != 0)
 					strBuilder.append("\n");
+				else 
+					strBuilder.append(reading.getCSVHeader());
 				strBuilder.append(reading.toCSVString());
 			}
 		}
@@ -251,6 +268,8 @@ public class SensorReadingController extends Controller {
 			for (models.SensorReading reading : readings) {
 				if (strBuilder.length() != 0)
 					strBuilder.append("\n");
+				else 
+					strBuilder.append(reading.getCSVHeader());
 				String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
 				strBuilder.append(Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue()));
 			}
@@ -284,6 +303,8 @@ public class SensorReadingController extends Controller {
 			for (models.SensorReading reading : readings) {
 				if (!ret.isEmpty())
 					ret += '\n';
+				else 
+					ret += reading.getCSVHeader();
 				ret += reading.toCSVString();
 			}
 		}
@@ -333,9 +354,10 @@ public class SensorReadingController extends Controller {
 			sb.append("]");
 		} else {
 			for (models.SensorReading reading : readings) {
-				if (sb.length() > 0) {
+				if (sb.length() > 0) 
 					sb.append('\n');
-				}
+				else 
+					sb.append(reading.getCSVHeader());
 				sb.append(reading.toCSVString());
 			}
 		}

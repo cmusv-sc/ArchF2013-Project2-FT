@@ -29,7 +29,7 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 
 	@Override
 	public List<SensorReading> searchReading(String deviceId, Long startTime, Long endTime, String sensorType) {
-		final String SQL = "SELECT TIMESTAMP, VALUE FROM CMU.CMU_SENSOR" 
+		final String SQL = "SELECT DEVICEID, TIMESTAMP, SENSORTYPE, VALUE FROM CMU.CMU_SENSOR" 
 				+ " WHERE DEVICEID = ? AND TIMESTAMP >= ? AND TIMESTAMP <= ? AND SENSORTYPE = ? ORDER BY TIMESTAMP DESC";
 		List<SensorReading> sensorReadings = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), deviceId, startTime, endTime, sensorType);
 		return sensorReadings;
