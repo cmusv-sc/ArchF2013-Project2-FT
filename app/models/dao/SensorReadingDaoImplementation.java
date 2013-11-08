@@ -23,7 +23,8 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 
 	@Override
 	public boolean addReading(String deviceId, Long timeStamp, String sensorType, Double value) {
-		// TODO Auto-generated method stub
+		// TODO 
+		// Add sensor reading to database, please reference DBHandler.addReading() 
 		return false;
 	}
 

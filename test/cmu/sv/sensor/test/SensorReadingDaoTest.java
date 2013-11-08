@@ -66,5 +66,17 @@ public class SensorReadingDaoTest {
 		assertEquals("device2,1383927322,temp,16.0", readings.get(0).toCSVString());
 		assertEquals("device2,1383927321,temp,15.0", readings.get(1).toCSVString());
 	}
+	
+	//Please pass this test
+	@Test
+	public void testAddSensorReading() {
+		sensorReadingDao.addReading("device3", new Long(1383927321), "temp", 15.0);
+		sensorReadingDao.addReading("device3", new Long(1383927321), "light", 200.0);
+		
+		SensorReading reading = sensorReadingDao.searchReading("device3", new Long(1383927321), "temp");
+		assertEquals("device3,1383927321,temp,15.0", reading.toCSVString());
+		reading = sensorReadingDao.searchReading("device3", new Long(1383927321), "light");
+		assertEquals("device2,1383927321,light,200.0", reading.toCSVString());
+	}
 
 }
