@@ -27,7 +27,7 @@ public class SensorReading {
 	private double value;
 	
 	public SensorReading(){
-		dbHandler = new DBHandler("conf/database.properties");	
+//		dbHandler = new DBHandler("conf/database.properties");	
 	}
 	
 	public SensorReading(String deviceId, Long timeStamp, String sensorType, double value){

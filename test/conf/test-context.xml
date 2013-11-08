@@ -1,0 +1,34 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+   <!-- Initialization for data source -->
+   <bean id="dataSource" 
+      class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="com.sap.db.jdbc.Driver"/>
+      <property name="url" value="jdbc:sap://grey.sv.cmu.edu:30015/?autocommit=false"/>
+      <property name="username" value="system"/>
+      <property name="password" value="cmuHANA0413"/>
+   </bean>
+   
+   <bean id="simpleJdbcTemplate"
+      class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+      <constructor-arg>
+      	<ref bean="dataSource"/>
+      </constructor-arg>
+   </bean>
+
+   <!-- Definition for deviceDaoImplementation bean -->
+   <bean id="deviceDaoImplementation" 
+      class="models.dao.DeviceDaoImplementation">
+      <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
+   </bean>
+   
+   <!-- Definition for sensorReadingDaoImplementation bean -->
+   <bean id="sensorReadingDaoImplementation" 
+      class="models.dao.SensorReadingDaoImplementation">
+      <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
+   </bean>
+      
+</beans>

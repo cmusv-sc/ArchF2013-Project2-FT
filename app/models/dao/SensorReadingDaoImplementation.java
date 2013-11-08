@@ -55,7 +55,7 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 //			") b "+
 //			"ON a.DEVICEID = b.device_id AND a.TIMESTAMP = b.max_timestamp WHERE a.SENSORTYPE = ?)";
 		
-		final String SQL ="SELECT \"DEVICEID\", \"TIMESTAMP\", \"VALUE\" FROM " +
+		final String SQL ="SELECT \"DEVICEID\", \"TIMESTAMP\", \"SENSORTYPE\", \"VALUE\" FROM " +
         "(SELECT * FROM \"CMU\".\"CMU_SENSOR\" AS a " + 
         "INNER JOIN " +
         "(SELECT " +
