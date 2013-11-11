@@ -4,7 +4,7 @@ Type
 .classpath
 .settings/
 bin/**
-conf/database.properties
+#conf/database.properties
 .DS_Store
 # Play! Framework
 logs
