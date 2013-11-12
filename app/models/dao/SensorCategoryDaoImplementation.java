@@ -2,29 +2,55 @@ package models.dao;
 
 import java.util.List;
 
+import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import models.SensorCategory;
+import models.SensorReading;
 
 public class SensorCategoryDaoImplementation implements SensorCategoryDao{
 	private SimpleJdbcTemplate simpleJdbcTemplate;
 	
 	@Override
-	public void addSensorCategory(String sensorCategoryName, String purpose) {
-		// TODO Auto-generated method stub
+	public boolean addSensorCategory(String sensorCategoryName, String purpose) {
+		// TODO need to use this in production for SAP HANA
+		//final String SQL_SEQUENCE = "SELECT CMU.COURSE_SENSOR_CATEGORY_ID_SEQ.NEXTVAL FROM DUMMY";
+		//int sensorCategoryId = simpleJdbcTemplate.queryForInt(SQL_SEQUENCE);
 		
+		// TODO need to use this in production for SAP HANA
+		//final String SQL = "INSERT INTO CMU.COURSE_SENSOR_CATEGORY (SENSOR_CATEGORY_ID, SENSOR_CATEGORY_NAME, PURPOSE) VALUES (?, ?, ?)";
+		
+		// for test only
+		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_CATEGORY (SENSOR_CATEGORY_ID, SENSOR_CATEGORY_NAME, PURPOSE) VALUES (next value for CMU.COURSE_SENSOR_CATEGORY_ID_SEQ, ?, ?)";
+		try{
+			// TODO need to use this in production for SAP HANA
+			//simpleJdbcTemplate.update(SQL, sensorCategoryId, sensorCategoryName, purpose);
+			
+			// for test only
+			simpleJdbcTemplate.update(SQL, sensorCategoryName, purpose);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public List<SensorCategory> getAllSensorCategories() {
-		// TODO Auto-generated method stub
-		return null;
+		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR_CATEGORY";
+		
+		List<SensorCategory> sensorCategories = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorCategory.class));
+		
+		return sensorCategories;
 	}
 
 	@Override
 	public SensorCategory getSensorCategory(String SensorCategoryName) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR_CATEGORY WHERE SENSOR_CATEGORY_NAME = ?";
+		
+		SensorCategory sensorCategory = simpleJdbcTemplate.queryForObject(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorCategory.class), SensorCategoryName);
+		
+		return sensorCategory;
 	}
 
 	public SimpleJdbcTemplate getSimpleJdbcTemplate() {

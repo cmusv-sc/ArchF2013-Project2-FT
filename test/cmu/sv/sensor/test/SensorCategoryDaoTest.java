@@ -21,7 +21,7 @@ public class SensorCategoryDaoTest extends AbstractTest{
 	public void testAddSensorCategory() {
 		String purpose = "for test";
 		sensorCategoryDaoImplementation.addSensorCategory("testSensorCategoryName", purpose);
-		SensorCategory sc = sensorCategoryDaoImplementation.getSensorCategory("name1");
+		SensorCategory sc = sensorCategoryDaoImplementation.getSensorCategory("testSensorCategoryName");
 		assertEquals(purpose, sc.getPurpose());
 		assertEquals(2, sensorCategoryDaoImplementation.getAllSensorCategories().size());
 		
