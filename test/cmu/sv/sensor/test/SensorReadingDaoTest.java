@@ -62,7 +62,7 @@ public class SensorReadingDaoTest extends AbstractTest{
 		SensorReading reading = sensorReadingDao.searchReading("device3", new Long(1383927321), "temp");
 		assertEquals("device3,1383927321,temp,15.0", reading.toCSVString());
 		reading = sensorReadingDao.searchReading("device3", new Long(1383927321), "light");
-		assertEquals("device2,1383927321,light,200.0", reading.toCSVString());
+		assertEquals("device3,1383927321,light,200.0", reading.toCSVString());
 	}
 
 }
