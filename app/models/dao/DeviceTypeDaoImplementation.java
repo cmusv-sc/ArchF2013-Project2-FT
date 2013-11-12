@@ -2,31 +2,32 @@ package models.dao;
 
 import java.util.List;
 
+import models.DeviceType;
+
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
-import models.Device;
+public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 
-public class DeviceDaoImplementation implements DeviceDao{
 	private SimpleJdbcTemplate simpleJdbcTemplate;
 
 	@Override
-	public void addDevice(String deviceTypeName, String uri,
-			String userDefinedFields, double longitude, double latitude,
-			double altitude, String representation) {
+	public List<DeviceType> getAllDeviceTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DeviceType getDeviceType(String deviceTypeName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addDeviceType(String deviceTypeName, String manufacturer,
+			String version, String userDefinedFields,
+			List<String> sensorTypes) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public List<Device> getAllDevices() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Device getDevice(String uri) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public SimpleJdbcTemplate getSimpleJdbcTemplate() {

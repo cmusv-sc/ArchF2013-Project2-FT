@@ -7,31 +7,17 @@ import java.util.List;
 import models.SensorReading;
 import models.dao.SensorReadingDaoImplementation;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
-public class SensorReadingDaoTest {
+public class SensorReadingDaoTest extends AbstractTest{
 	
-	private static EmbeddedDatabase database;
 	private static SensorReadingDaoImplementation sensorReadingDao;
 	
 	@BeforeClass
-	public static void setup() {
-		database = new EmbeddedDatabaseBuilder().addDefaultScripts().build();
-	
-		SimpleJdbcTemplate jdbcTemplate = new SimpleJdbcTemplate(database);
-		
+	public static void subSetup() {
 		sensorReadingDao = new SensorReadingDaoImplementation();
 		sensorReadingDao.setSimpleJdbcTemplate(jdbcTemplate);
-	}
-	
-	@AfterClass
-	public static void tearDown() {
-		database.shutdown();
 	}
 	
 	@Test

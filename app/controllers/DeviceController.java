@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.DBHandler;
-import models.dao.DeviceDao;
+import models.dao.OldDeviceDao;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
@@ -16,14 +16,14 @@ import play.mvc.Result;
 public class DeviceController extends Controller {
 	private static DBHandler dbHandler = null;
 	private static ApplicationContext context;
-	private static DeviceDao deviceDao;
+	private static OldDeviceDao deviceDao;
 	
 	private static void checkDao(){
 		if (context == null) {
 			context = new ClassPathXmlApplicationContext("application-context.xml");
 		}
 		if (deviceDao == null) {
-			deviceDao = (DeviceDao) context.getBean("deviceDaoImplementation");
+			deviceDao = (OldDeviceDao) context.getBean("deviceDaoImplementation");
 		}
 	}
 	
@@ -48,7 +48,7 @@ public class DeviceController extends Controller {
 		 String deviceType = json.findPath("device_type").getTextValue();
 		 String deviceAgent = json.findPath("device_agent").getTextValue();
 		 String location = json.findPath("location").getTextValue();
-		 models.Device device = new models.Device(deviceId, deviceType, deviceAgent, location); 
+		 models.OldDevice device = new models.OldDevice(deviceId, deviceType, deviceAgent, location); 
 		 if(!device.save()){
 			System.err.println("device " + deviceId + " is not saved");
 			return ok("not saved");
@@ -62,14 +62,14 @@ public class DeviceController extends Controller {
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();
-		List<models.Device> devices = deviceDao.getAllDevices();
+		List<models.OldDevice> devices = deviceDao.getAllDevices();
 		if(devices == null || devices.isEmpty()){
 			return notFound("no devices found");
 		}
 		String ret = new String();
 		if (format.equals("json"))
 		{			
-			for (models.Device device : devices) {
+			for (models.OldDevice device : devices) {
 				if (ret.isEmpty())
 					ret += "[";
 				else				
@@ -78,7 +78,7 @@ public class DeviceController extends Controller {
 			}
 			ret += "]";			
 		} else {			
-			for (models.Device device : devices) {
+			for (models.OldDevice device : devices) {
 				if (!ret.isEmpty())
 					ret += '\n';
 				else

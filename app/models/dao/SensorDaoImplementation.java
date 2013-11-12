@@ -4,27 +4,26 @@ import java.util.List;
 
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
-import models.Device;
+import models.Sensor;
 
-public class DeviceDaoImplementation implements DeviceDao{
+public class SensorDaoImplementation implements SensorDao{
 	private SimpleJdbcTemplate simpleJdbcTemplate;
-
+	
 	@Override
-	public void addDevice(String deviceTypeName, String uri,
-			String userDefinedFields, double longitude, double latitude,
-			double altitude, String representation) {
+	public void addSensor(String sensorName, String sensorTypeName,
+			String deviceUri) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public List<Device> getAllDevices() {
+	public Sensor getSensor(String sensorName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Device getDevice(String uri) {
+	public List<Sensor> getAllSensors() {
 		// TODO Auto-generated method stub
 		return null;
 	}
