@@ -5,8 +5,10 @@ import models.MessageBusHandler;
 import models.SensorReading;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class MessageBusHandlerTest {
 
 	private static MessageBusHandler handler; 
