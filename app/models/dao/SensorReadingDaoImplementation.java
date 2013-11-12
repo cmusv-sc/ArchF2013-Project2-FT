@@ -23,9 +23,14 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 
 	@Override
 	public boolean addReading(String deviceId, Long timeStamp, String sensorType, Double value) {
-		// TODO 
-		// Add sensor reading to database, please reference DBHandler.addReading() 
-		return false;
+		final String SQL = "INSERT INTO CMU.CMU_SENSOR (DEVICEID, TIMESTAMP, SENSORTYPE, VALUE)" 
+				+ "VALUES ('" + deviceId + "','" + timeStamp.toString() + "','" + sensorType + "','" + value.toString() + "')";
+		try{
+			simpleJdbcTemplate.update(SQL);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
