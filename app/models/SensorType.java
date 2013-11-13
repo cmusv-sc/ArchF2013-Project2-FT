@@ -2,18 +2,18 @@ package models;
 
 public class SensorType {
 	private String sensorTypeName;
-	private String manufactuere;
+	private String manufacturer;
 	private String version;
 	private double maxValue;
 	private double minValue;
 	private String unit;
 	private String interpreter;
 	private String userDefinedFields;
-	public String getManufactuere() {
-		return manufactuere;
+	public String getManufacturer() {
+		return manufacturer;
 	}
-	public void setManufactuere(String manufactuere) {
-		this.manufactuere = manufactuere;
+	public void setManufactuere(String manufacturer) {
+		this.manufacturer = manufacturer;
 	}
 	public String getVersion() {
 		return version;
