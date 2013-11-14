@@ -15,6 +15,11 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 			String manufacturer, String version, double maxValue,
 			double minValue, String unit, String interpreter,
 			String userDefinedFields) {
+//		TODO: Need to use this in production for SAP HANA
+//		final String SQL_SEQUENCE = "SELECT CMU.COURSE_SENSOR_TYPE_ID_SEQ.NEXTVAL FROM DUMMY";
+//		int sensorTypeId = simpleJdbcTemplate.queryForInt(SQL_SEQUENCE);
+		      
+		
 //		Check if SensorTypeName is duplicate
 		final String SQL_CHECK = "SELECT * FROM CMU.COURSE_SENSOR_TYPE WHERE SENSOR_TYPE_NAME=?";
 		List<SensorType> types = simpleJdbcTemplate.query(SQL_CHECK, 
@@ -24,8 +29,18 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 			return false;
 		}
 		
+//		TODO: Need to use this in production for SAP HANA
+//		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_TYPE (SENSOR_TYPE_ID, SENSOR_TYPE_NAME, MANUFACTURER, VERSION, MAX_VALUE, MIN_VALUE, UNIT, INTERPRETER, USER_DEFINED_FIELDS, SENSOR_CATEGORY_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";		
+//		Test Only
 		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_TYPE (SENSOR_TYPE_ID, SENSOR_TYPE_NAME, MANUFACTURER, VERSION, MAX_VALUE, MIN_VALUE, UNIT, INTERPRETER, USER_DEFINED_FIELDS, SENSOR_CATEGORY_ID) VALUES (NEXT VALUE FOR CMU.COURSE_SENSOR_TYPE_ID_SEQ, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try{
+			
+//			TODO: Need to use this in production for SAP HANA
+//			simpleJdbcTemplate.update(SQL, sensorTypeId, sensorTypeName, 
+//					manufacturer, version, maxValue, minValue, unit, 
+//					interpreter, userDefinedFields, sensorCategoryId);
+
+//			Test Only
 			simpleJdbcTemplate.update(SQL, sensorTypeName, 
 					manufacturer, version, maxValue, minValue, unit, 
 					interpreter, userDefinedFields, sensorCategoryId);
@@ -33,7 +48,6 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 			e.printStackTrace();
 			return false;
 		}
-		
 		return true;
 	}
 

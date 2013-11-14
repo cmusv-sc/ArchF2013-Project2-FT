@@ -12,7 +12,7 @@ public class SensorType {
 	public String getManufacturer() {
 		return manufacturer;
 	}
-	public void setManufactuere(String manufacturer) {
+	public void setManufacturer(String manufacturer) {
 		this.manufacturer = manufacturer;
 	}
 	public String getVersion() {

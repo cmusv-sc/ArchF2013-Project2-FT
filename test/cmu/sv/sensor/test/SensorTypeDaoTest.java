@@ -5,7 +5,6 @@ import models.SensorType;
 import models.dao.SensorTypeDaoImplementation;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SensorTypeDaoTest extends AbstractTest{
@@ -24,8 +23,7 @@ public class SensorTypeDaoTest extends AbstractTest{
 		sensorTypeDaoImplementation.addSensorType(1, "testSensorTypeName1", "testManufacturer", "0.1", 100, 1, "Fahrenheit", "testInterpreter", "testUserDefinedFields");
 		SensorType st = sensorTypeDaoImplementation.getSensorType("testSensorTypeName1");
 		assertEquals("testSensorTypeName1", st.getSensorTypeName());
-//		TODO: Something's wrong with the manufacturer
-//		assertEquals("testManufacturer", st.getManufacturer());
+		assertEquals("testManufacturer", st.getManufacturer());
 		assertEquals("0.1", st.getVersion());
 		assertEquals(100.0, st.getMaxValue(), 0.0);
 		assertEquals(1.0, st.getMinValue(), 0.0);
@@ -46,8 +44,7 @@ public class SensorTypeDaoTest extends AbstractTest{
 		sensorTypeDaoImplementation.addSensorType(1, "testSensorTypeName2", "testManufacturer", "0.1", 100, 1, "Fahrenheit", "testInterpreter", "testUserDefinedFields");
 		SensorType st = sensorTypeDaoImplementation.getSensorType("testSensorTypeName2");
 		assertEquals("testSensorTypeName2", st.getSensorTypeName());
-//		TODO: Something's wrong with the manufacturer
-//		assertEquals("testManufacturer", st.getManufacturer());
+		assertEquals("testManufacturer", st.getManufacturer());
 		assertEquals("0.1", st.getVersion());
 		assertEquals(100.0, st.getMaxValue(), 0.0);
 		assertEquals(1.0, st.getMinValue(), 0.0);
