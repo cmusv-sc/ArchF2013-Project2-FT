@@ -45,6 +45,9 @@ CREATE  TABLE "CMU"."COURSE_SENSOR" ("SENSOR_ID" INTEGER  NOT NULL ,
 	 UNIQUE ("SENSOR_NAME"),
 	 PRIMARY KEY ("SENSOR_ID"));
 	 
+CREATE TABLE "CMU"."COURSE_DEVICE_TYPE_SENSOR_TYPE" ("DEVICE_TYPE_ID" INTEGER ,
+	 "SENSOR_TYPE_ID" INTEGER );
+	 
 create sequence "CMU"."COURSE_SENSOR_CATEGORY_ID_SEQ" increment by 1 start with 1 minvalue 1 maxvalue 1000 no cycle
 
 create sequence "CMU"."COURSE_SENSOR_TYPE_ID_SEQ" increment by 1 start with 1 minvalue 1 maxvalue 1000 no cycle 
