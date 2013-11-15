@@ -60,7 +60,7 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 				ParameterizedBeanPropertyRowMapper.newInstance(SensorType.class), 
 				sensorTypeName);
 		if(types.size() > 0){
-//			Returns the first item if duplicate SensorType exists
+//			Returns the first item if duplicate SensorType exists, it should never happen
 			sensorType = types.get(0);
 		}
 		return sensorType;
