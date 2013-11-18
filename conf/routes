@@ -31,7 +31,6 @@ GET		/last_readings_from_all_devices/:timeStamp/:sensorType/json	controllers.Sen
 GET     /lastest_readings_from_all_devices/:sensorType  controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "csv")
 GET     /lastest_readings_from_all_devices/:sensorType/csv  controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "csv")
 GET     /lastest_readings_from_all_devices/:sensorType/json controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "json")
-POST    /sql_query                          controllers.SensorReadingController.sql_query()
 POST	/sensors/				  			controllers.SensorReadingController.add(publish:Boolean = false)
 POST	/sensors				  			controllers.SensorReadingController.add(publish:Boolean = false)
 POST	/sensors_save/				  		controllers.SensorReadingController.add(publish:Boolean = false)
