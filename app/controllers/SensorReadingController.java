@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import models.DBHandler;
 import models.MessageBusHandler;
 import models.SensorReading;
 import models.dao.SensorReadingDao;
