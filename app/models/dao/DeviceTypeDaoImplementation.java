@@ -23,7 +23,7 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 		Map<String, DeviceType> deviceTypesMap = new HashMap<String, DeviceType>();
 		for (DeviceType deviceType : deviceTypes) {
 			if (deviceType.getSensorTypes() == null) {
-				deviceType.setSensorTypes(new LinkedList<String>());
+				deviceType.addSensorTypes(new LinkedList<String>());
 			}
 			deviceTypesMap.put(deviceType.getDeviceTypeName(), deviceType);
 		}
@@ -48,26 +48,36 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 		DeviceType deviceType = simpleJdbcTemplate.queryForObject(sqlStatement, ParameterizedBeanPropertyRowMapper.newInstance(DeviceType.class), deviceTypeName);
 		
 		if (deviceType.getSensorTypes() == null) {
-			deviceType.setSensorTypes(new ArrayList<String>());
+			deviceType.addSensorTypes(new ArrayList<String>());
 		}
 		List<Map<String, Object>> deviceTypeSensorTypeMap = getDeviceSensorTypes(deviceTypeName);
 		
 		for (Map<String, Object> map : deviceTypeSensorTypeMap) {
-			deviceType.getSensorTypes().add((String)map.get("sensor_type_name"));
+			deviceType.getSensorTypes().add((String)map.get("SENSOR_TYPE_NAME"));
 		}
 		
 		return deviceType;
 	}
 
 	@Override
-	public void addDeviceType(String deviceTypeName, String manufacturer,
+	public boolean addDeviceType(String deviceTypeName, String manufacturer,
 			String version, String userDefinedFields,
 			List<String> sensorTypes) {
-		String sqlStatement = "insert into cmu.course_device_type (device_type_id, device_type_name, manufacturer, version, user_defined_fields) values (next value for cmu.COURSE_DEVICE_TYPE_ID_SEQ, ?, ?, ?, ?)"; 
-		int numOfrowsAffected = simpleJdbcTemplate.update(sqlStatement, deviceTypeName,
+		String sqlStatement = "insert into cmu.course_device_type (device_type_id, device_type_name, manufacturer, version, user_defined_fields) values (cmu.COURSE_DEVICE_TYPE_ID_SEQ.nextval, ?, ?, ?, ?)"; 
+		int numOfrowsAffected = 0;
+		try {
+			numOfrowsAffected = simpleJdbcTemplate.update(sqlStatement, deviceTypeName,
 				manufacturer,
 				version,
 				userDefinedFields);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		//TODO: need transaction control
+		if (numOfrowsAffected == 0) {
+			return false;
+		} 
 		
 		
 		sqlStatement = "insert into cmu.course_device_type_sensor_type (device_type_id, sensor_type_id) "
@@ -82,8 +92,12 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 					sensorType
 			});
 		}
+
+		int[] returnVals = simpleJdbcTemplate.batchUpdate(sqlStatement, params);
 		
-		simpleJdbcTemplate.batchUpdate(sqlStatement, params);
+		//TODO: need transaction control
+		return true;
+		
 	}
 	
 	private List<Map<String,Object>> getAllDevicesSensorTypes() {

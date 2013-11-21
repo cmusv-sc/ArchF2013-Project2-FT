@@ -65,9 +65,9 @@ public class DeviceController extends Controller {
 	}
 
 	public static Result getDevice(String format) {
-		if(!testDBHandler()){
-			return internalServerError("database conf file not found");
-		}
+//		if(!testDBHandler()){
+//			return internalServerError("database conf file not found");
+//		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();
 		List<models.OldDevice> devices = deviceDao.getAllDevices();

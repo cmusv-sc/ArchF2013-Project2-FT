@@ -44,8 +44,11 @@ POST	/sensors_save				  		controllers.SensorReadingController.add(publish:Boolea
 
 #Metadata
 POST	/add_sensor				  controllers.MetadataController.addSensor()
-POST	/add_device_type 			controllers.MetadataController.addDeviceType()
+POST	/add_device_type 			controllers.DeviceTypeController.addDeviceType()
+GET		/get_device_type/:device_type_name/json 			controllers.DeviceTypeController.getDeviceType(device_type_name: String, format: String="json")
 POST	/add_device 			controllers.MetadataController.addDevice()
+POST	/add_sensor_category		controllers.SensorCategoryController.addSensorCategory()
+GET		/get_sensor_category/:sensor_category_name/json		controllers.SensorCategoryController.getSensorCategory(sensor_category_name: String, format: String="json")
 
 # WorkFlow
 POST	/workflow/							controllers.WorkFlowRunnerController.changeInterval()
