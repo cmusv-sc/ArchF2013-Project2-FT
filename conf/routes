@@ -40,7 +40,8 @@ POST	/sensors_save				  		controllers.SensorReadingController.add(publish:Boolea
 #Metadata
 POST	/add_sensor_type				  controllers.MetadataController.addSensorType()
 POST	/add_sensor				  controllers.MetadataController.addSensor()
-POST	/add_device_type 			controllers.MetadataController.addDeviceType()
+POST	/add_device_type 			controllers.DeviceTypeController.addDeviceType()
+GET		/get_device_type/:device_type_name/json 			controllers.DeviceTypeController.getDeviceType(device_type_name: String, format: String="json")
 POST	/add_device 			controllers.MetadataController.addDevice()
 
 # WorkFlow

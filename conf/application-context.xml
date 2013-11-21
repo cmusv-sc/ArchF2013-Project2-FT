@@ -7,7 +7,7 @@
    <bean id="dataSource" 
       class="org.springframework.jdbc.datasource.DriverManagerDataSource">
       <property name="driverClassName" value="com.sap.db.jdbc.Driver"/>
-      <property name="url" value="jdbc:sap://grey.sv.cmu.edu:30015/?autocommit=false"/>
+      <property name="url" value="jdbc:sap://grey.sv.cmu.edu:30015/?autocommit=true"/>
       <property name="username" value="system"/>
       <property name="password" value="cmuHANA0413"/>
    </bean>
@@ -19,6 +19,12 @@
       </constructor-arg>
    </bean>
 
+	<!-- Definition for deviceTypeDaoImplementation bean -->
+   <bean id="deviceTypeDaoImplementation" 
+      class="models.dao.DeviceTypeDaoImplementation">
+      <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
+   </bean>
+   
    <!-- Definition for deviceDaoImplementation bean -->
    <bean id="deviceDaoImplementation" 
       class="models.dao.DeviceDaoImplementation">

@@ -2,6 +2,10 @@ package models;
 
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class DeviceType {
 	private String deviceTypeName;
 	private String manufacturer;
@@ -35,8 +39,42 @@ public class DeviceType {
 	public List<String> getSensorTypes() {
 		return sensorTypes;
 	}
-	public void setSensorTypes(List<String> sensorTypes) {
+	public void addSensorTypes(List<String> sensorTypes) {
 		this.sensorTypes = sensorTypes;
+	}
+	
+	public String toCSVString() {
+		return "TODO";
+	}
+	public String getCSVHeader() {
+		return "device_type_name,manufacturer,version,user_defined_fields, sensor_type_names\n";
+	}
+	
+	public String toJSONString() {
+		String jsonString = new String();
+		try {
+			JSONObject obj=new JSONObject();
+			obj.put("device_type_name",  deviceTypeName);
+			obj.put("manufacturer", manufacturer);
+			obj.put("version", version);
+			obj.put("user_defined_fields", userDefinedFields);
+			
+			if (sensorTypes.size() > 0) {
+				Object[] content = new Object[sensorTypes.size()];
+				int i = 0;
+				for (String sensorType : sensorTypes) {
+					content[i] = sensorType;
+					i++;
+				}
+				JSONArray arr = new JSONArray(content);
+				obj.put("sensor_type_names", arr);
+			}
+			
+			jsonString = obj.toString();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jsonString;
 	}
 
 }
