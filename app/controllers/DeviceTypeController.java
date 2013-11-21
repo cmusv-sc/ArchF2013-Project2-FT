@@ -37,7 +37,7 @@ public class DeviceTypeController extends Controller {
 		checkDao();
 
 		// Parse JSON FIle 
-		String deviceTypeName= json.findPath("device_type_name").getTextValue();
+		String deviceTypeName = json.findPath("device_type_name").getTextValue();
 		String manufacturer = json.findPath("manufacturer").getTextValue();
 		String version = json.findPath("version").getTextValue();
 		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
@@ -54,7 +54,7 @@ public class DeviceTypeController extends Controller {
 		if(!result){
 			error.add(deviceTypeName);
 		}
-
+		// Can this error have more than one name in it? I don't understand why error needs to be a list.
 		if(error.size() == 0){
 			System.out.println("device type saved");
 			return ok("device type saved");
