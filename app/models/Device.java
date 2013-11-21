@@ -4,11 +4,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Device {
-	private static DBHandler dbHandler = null;
 	private String uri;
 	private String userDefinedFields;
-	private String representation;
+	private Location location;
 	
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
 	public String getUri() {
 		return uri;
 	}
@@ -23,32 +30,6 @@ public class Device {
 
 	public void setUserDefinedFields(String userDefinedFields) {
 		this.userDefinedFields = userDefinedFields;
-	}
-
-	public Device(){
-		dbHandler = new DBHandler("conf/database.properties");	
-	}
-	
-	public Device(String deviceId, String deviceType, String deviceAgent, String deviceLocation){
-		this.uri = deviceAgent;
-		this.userDefinedFields = deviceLocation;
-	}
-	
-	
-	public String getDeviceAgent(){
-		return uri;
-	}
-	
-	public void setDeviceAgent(String agent){
-		this.uri = agent;
-	}
-		
-	public String getLocation(){
-		return userDefinedFields;
-	}
-	
-	public void setLocation(String location){
-		this.userDefinedFields = location;
 	}
 		
 	public String getCSVHeader() {
@@ -71,27 +52,5 @@ public class Device {
 		}
 		return jsonString;
 	}
-	
-	public String executeSQL(String sql, int number_of_result_columns){
-		if(dbHandler == null){
-			dbHandler = new DBHandler("conf/database.properties");
-		}
-		return dbHandler.runQuery(sql, number_of_result_columns);
-	}
 
-	public String getRepresentation() {
-		return representation;
-	}
-
-	public void setRepresentation(String representation) {
-		this.representation = representation;
-	}
-
-//	publisc boolean save(){
-//		if(dbHandler == null){
-//			dbHandler = new DBHandler("conf/database.properties");
-//		}
-//		return dbHandler.addDevice(deviceId, deviceTypeName, uri, userDefinedFields);
-
-//	}
 }

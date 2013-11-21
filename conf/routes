@@ -12,11 +12,17 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /get_devices          controllers.DeviceController.getDevice(format: String = "csv")
 GET     /get_devices/csv      controllers.DeviceController.getDevice(format: String = "csv")
 GET     /get_devices/json     controllers.DeviceController.getDevice(format: String = "json")
-GET     /get_sensor_types/:deviceType controllers.DeviceController.getSensorType(deviceType: String, format: String = "csv")
-GET     /get_sensor_types/:deviceType/csv controllers.DeviceController.getSensorType(deviceType: String, format: String = "csv")
-GET     /get_sensor_types/:deviceType/json controllers.DeviceController.getSensorType(deviceType: String, format: String = "json")
 POST    /device               controllers.DeviceController.add()
 POST    /device/              controllers.DeviceController.add()
+
+# SensorType
+GET     /get_sensor_type/:sensorTypeName controllers.SensorTypeController.getSensorType(sensorTypeName: String, format: String = "csv")
+GET     /get_sensor_type/:sensorTypeName/csv controllers.SensorTypeController.getSensorType(sensorTypeName: String, format: String = "csv")
+GET     /get_sensor_type/:sensorTypeName/json controllers.SensorTypeController.getSensorType(sensorTypeName: String, format: String = "json")
+GET     /get_sensor_types/ controllers.SensorTypeController.getAllSensorTypes(format: String = "csv")
+GET     /get_sensor_types/csv controllers.SensorTypeController.getAllSensorTypes(format: String = "csv")
+GET     /get_sensor_types/json controllers.SensorTypeController.getAllSensorTypes(format: String = "json")
+POST	/add_sensor_type controllers.SensorTypeController.addSensorType()
 
 # SensorReading
 GET		/sensors/:deviceId/:timeStamp/:sensorType			controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
@@ -31,14 +37,12 @@ GET		/last_readings_from_all_devices/:timeStamp/:sensorType/json	controllers.Sen
 GET     /lastest_readings_from_all_devices/:sensorType  controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "csv")
 GET     /lastest_readings_from_all_devices/:sensorType/csv  controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "csv")
 GET     /lastest_readings_from_all_devices/:sensorType/json controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "json")
-POST    /sql_query                          controllers.SensorReadingController.sql_query()
 POST	/sensors/				  			controllers.SensorReadingController.add(publish:Boolean = false)
 POST	/sensors				  			controllers.SensorReadingController.add(publish:Boolean = false)
 POST	/sensors_save/				  		controllers.SensorReadingController.add(publish:Boolean = false)
 POST	/sensors_save				  		controllers.SensorReadingController.add(publish:Boolean = false)
 
 #Metadata
-POST	/add_sensor_type				  controllers.MetadataController.addSensorType()
 POST	/add_sensor				  controllers.MetadataController.addSensor()
 POST	/add_device_type 			controllers.DeviceTypeController.addDeviceType()
 GET		/get_device_type/:device_type_name/json 			controllers.DeviceTypeController.getDeviceType(device_type_name: String, format: String="json")

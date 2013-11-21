@@ -5,7 +5,6 @@ import models.Sensor;
 import models.dao.SensorDaoImplementation;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SensorDaoTest extends AbstractTest{
@@ -19,27 +18,45 @@ public class SensorDaoTest extends AbstractTest{
 	
 	@Test
 	public void testAddSensor() {
-		sensorDaoImplementation.addSensor("testSensorName", "motorola temp", "devece1.sv.cmu.edu");
-		Sensor st = sensorDaoImplementation.getSensor("testSensorName");
-		assertEquals("testUserDefinedFields", st.getUserDefinedFields());
-		assertEquals(2, sensorDaoImplementation.getAllSensors().size());
+		int prev = sensorDaoImplementation.getAllSensors().size();
 		
-		sensorDaoImplementation.addSensor("testSensorName2", "motorola temp", "devece1.sv.cmu.edu");
-		assertEquals(3, sensorDaoImplementation.getAllSensors().size());
+		sensorDaoImplementation.addSensor(1, 1, "testSensorName1", "testUserDefinedFields");
+		Sensor st = sensorDaoImplementation.getSensor("testSensorName1");
+		assertEquals(1, st.getSensorTypeId());
+		assertEquals(1, st.getDeviceId());
+		assertEquals("testUserDefinedFields", st.getUserDefinedFields());
+		
+		int post = sensorDaoImplementation.getAllSensors().size();
+		assertEquals(1, post - prev);
+		
+		sensorDaoImplementation.addSensor(1, 1, "testSensorName2", "testUserDefinedFields");
+		post = sensorDaoImplementation.getAllSensors().size();
+		assertEquals(2, post - prev);
 		
 		//negative test for adding the same sensor_category_name
-		sensorDaoImplementation.addSensor("testSensorName", "motorola temp", "devece1.sv.cmu.edu");
-		assertEquals(3, sensorDaoImplementation.getAllSensors().size());
+		sensorDaoImplementation.addSensor(1, 1, "testSensorName1", "testUserDefinedFields");
+		post = sensorDaoImplementation.getAllSensors().size();
+		assertEquals(2, post - prev);
 	}
 	
 	@Test
-	@Ignore
 	public void testGetSensor() {
-		
+		sensorDaoImplementation.addSensor(1, 1, "testSensorName3", "testUserDefinedFields");
+		Sensor st = sensorDaoImplementation.getSensor("testSensorName3");
+		assertEquals(1, st.getSensorTypeId());
+		assertEquals(1, st.getDeviceId());
+		assertEquals("testUserDefinedFields", st.getUserDefinedFields());
 	}
+	
 	@Test
-	@Ignore
 	public void testGetAllSensor() {
+		int prev = sensorDaoImplementation.getAllSensors().size();
 		
+		sensorDaoImplementation.addSensor(1, 1, "testSensorName4", "testUserDefinedFields");
+		sensorDaoImplementation.addSensor(1, 1, "testSensorName5", "testUserDefinedFields");
+		sensorDaoImplementation.addSensor(1, 1, "testSensorName6", "testUserDefinedFields");
+
+		int post = sensorDaoImplementation.getAllSensors().size();
+		assertEquals(3, post - prev);
 	}
 }
