@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import models.DBHandler;
 import models.MessageBusHandler;
 import models.SensorReading;
 import models.dao.SensorReadingDao;
@@ -26,25 +25,18 @@ import play.mvc.Result;
 
 
 public class SensorReadingController extends Controller {
-	private static DBHandler dbHandler = null;
 	private static final String ISO8601 = "ISO8601";
-	
 	private static ApplicationContext context;
 	private static SensorReadingDao sensorReadingDao;
 	
-	private static void checkDao(){
+	private static boolean checkDao(){
 		if (context == null) {
 			context = new ClassPathXmlApplicationContext("application-context.xml");
 		}
 		if (sensorReadingDao == null) {
 			sensorReadingDao = (SensorReadingDao) context.getBean("sensorReadingDaoImplementation");
 		}
-	}
-	
-	private static boolean testDBHandler(){
-		if(dbHandler == null){
-			dbHandler = new DBHandler("conf/database.properties");
-		}
+		
 		return true;
 	}
 
@@ -53,7 +45,7 @@ public class SensorReadingController extends Controller {
 		if(json == null) {              
 			return badRequest("Expecting Json data");
 		}
-		if(!testDBHandler()){           
+		if(!checkDao()){           
 			return internalServerError("database conf file not found");
 		}
 		
@@ -66,14 +58,13 @@ public class SensorReadingController extends Controller {
 			String sensorType = it.next();  
 			if(sensorType == "id" || sensorType == "timestamp") continue;
 			double value = json.findPath(sensorType).getDoubleValue();
-			models.SensorReading reading = new models.SensorReading(deviceId, timeStamp, sensorType, value);  
-			if(!reading.save()){            
+			if(!sensorReadingDao.addReading(deviceId, timeStamp, sensorType, value)){            
 				error.add(sensorType + ", " + deviceId + ", " + timeStamp.toString() + ", " + value + "\n");
 			}
 
 			if(publish){                    
 				MessageBusHandler mb = new MessageBusHandler();
-				if(!mb.publish(reading)){       
+				if(!mb.publish(new models.SensorReading(deviceId, timeStamp, sensorType, value))){       
 					error.add("publish failed");    
 				}                               
 			}
@@ -86,29 +77,6 @@ public class SensorReadingController extends Controller {
 			System.out.println("some not saved: " + error.toString());
 			return ok("some not saved: " + error.toString());
 		}
-	}
-
-
-	// query for readings
-	public static Result sql_query(){
-		String resultStr = "";
-		
-		if(!testDBHandler()){
-			return internalServerError("database conf file not found");
-		}
-		try {
-			response().setHeader("Access-Control-Allow-Origin", "*");
-			JsonNode sql_json = request().body().asJson();
-			if (sql_json == null) {
-				return badRequest("Expect sql in valid json");
-			}
-			String sql = sql_json.findPath("sql").getTextValue();
-			int number_of_result_columns = sql_json.findPath("number_of_result_columns").getIntValue();			
-			resultStr = dbHandler.runQuery(sql, number_of_result_columns);
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-		return ok(resultStr);		
 	}
 	
 	// search reading at a specific timestamp
@@ -158,8 +126,8 @@ public class SensorReadingController extends Controller {
 			}
 			return searchAtTimestamp(deviceId, timestamp, sensorType, format);
 		} 
-
-		if(!testDBHandler()){
+		
+		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
 
@@ -170,7 +138,7 @@ public class SensorReadingController extends Controller {
 		} catch(ParseException ex) {
 			return badRequest("Date format or value is incorrect, please check APIs!");
 		}
-		models.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
+		models.SensorReading reading = sensorReadingDao.searchReading(deviceId, timeStamp, sensorType);
 		if(reading == null){
 			return notFound("no reading found");
 		}
@@ -191,28 +159,33 @@ public class SensorReadingController extends Controller {
 	// search readings of timestamp range [startTime, endTime]
 	public static Result searchInTimestampRange(String deviceId, Long startTime, Long endTime, String sensorType, String format){
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		checkDao();
+
+		if(!checkDao()){
+			return internalServerError("database conf file not found");
+		}
+		
 		List<SensorReading> readings = sensorReadingDao.searchReading(deviceId, startTime, endTime, sensorType);
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
 		}
 		StringBuilder strBuilder = new StringBuilder();
-		if (format.equals("json"))
-		{			
+		if (format.equals("json")) {			
 			for (models.SensorReading reading : readings) {
-				if (strBuilder.length() == 0)
+				if (strBuilder.length() == 0){
 					strBuilder.append("[");
-				else				
+				}else{
 					strBuilder.append(",");
+				}				
 				strBuilder.append(reading.toJSONString());
 			}
 			strBuilder.append("]");			
 		} else {
 			for (models.SensorReading reading : readings) {
-				if (strBuilder.length() != 0)
+				if (strBuilder.length() != 0){
 					strBuilder.append("\n");
-				else 
+				}else{
 					strBuilder.append(reading.getCSVHeader());
+				} 
 				strBuilder.append(reading.toCSVString());
 			}
 		}
@@ -236,9 +209,11 @@ public class SensorReadingController extends Controller {
 			}
 			return searchInTimestampRange(deviceId, startTimestamp, endTimestamp, sensorType, format);
 		} 
-		if(!testDBHandler()){
+		
+		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
+		
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		Long startTimestamp = null;
 		Long endTimestamp = null;
@@ -248,7 +223,7 @@ public class SensorReadingController extends Controller {
 		} catch(ParseException ex) {
 			return badRequest("Date format or value is incorrect, please check APIs!");
 		}
-		ArrayList<models.SensorReading> readings = dbHandler.searchReading(deviceId, startTimestamp, endTimestamp, sensorType);
+		List<models.SensorReading> readings = sensorReadingDao.searchReading(deviceId, startTimestamp, endTimestamp, sensorType);
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
 		}
@@ -279,12 +254,12 @@ public class SensorReadingController extends Controller {
 	}
 
 	public static Result lastReadingFromAllDevices(Long timeStamp, String sensorType, String format) {
-		if(!testDBHandler()){
+		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
 
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		ArrayList<models.SensorReading> readings = dbHandler.lastReadingFromAllDevices(timeStamp, sensorType);
+		List<models.SensorReading> readings = sensorReadingDao.lastReadingFromAllDevices(timeStamp, sensorType);
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
 		}
@@ -321,28 +296,26 @@ public class SensorReadingController extends Controller {
 
 	}	
 	public static Result lastestReadingFromAllDevices(String sensorType, String format) {
-		if(!testDBHandler()){
+		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
 		String dateFormat = getDateFormat();
 
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();
-//		List<SensorReading> readings = sensorReadingDao.lastestReadingFromAllDevices(sensorType);
-		
-		ArrayList<models.SensorReading> readings = dbHandler.lastestReadingFromAllDevices(sensorType);
+		List<SensorReading> readings = sensorReadingDao.lastestReadingFromAllDevices(sensorType);
 
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
 		}
 		StringBuilder sb = new StringBuilder();
-		if (format.equals("json"))
-		{			
+		if (format.equals("json")) {			
 			for (models.SensorReading reading : readings) {
-				if (sb.length() == 0) 
+				if (sb.length() == 0) {
 					sb.append("[");
-				else		
+				} else {
 					sb.append(",");
+				}		
 				if (ISO8601.equals(dateFormat)) {
 					String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
 					String jsonString = Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
@@ -354,10 +327,11 @@ public class SensorReadingController extends Controller {
 			sb.append("]");
 		} else {
 			for (models.SensorReading reading : readings) {
-				if (sb.length() > 0) 
+				if (sb.length() > 0) {
 					sb.append('\n');
-				else 
+				} else {
 					sb.append(reading.getCSVHeader());
+				}
 				sb.append(reading.toCSVString());
 			}
 		}
