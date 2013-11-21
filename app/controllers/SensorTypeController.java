@@ -14,8 +14,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 public class SensorTypeController extends Controller {
-	private static ApplicationContext context;
-	private static SensorTypeDao sensorTypeDao;
+	private static SensorTypeDao sensorTypeDao = null;
+	private static ApplicationContext context = null;
 	
 	private static boolean checkDao(){
 		if (context == null) {
