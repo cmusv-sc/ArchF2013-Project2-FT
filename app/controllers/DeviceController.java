@@ -3,8 +3,10 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.DBHandler;
-import models.dao.OldDeviceDao;
+
+//import models.DBHandler;
+import models.Device;
+import models.dao.DeviceDao;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
@@ -12,45 +14,51 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.defaultpages.error;
 
 public class DeviceController extends Controller {
-	private static DBHandler dbHandler = null;
+//	private static DBHandler dbHandler = null;
 	private static ApplicationContext context;
-	private static OldDeviceDao deviceDao;
+	private static DeviceDao deviceDao;
 	
-	private static void checkDao(){
+	private static boolean checkDao(){
 		if (context == null) {
 			context = new ClassPathXmlApplicationContext("application-context.xml");
 		}
 		if (deviceDao == null) {
-			deviceDao = (OldDeviceDao) context.getBean("deviceDaoImplementation");
-		}
-	}
-	
-	private static boolean testDBHandler(){
-		if(dbHandler == null){
-			dbHandler = new DBHandler("conf/database.properties");
+			deviceDao = (DeviceDao) context.getBean("deviceDaoImplementation");
 		}
 		return true;
 	}
+	
+//	private static boolean testDBHandler(){
+//		if(dbHandler == null){
+//			dbHandler = new DBHandler("conf/database.properties");
+//		}
+//		return true;
+//	}
 	
 	public static Result add() {
 		JsonNode json = request().body().asJson();
 		 if(json == null) {
 			    return badRequest("Expecting Json data");
 		 } 
-		 if(!testDBHandler()){
-			 return internalServerError("database conf file not found");
+		 
+		 if (!checkDao()){
+			 return internalServerError("database conf file not found"); 
 		 }
+
 		 
 		 // Parse JSON FIle 
-		 String deviceId = json.findPath("device_id").getTextValue();
-		 String deviceType = json.findPath("device_type").getTextValue();
-		 String deviceAgent = json.findPath("device_agent").getTextValue();
-		 String location = json.findPath("location").getTextValue();
-		 models.OldDevice device = new models.OldDevice(deviceId, deviceType, deviceAgent, location); 
+//		 String deviceId = json.findPath("device_id").getTextValue();
+		 String deviceTypeId = json.findPath("device_type_id").getTextValue();
+		 String uri= json.findPath("uri").getTextValue();
+		 String userDefinedFields = json.findPath("user_defined_field").getTextValue();
+//		 models.Device device = new models.Device(deviceTypeId, uri, userDefinedFields);
+		 
+		 boolean result = deviceDao.addDevice(deviceTypeName, uri, userDefinedFields, longitude, latitude, altitude, representation);
 		 if(!device.save()){
-			System.err.println("device " + deviceId + " is not saved");
+			System.err.println("device is not saved: " + error.toString());
 			return ok("not saved");
 		 } 
          return ok("saved");		 
