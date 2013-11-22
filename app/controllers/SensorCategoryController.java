@@ -1,8 +1,5 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import models.SensorCategory;
 import models.dao.SensorCategoryDao;
 
@@ -10,7 +7,6 @@ import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import app.models.dao.String;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -38,7 +34,7 @@ public class SensorCategoryController extends Controller {
 
 		// Parse JSON FIle 
 		String sensorCategoryName = json.findPath("sensor_category_name").getTextValue();
-		String manufacturer = json.findPath("purpose").getTextValue();
+		String purpose = json.findPath("purpose").getTextValue();
 		
 		boolean result = sensorCategoryDao.addSensorCategory(sensorCategoryName, purpose);
 
