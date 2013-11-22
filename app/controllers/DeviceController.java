@@ -3,8 +3,11 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.DBHandler;
-import models.dao.OldDeviceDao;
+
+
+//import models.DBHandler;
+import models.Device;
+import models.dao.DeviceDao;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
@@ -12,64 +15,77 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.defaultpages.error;
 
 public class DeviceController extends Controller {
-	private static DBHandler dbHandler = null;
+//	private static DBHandler dbHandler = null;
 	private static ApplicationContext context;
-	private static OldDeviceDao deviceDao;
+	private static DeviceDao deviceDao;
 	
-	private static void checkDao(){
+	private static boolean checkDao(){
 		if (context == null) {
 			context = new ClassPathXmlApplicationContext("application-context.xml");
 		}
 		if (deviceDao == null) {
-			deviceDao = (OldDeviceDao) context.getBean("deviceDaoImplementation");
-		}
-	}
-	
-	private static boolean testDBHandler(){
-		if(dbHandler == null){
-			dbHandler = new DBHandler("conf/database.properties");
+			deviceDao = (DeviceDao) context.getBean("deviceDaoImplementation");
 		}
 		return true;
 	}
+	
+//	private static boolean testDBHandler(){
+//		if(dbHandler == null){
+//			dbHandler = new DBHandler("conf/database.properties");
+//		}
+//		return true;
+//	}
 	
 	public static Result add() {
 		JsonNode json = request().body().asJson();
 		 if(json == null) {
 			    return badRequest("Expecting Json data");
 		 } 
-		 if(!testDBHandler()){
-			 return internalServerError("database conf file not found");
+		 
+		 if (!checkDao()){
+			 return internalServerError("database conf file not found"); 
 		 }
+
 		 
 		 // Parse JSON FIle 
-		 String deviceId = json.findPath("device_id").getTextValue();
-		 String deviceType = json.findPath("device_type").getTextValue();
-		 String deviceAgent = json.findPath("device_agent").getTextValue();
-		 String location = json.findPath("location").getTextValue();
-		 models.OldDevice device = new models.OldDevice(deviceId, deviceType, deviceAgent, location); 
-		 if(!device.save()){
-			System.err.println("device " + deviceId + " is not saved");
-			return ok("not saved");
+//		 String deviceId = json.findPath("device_id").getTextValue();
+		 String deviceTypeName = json.findPath("device_type_name").getTextValue();
+		 String uri= json.findPath("uri").getTextValue();
+//		 String deviceTypeId = json.findPath("device_type_id").getTextValue();
+		 String userDefinedFields = json.findPath("user_defined_field").getTextValue();
+		 double longitude = json.findPath("longitude").getDoubleValue();
+		 double latitude = json.findPath("latitude").getDoubleValue();
+		 double altitude = json.findPath("altitude").getDoubleValue();
+		 String representation = json.findPath("representation").getTextValue();
+//		 models.Device device = new models.Device(deviceTypeId, uri, userDefinedFields);
+		 
+		 boolean result = deviceDao.addDevice(deviceTypeName, uri, userDefinedFields, longitude, latitude, altitude, representation);
+		 
+		 if(!result){
+			System.err.println(deviceTypeName + " is not saved: " + error.toString());
+			return ok("device not saved");
 		 } 
-         return ok("saved");		 
+         return ok("device saved");		 
 	}
 
-	public static Result getDevice(String format) {
-//		if(!testDBHandler()){
-//			return internalServerError("database conf file not found");
-//		}
+	public static Result getAllDevices(String format) {
+		if(!checkDao()){
+			return internalServerError("database conf file not found");
+		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		checkDao();
-		List<models.OldDevice> devices = deviceDao.getAllDevices();
+	    // case insensitive search. device types in the database are in lower case
+		
+		List<models.Device> devices = deviceDao.getAllDevices();
 		if(devices == null || devices.isEmpty()){
 			return notFound("no devices found");
 		}
 		String ret = new String();
 		if (format.equals("json"))
 		{			
-			for (models.OldDevice device : devices) {
+			for (models.Device device : devices) {
 				if (ret.isEmpty())
 					ret += "[";
 				else				
@@ -78,7 +94,7 @@ public class DeviceController extends Controller {
 			}
 			ret += "]";			
 		} else {			
-			for (models.OldDevice device : devices) {
+			for (models.Device device : devices) {
 				if (!ret.isEmpty())
 					ret += '\n';
 				else
@@ -88,38 +104,60 @@ public class DeviceController extends Controller {
 		}
 		return ok(ret);
 	}
-
-	public static Result getSensorType(String deviceType, String format) {
-		if(!testDBHandler()){
+	
+	public static Result getDevice(String uri, String format) {
+		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		// case insensitive search. device types in the database are in lower case
-		deviceType = deviceType.toLowerCase();
-		ArrayList<String> sensorTypes = dbHandler.getSensorType(deviceType);
-		if(sensorTypes == null || sensorTypes.isEmpty()){
-			return notFound("No sensor type found for " + deviceType);
+	    // case insensitive search. device types in the database are in lower case
+		
+		Device device = deviceDao.getDevice(uri);
+		if(device == null){
+			return notFound("no device found");
 		}
 		String ret = new String();
 		if (format.equals("json"))
-		{
-			String sensorTypesStr = "";
-			for (String sensorType : sensorTypes) {
-				if (!sensorTypesStr.isEmpty())
-					sensorTypesStr += ',';
-				sensorTypesStr += sensorType;
-			}
-			ret = "{\"device_type\":\"" + deviceType + "\", \"sensor_type\":\"" + sensorTypesStr + "\"}";
-		} else {
-			for (String sensorType : sensorTypes) {
-				if (!ret.isEmpty())
-					ret += '\n';
-				else
-					ret += "sensor_types\n";
-				ret += sensorType;
-			}
+		{							
+				ret = device.toJSONString();
+							
+		} else {						
+				ret = device.toCSVString();			
 		}
 		return ok(ret);
-	}	
+	}
+
+//	public static Result getSensorType(String deviceType, String format) {
+//		if(!checkDao()){
+//			return internalServerError("database conf file not found");
+//		}
+//		response().setHeader("Access-Control-Allow-Origin", "*");
+//		// case insensitive search. device types in the database are in lower case
+//		deviceType = deviceType.toLowerCase();
+//		ArrayList<String> sensorTypes = deviceDao.getSensorType(deviceType);
+//		if(sensorTypes == null || sensorTypes.isEmpty()){
+//			return notFound("No sensor type found for " + deviceType);
+//		}
+//		String ret = new String();
+//		if (format.equals("json"))
+//		{
+//			String sensorTypesStr = "";
+//			for (String sensorType : sensorTypes) {
+//				if (!sensorTypesStr.isEmpty())
+//					sensorTypesStr += ',';
+//				sensorTypesStr += sensorType;
+//			}
+//			ret = "{\"device_type\":\"" + deviceType + "\", \"sensor_type\":\"" + sensorTypesStr + "\"}";
+//		} else {
+//			for (String sensorType : sensorTypes) {
+//				if (!ret.isEmpty())
+//					ret += '\n';
+//				else
+//					ret += "sensor_types\n";
+//				ret += sensorType;
+//			}
+//		}
+//		return ok(ret);
+//	}	
 	
 }
