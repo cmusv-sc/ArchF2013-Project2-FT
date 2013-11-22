@@ -22,8 +22,8 @@ public class DeviceDaoImplementation implements DeviceDao{
 			String userDefinedFields, double longitude, double latitude,
 			double altitude, String representation) {
 		// TODO need to use this in production for SAP HANA
-		//final String SQL_DEVICE_ID_SEQUENCE = "SELECT CMU.COURSE_DEVICE_ID_SEQ.NEXTVAL FROM DUMMY";
-		//int deviceId = simpleJdbcTemplate.queryForInt(SQL_DEVICE_ID_SEQUENCE);
+		final String SQL_DEVICE_ID_SEQUENCE = "SELECT CMU.COURSE_DEVICE_ID_SEQ.NEXTVAL FROM DUMMY";
+		int deviceId = simpleJdbcTemplate.queryForInt(SQL_DEVICE_ID_SEQUENCE);
 		
 		final String SQL_SELECT_DEVICE_TYPE_ID = "SELECT DEVICE_TYPE_ID FROM CMU.COURSE_DEVICE_TYPE WHERE DEVICE_TYPE_NAME = ?";
 		int deviceTypeId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_TYPE_ID, deviceTypeName);
@@ -33,20 +33,20 @@ public class DeviceDaoImplementation implements DeviceDao{
 		Timestamp timestamp = new Timestamp(time);
 		
 		// TODO need to use this in production for SAP HANA
-		//final String SQL_INSERT_DEVICE = "INSERT INTO CMU.COURSE_DEVICE (DEVICE_ID, DEVICE_TYPE_ID, URI, REGISTRATION_TIMESTAMP, USER_DEFINED_FIELDS) VALUES (?, ?, ?, ?, ?)";
+		final String SQL_INSERT_DEVICE = "INSERT INTO CMU.COURSE_DEVICE (DEVICE_ID, DEVICE_TYPE_ID, URI, REGISTRATION_TIMESTAMP, USER_DEFINED_FIELDS) VALUES (?, ?, ?, ?, ?)";
 		
 		// for test only
-		final String SQL_INSERT_DEVICE = "INSERT INTO CMU.COURSE_DEVICE (DEVICE_ID, DEVICE_TYPE_ID, URI, REGISTRATION_TIMESTAMP, USER_DEFINED_FIELDS) VALUES (next value for CMU.COURSE_DEVICE_ID_SEQ, ?, ?, ?, ?)";
+//		final String SQL_INSERT_DEVICE = "INSERT INTO CMU.COURSE_DEVICE (DEVICE_ID, DEVICE_TYPE_ID, URI, REGISTRATION_TIMESTAMP, USER_DEFINED_FIELDS) VALUES (next value for CMU.COURSE_DEVICE_ID_SEQ, ?, ?, ?, ?)";
 		
 		
-		//final String SQL_LOCATION_ID_SEQUENCE = "SELECT CMU.COURSE_LOCATION_ID_SEQ.NEXTVAL FROM DUMMY";
-		//int locationId = simpleJdbcTemplate.queryForInt(SQL_LOCATION_ID_SEQUENCE);
+		final String SQL_LOCATION_ID_SEQUENCE = "SELECT CMU.COURSE_LOCATION_ID_SEQ.NEXTVAL FROM DUMMY";
+		int locationId = simpleJdbcTemplate.queryForInt(SQL_LOCATION_ID_SEQUENCE);
 		
 		// TODO need to use this in production for SAP HANA
-		//final String SQL_INSERT_LOCATION = "INSERT INTO CMU.COURSE_LOCATION (LOCATION_ID, LONGITUDE, LATITUDE, ALTITUDE, REPRESENTATION) VALUES (?, ?, ?, ?, ?)";
+		final String SQL_INSERT_LOCATION = "INSERT INTO CMU.COURSE_LOCATION (LOCATION_ID, LONGITUDE, LATITUDE, ALTITUDE, REPRESENTATION) VALUES (?, ?, ?, ?, ?)";
 		
 		// for test only
-		final String SQL_INSERT_LOCATION = "INSERT INTO CMU.COURSE_LOCATION (LOCATION_ID, LONGITUDE, LATITUDE, ALTITUDE, REPRESENTATION) VALUES (next value for CMU.COURSE_LOCATION_ID_SEQ, ?, ?, ?, ?)";
+//		final String SQL_INSERT_LOCATION = "INSERT INTO CMU.COURSE_LOCATION (LOCATION_ID, LONGITUDE, LATITUDE, ALTITUDE, REPRESENTATION) VALUES (next value for CMU.COURSE_LOCATION_ID_SEQ, ?, ?, ?, ?)";
 		
 		
 		// TODO need to use this in production for SAP HANA
@@ -54,30 +54,30 @@ public class DeviceDaoImplementation implements DeviceDao{
 		
 		
 		// for test only
-		final String SQL_SELECT_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_DEVICE WHERE URI = ?";
+//		final String SQL_SELECT_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_DEVICE WHERE URI = ?";
 		
 		
-		final String SQL_SELECT_LOCATION_ID = "SELECT DEVICE_ID FROM CMU.COURSE_LOCATION WHERE LONGITUDE = ? AND LATITUDE = ? AND ALTITUDE = ?";
+//		final String SQL_SELECT_LOCATION_ID = "SELECT DEVICE_ID FROM CMU.COURSE_LOCATION WHERE LONGITUDE = ? AND LATITUDE = ? AND ALTITUDE = ?";
 		
 		
 		try{
 			// TODO need to use this in production for SAP HANA
-			//simpleJdbcTemplate.update(SQL, deviceId, deviceTypeId, uri, timestamp, userDefinedFields);
+			simpleJdbcTemplate.update(SQL_INSERT_DEVICE, deviceId, deviceTypeId, uri, timestamp, userDefinedFields);
 			
 			// for test only
-			simpleJdbcTemplate.update(SQL_INSERT_DEVICE, deviceTypeId, uri, timestamp, userDefinedFields);
+//			simpleJdbcTemplate.update(SQL_INSERT_DEVICE, deviceTypeId, uri, timestamp, userDefinedFields);
 			
 			
 			// TODO need to use this in production for SAP HANA
-			//simpleJdbcTemplate.update(SQL_INSERT_LOCATION, locationId, longitude, latitude, altitude, representation);
+			simpleJdbcTemplate.update(SQL_INSERT_LOCATION, locationId, longitude, latitude, altitude, representation);
 			
 			// for test only
-			simpleJdbcTemplate.update(SQL_INSERT_LOCATION, longitude, latitude, altitude, representation);
+//			simpleJdbcTemplate.update(SQL_INSERT_LOCATION, longitude, latitude, altitude, representation);
 			
 			// no deviceId & locationId?
 			// can we use the parameter userDefinedFields for COURSE_DEVICE_LOCATION.USER_DEFINED_FIELDS
-			int deviceId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_ID, uri);
-			int locationId = simpleJdbcTemplate.queryForInt(SQL_SELECT_LOCATION_ID, longitude, latitude, altitude);
+//			int deviceId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_ID, uri);
+//			int locationId = simpleJdbcTemplate.queryForInt(SQL_SELECT_LOCATION_ID, longitude, latitude, altitude);
 			simpleJdbcTemplate.update(SQL_INSERT_DEVICE_LOCATION, deviceId, locationId, timestamp, userDefinedFields, "Y");
 			
 			
@@ -91,7 +91,7 @@ public class DeviceDaoImplementation implements DeviceDao{
 	@Override
 	public List<Device> getAllDevices() {
 		final String SQL = "SELECT * FROM CMU.COURSE_DEVICE";
-		final String SQL_SELECT_DEVICE_LOCATION = "SELECT * FROM CMU.COURSE_DEVICE_LOCATION WHERE DEVICE_ID = ? AND IS_ACTIVE = 'Y'";
+		final String SQL_SELECT_DEVICE_LOCATION = "SELECT LOCATION_ID FROM CMU.COURSE_DEVICE_LOCATION WHERE DEVICE_ID = ? AND IS_ACTIVE = 'Y'";
 		final String SQL_SELECT_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_DEVICE WHERE URI = ?";
 		final String SQL_SELECT_LOCATION = "SELECT * FROM CMU.COURSE_LOCATION WHERE LOCATION_ID = ?";
 		
@@ -116,7 +116,7 @@ public class DeviceDaoImplementation implements DeviceDao{
 	public Device getDevice(String uri) {
 		
 		final String SQL_SELECT_DEVICE = "SELECT * FROM CMU.COURSE_DEVICE WHERE URI = ?";
-		final String SQL_SELECT_DEVICE_LOCATION = "SELECT * FROM CMU.COURSE_DEVICE_LOCATION WHERE DEVICE_ID = ? AND IS_ACTIVE = 'Y'";
+		final String SQL_SELECT_DEVICE_LOCATION = "SELECT LOCATION_ID FROM CMU.COURSE_DEVICE_LOCATION WHERE DEVICE_ID = ? AND IS_ACTIVE = 'Y'";
 		final String SQL_SELECT_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_DEVICE WHERE URI = ?";
 		final String SQL_SELECT_LOCATION = "SELECT * FROM CMU.COURSE_LOCATION WHERE LOCATION_ID = ?";
 		

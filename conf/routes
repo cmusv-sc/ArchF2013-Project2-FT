@@ -9,9 +9,12 @@ GET     /                           controllers.Application.index()
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 #DEVICE
-GET     /get_devices          controllers.DeviceController.getDevice(format: String = "csv")
-GET     /get_devices/csv      controllers.DeviceController.getDevice(format: String = "csv")
-GET     /get_devices/json     controllers.DeviceController.getDevice(format: String = "json")
+GET     /get_devices          controllers.DeviceController.getAllDevices(format: String = "csv")
+GET     /get_devices/csv      controllers.DeviceController.getAllDevices(format: String = "csv")
+GET     /get_devices/json     controllers.DeviceController.getAllDevices(format: String = "json")
+GET     /get_device/:uri          controllers.DeviceController.getDevice(uri: String, format: String = "csv")
+GET     /get_device/:uri/csv      controllers.DeviceController.getDevice(uri: String, format: String = "csv")
+GET     /get_device/:uri/json     controllers.DeviceController.getDevice(uri: String,format: String = "json")
 POST    /device               controllers.DeviceController.add()
 POST    /device/              controllers.DeviceController.add()
 
