@@ -19,6 +19,10 @@ public class SensorCategory {
 		this.purpose = purpose;
 	}
 	
+	public String toCSVString() {
+		return "TODO";
+	}
+	
 	public String getCSVHeader() {
 		return "sensor_category_name,purpose\n";
 	}
