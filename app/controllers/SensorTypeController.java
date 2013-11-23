@@ -14,8 +14,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 public class SensorTypeController extends Controller {
-	private static SensorTypeDao sensorTypeDao = null;
-	private static ApplicationContext context = null;
+	private static ApplicationContext context;
+	private static SensorTypeDao sensorTypeDao;
 	
 	private static boolean checkDao(){
 		if (context == null) {
@@ -24,11 +24,8 @@ public class SensorTypeController extends Controller {
 		if (sensorTypeDao == null) {
 			sensorTypeDao = (SensorTypeDao) context.getBean("sensorTypeDaoImplementation");
 		}
-		
 		return true;
 	}
-	
-	
 	
 	public static Result addSensorType() {
 		JsonNode json = request().body().asJson();
@@ -40,8 +37,7 @@ public class SensorTypeController extends Controller {
 		}
 
 		// Parse JSON FIle
-		int sensorCategoryId = json.findPath("sensor_category_id").getIntValue();
-		String sensorTypeName = json.findPath("sensor_type").getTextValue();
+		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
 		String manufacturer = json.findPath("manufacturer").getTextValue();
 		String version = json.findPath("version").getTextValue();
 		Double maxValue = json.findPath("max_value").getDoubleValue();
@@ -49,9 +45,10 @@ public class SensorTypeController extends Controller {
 		String unit = json.findPath("unit").getTextValue();
 		String interpreter = json.findPath("interpreter").getTextValue();
 		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
+		String sensorCategoryName = json.findPath("sensor_category_name").getTextValue();
 		ArrayList<String> error = new ArrayList<String>();
 
-		boolean result = sensorTypeDao.addSensorType(sensorCategoryId, sensorTypeName, manufacturer, version, maxValue, minValue, unit, interpreter, userDefinedFields);
+		boolean result = sensorTypeDao.addSensorType(sensorTypeName, manufacturer, version, maxValue, minValue, unit, interpreter, userDefinedFields, sensorCategoryName);
 
 		if(!result){
 			error.add(sensorTypeName);
@@ -78,13 +75,15 @@ public class SensorTypeController extends Controller {
 		if(sensorType == null){
 			return notFound("No sensor type found for " + sensorTypeName);
 		}
+		
 		String ret = new String();
-		String sensorTypesStr = sensorType.getSensorTypeName();
-		if (format.equals("json")) {
-			ret = "{\"sensor_type\":\"" + sensorTypesStr + "\"}";
-		} else {
-			ret += "sensor_types\n" + sensorTypesStr;
-		}
+//		if (format.equals("json")) {
+//			ret = "[{\"sensor_type\":\"" + sensorType.toJSONString() + "\"}]";
+//		} else {
+//			ret += SensorType.getCSVHeader();
+//			ret += "\n";
+//			ret += sensorType.toCSVString();
+//		}
 		return ok(ret);
 	}
 	
@@ -99,24 +98,21 @@ public class SensorTypeController extends Controller {
 			return notFound("No sensor type found");
 		}
 		String ret = new String();
-		if (format.equals("json"))
-		{
-			String sensorTypesStr = "";
-			for (SensorType sensorType : sensorTypes) {
-				if (!sensorTypesStr.isEmpty())
-					sensorTypesStr += ',';
-				sensorTypesStr += sensorType.getSensorTypeName();
-			}
-			ret = "{\"sensor_type\":\"" + sensorTypesStr + "\"}";
-		} else {
-			for (SensorType sensorType : sensorTypes) {
-				if (!ret.isEmpty())
-					ret += '\n';
-				else
-					ret += "sensor_types\n";
-				ret += sensorType.getSensorTypeName();
-			}
-		}
+//		if(format.equals("json")){
+//			String sensorTypesStr = "";
+//			for (SensorType sensorType : sensorTypes) {
+//				if (!sensorTypesStr.isEmpty()) sensorTypesStr += ',';
+//				sensorTypesStr += sensorType.toJSONString();
+//			}
+//			ret = "[{\"sensor_type\":\"" + sensorTypesStr + "\"}]";
+//		} else {
+//			ret += SensorType.getCSVHeader();
+//			
+//			for (SensorType sensorType : sensorTypes) {
+//				ret += "\n";
+//				ret += sensorType.toCSVString();
+//			}
+//		}
 		return ok(ret);
 	}
 }
