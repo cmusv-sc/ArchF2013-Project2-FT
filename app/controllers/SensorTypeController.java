@@ -40,8 +40,8 @@ public class SensorTypeController extends Controller {
 		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
 		String manufacturer = json.findPath("manufacturer").getTextValue();
 		String version = json.findPath("version").getTextValue();
-		Double maxValue = json.findPath("max_value").getDoubleValue();
-		Double minValue = json.findPath("min_value").getDoubleValue();
+		Double maxValue = json.findPath("maximum_value").getDoubleValue();
+		Double minValue = json.findPath("minimum_value").getDoubleValue();
 		String unit = json.findPath("unit").getTextValue();
 		String interpreter = json.findPath("interpreter").getTextValue();
 		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
@@ -77,13 +77,12 @@ public class SensorTypeController extends Controller {
 		}
 		
 		String ret = new String();
-//		if (format.equals("json")) {
-//			ret = "[{\"sensor_type\":\"" + sensorType.toJSONString() + "\"}]";
-//		} else {
-//			ret += SensorType.getCSVHeader();
-//			ret += "\n";
-//			ret += sensorType.toCSVString();
-//		}
+		if (format.equals("json")) {
+			ret = "[{\"sensor_type\":\"" + sensorType.toJSONString() + "\"}]";
+		} else {
+			ret += SensorType.getCSVHeader();
+			ret += sensorType.toCSVString();
+		}
 		return ok(ret);
 	}
 	
@@ -98,21 +97,21 @@ public class SensorTypeController extends Controller {
 			return notFound("No sensor type found");
 		}
 		String ret = new String();
-//		if(format.equals("json")){
-//			String sensorTypesStr = "";
-//			for (SensorType sensorType : sensorTypes) {
-//				if (!sensorTypesStr.isEmpty()) sensorTypesStr += ',';
-//				sensorTypesStr += sensorType.toJSONString();
-//			}
-//			ret = "[{\"sensor_type\":\"" + sensorTypesStr + "\"}]";
-//		} else {
-//			ret += SensorType.getCSVHeader();
-//			
-//			for (SensorType sensorType : sensorTypes) {
-//				ret += "\n";
-//				ret += sensorType.toCSVString();
-//			}
-//		}
+		if(format.equals("json")){
+			String sensorTypesStr = "";
+			for (SensorType sensorType : sensorTypes) {
+				if (!sensorTypesStr.isEmpty()) sensorTypesStr += ',';
+				sensorTypesStr += sensorType.toJSONString();
+			}
+			ret = "[{\"sensor_type\":\"" + sensorTypesStr + "\"}]";
+		} else {
+			ret += SensorType.getCSVHeader();
+			
+			for (SensorType sensorType : sensorTypes) {
+				ret += "\n";
+				ret += sensorType.toCSVString();
+			}
+		}
 		return ok(ret);
 	}
 }

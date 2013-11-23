@@ -1,9 +1,7 @@
 package models.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import models.SensorCategory;
 import models.SensorType;
 
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
@@ -26,12 +24,23 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 			return false;
 		}
 		
+//		Find SensorCategoryId by SensorCategoryName
+		int sensorCategoryId = -1;
+		final String SQL_FIND_CATEGORY_ID =
+				"SELECT SENSOR_CATEGORY_ID "
+				+ "FROM CMU.COURSE_SENSOR_CATEGORY "
+				+ "WHERE SENSOR_CATEGORY_NAME = ?";
+		try{
+			sensorCategoryId = simpleJdbcTemplate.queryForInt(SQL_FIND_CATEGORY_ID, sensorCategoryName);
+		}catch(Exception e){
+			return false;
+		}
+		
 //		TODO: Need to use this in production for SAP HANA
 		final String SQL_SEQUENCE = "SELECT CMU.COURSE_SENSOR_TYPE_ID_SEQ.NEXTVAL FROM DUMMY";
 		int sensorTypeId = simpleJdbcTemplate.queryForInt(SQL_SEQUENCE);
 		
 //		TODO: Need to use this in production for SAP HANA
-		int temporarySensorCategoryId = -1;
 		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_TYPE (SENSOR_TYPE_ID, SENSOR_TYPE_NAME, MANUFACTURER, VERSION, MAX_VALUE, MIN_VALUE, UNIT, INTERPRETER, USER_DEFINED_FIELDS, SENSOR_CATEGORY_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";		
 //		Test Only
 //		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_TYPE (SENSOR_TYPE_ID, SENSOR_TYPE_NAME, MANUFACTURER, VERSION, MAX_VALUE, MIN_VALUE, UNIT, INTERPRETER, USER_DEFINED_FIELDS, SENSOR_CATEGORY_ID) VALUES (NEXT VALUE FOR CMU.COURSE_SENSOR_TYPE_ID_SEQ, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -40,7 +49,7 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 //			TODO: Need to use this in production for SAP HANA
 			simpleJdbcTemplate.update(SQL, sensorTypeId, sensorTypeName, 
 					manufacturer, version, maxValue, minValue, unit, 
-					interpreter, userDefinedFields, temporarySensorCategoryId);
+					interpreter, userDefinedFields, sensorCategoryId);
 
 //			Test Only
 //			simpleJdbcTemplate.update(SQL, sensorTypeName, 
@@ -51,21 +60,12 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 			return false;
 		}
 		
-//		TODO: Set the SensorCategoryId by SensorCategoryName
-		int sensorCategoryId = 0;
-		final String SQL_FIND_CATEGORY_ID =
-				"SELECT SENSOR_CATEGORY_ID"
-				+ "FROM CMU.COURSE_SENSOR_CATEGORY "
-				+ "WHERE SENSOR_CATEGORY_NAME = ?";
-		final String SQL_UPDATE_CATEGORY_ID =
-				"UPDATE CMU.COURSE_SENSOR_TYPE "
-						+ "SET SENSOR_CATEGORY_ID = ? "
-						+ "WHERE SENSOR_TYPE_NAME = ?";
-		List<Object[]> params = new ArrayList<Object[]>();
-		params.add(new Object[] {sensorCategoryId});
+//		Set SensorCategoryId
+		final String SQL_UPDATE_CATEGORY_ID = "UPDATE CMU.COURSE_SENSOR_TYPE "
+				+ "SET SENSOR_CATEGORY_ID = ? "
+				+ "WHERE SENSOR_TYPE_NAME = ?";
 		try{
-			sensorCategoryId = simpleJdbcTemplate.queryForInt(SQL_FIND_CATEGORY_ID, sensorCategoryName);
-			simpleJdbcTemplate.batchUpdate(SQL_UPDATE_CATEGORY_ID, params);
+			simpleJdbcTemplate.update(SQL_UPDATE_CATEGORY_ID, sensorCategoryId, sensorTypeName);
 		}catch(Exception e){
 			return false;
 		}
@@ -86,7 +86,26 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 		List<SensorType> sensorType = simpleJdbcTemplate.query(SQL, 
 				ParameterizedBeanPropertyRowMapper.newInstance(SensorType.class));
 
-//		TODO: Get SensorCategoryName by its ID
+//		TODO: Set SensorCategoryName by its ID
+		for(SensorType type : sensorType){
+			String sensorCategoryName = new String();
+			final String SQL_GET_CATEGORY_ID =
+					"SELECT SENSOR_CATEGORY_ID "
+							+ "FROM CMU.COURSE_SENSOR_TYPE "
+							+ "WHERE SENSOR_TYPE_NAME = ?";
+			final String SQL_FIND_CATEGORY_NAME =
+					"SELECT SENSOR_CATEGORY_NAME "
+							+ "FROM CMU.COURSE_SENSOR_CATEGORY "
+							+ "WHERE SENSOR_CATEGORY_ID = ?";
+			int sensorCategoryId = -1;
+			try{
+				sensorCategoryId = simpleJdbcTemplate.queryForInt(SQL_GET_CATEGORY_ID, type.getSensorTypeName());
+				sensorCategoryName = simpleJdbcTemplate.queryForObject(SQL_FIND_CATEGORY_NAME, String.class, sensorCategoryId);
+				type.setSensorCategoryName(sensorCategoryName);
+			}catch(Exception e){
+				return null;
+			}
+		}
 		
 		return sensorType;
 	}
