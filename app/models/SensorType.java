@@ -3,7 +3,7 @@ package models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SensorType {
+public class SensorType extends SensorCategory{
 	private String sensorTypeName;
 	private String manufacturer;
 	private String version;
@@ -11,8 +11,7 @@ public class SensorType {
 	private double minValue;
 	private String unit;
 	private String interpreter;
-	private String userDefinedFields;
-	private String sensorCategoryName;
+	private String sensorTypeUserDefinedFields;
 	
 	public String getManufacturer() {
 		return manufacturer;
@@ -50,24 +49,17 @@ public class SensorType {
 	public void setInterpreter(String interpreter) {
 		this.interpreter = interpreter;
 	}
-	public String getUserDefinedFields() {
-		return userDefinedFields;
+	public String getSensorTypeUserDefinedFields() {
+		return sensorTypeUserDefinedFields;
 	}
-	public void setUserDefinedFields(String userDefinedFields) {
-		this.userDefinedFields = userDefinedFields;
+	public void setSensorTypeUserDefinedFields(String userDefinedFields) {
+		this.sensorTypeUserDefinedFields = userDefinedFields;
 	}
 	public String getSensorTypeName() {
 		return sensorTypeName;
 	}
 	public void setSensorTypeName(String sensorTypeName) {
 		this.sensorTypeName = sensorTypeName;
-	}
-	
-	public String getSensorCategoryName() {
-		return sensorCategoryName;
-	}
-	public void setSensorCategoryName(String categoryName) {
-		this.sensorCategoryName = categoryName;
 	}
 	
 	public String toCSVString() {
@@ -86,13 +78,11 @@ public class SensorType {
 		csvString += ",";
 		csvString += interpreter;
 		csvString += ",";
-		csvString += userDefinedFields;
-		csvString += ",";
-		csvString += sensorCategoryName;
+		csvString += sensorTypeUserDefinedFields;
 		return csvString;
 	}
 	
-	public static String getCSVHeader() {
+	public String getCSVHeader() {
 		return "sensor_type_name,manufacturer,version,maximum_value,minimum_value,unit,interpreter,user_defined_fields, sensor_category_name";
 	}
 	
@@ -107,8 +97,7 @@ public class SensorType {
 			obj.put("minimum_value", minValue);
 			obj.put("unit", unit);
 			obj.put("interpreter", interpreter);
-			obj.put("user_defined_fields", userDefinedFields);
-			obj.put("sensor_category_name", sensorCategoryName);
+			obj.put("user_defined_fields", sensorTypeUserDefinedFields);
 			jsonString = obj.toString();
 		} catch (JSONException e) {
 			e.printStackTrace();

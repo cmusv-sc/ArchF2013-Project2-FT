@@ -80,7 +80,7 @@ public class SensorTypeController extends Controller {
 		if (format.equals("json")) {
 			ret = "[{\"sensor_type\":\"" + sensorType.toJSONString() + "\"}]";
 		} else {
-			ret += SensorType.getCSVHeader();
+			ret += sensorType.getCSVHeader();
 			ret += sensorType.toCSVString();
 		}
 		return ok(ret);
@@ -105,7 +105,7 @@ public class SensorTypeController extends Controller {
 			}
 			ret = "[{\"sensor_type\":\"" + sensorTypesStr + "\"}]";
 		} else {
-			ret += SensorType.getCSVHeader();
+//			ret += sensorType.getCSVHeader();
 			
 			for (SensorType sensorType : sensorTypes) {
 				ret += "\n";

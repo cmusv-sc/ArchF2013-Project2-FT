@@ -8,6 +8,13 @@ GET     /                           controllers.Application.index()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
+#DeviceType
+POST	/add_device_type 			controllers.DeviceTypeController.addDeviceType()
+GET		/get_device_type/:device_type_name/json 			controllers.DeviceTypeController.getDeviceType(device_type_name: String, format: String="json")
+GET		/get_device_type/:device_type_name/csv 			controllers.DeviceTypeController.getDeviceType(device_type_name: String, format: String="csv")
+GET		/get_all_device_types/json 			controllers.DeviceTypeController.getAllDeviceTypes(format: String="json")
+GET		/get_all_device_types/csv 			controllers.DeviceTypeController.getAllDeviceTypes(format: String="csv")
+
 #DEVICE
 GET     /get_devices          controllers.DeviceController.getAllDevices(format: String = "csv")
 GET     /get_devices/csv      controllers.DeviceController.getAllDevices(format: String = "csv")
@@ -46,9 +53,13 @@ POST	/sensors_save/				  		controllers.SensorReadingController.add(publish:Boole
 POST	/sensors_save				  		controllers.SensorReadingController.add(publish:Boolean = false)
 
 #Metadata
-POST	/add_sensor				  controllers.MetadataController.addSensor()
-POST	/add_device_type 			controllers.DeviceTypeController.addDeviceType()
-GET		/get_device_type/:device_type_name/json 			controllers.DeviceTypeController.getDeviceType(device_type_name: String, format: String="json")
+#POST	/add_sensor				  controllers.MetadataController.addSensor()
+POST	/add_sensor				  controllers.SensorController.addSensor()
+GET 	/get_sensor/:sensor_name/json	controllers.SensorController.getSensor(sensor_name: String, format: String="json")
+GET 	/get_sensor/:sensor_name/csv	controllers.SensorController.getSensor(sensor_name: String, format: String="csv")
+GET 	/get_all_sensors/json	controllers.SensorController.getAllSensors(format: String="json")
+GET 	/get_all_sensors/csv	controllers.SensorController.getAllSensors(format: String="csv")
+
 POST	/add_device 			controllers.MetadataController.addDevice()
 POST	/add_sensor_category		controllers.SensorCategoryController.addSensorCategory()
 GET		/get_sensor_category/:sensor_category_name/json		controllers.SensorCategoryController.getSensorCategory(sensor_category_name: String, format: String="json")

@@ -29,7 +29,7 @@ public class SensorTypeDaoTest extends AbstractTest{
 		assertEquals(1.0, st.getMinValue(), 0.0);
 		assertEquals("Fahrenheit", st.getUnit());
 		assertEquals("testInterpreter", st.getInterpreter());
-		assertEquals("testUserDefinedFields", st.getUserDefinedFields());
+//		assertEquals("testUserDefinedFields", st.getSensorUserDefinedFields());
 		assertEquals("testSensorCategory", st.getSensorCategoryName());
 		
 //		Negative test for adding the same sensor_category_name
@@ -51,7 +51,7 @@ public class SensorTypeDaoTest extends AbstractTest{
 		assertEquals(1.0, st.getMinValue(), 0.0);
 		assertEquals("Fahrenheit", st.getUnit());
 		assertEquals("testInterpreter", st.getInterpreter());
-		assertEquals("testUserDefinedFields", st.getUserDefinedFields());
+//		assertEquals("testUserDefinedFields", st.getSensorUserDefinedFields());
 		assertEquals("testSensorCategory", st.getSensorCategoryName());
 	}
 	
