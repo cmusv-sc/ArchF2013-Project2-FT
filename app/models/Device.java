@@ -45,7 +45,7 @@ public class Device extends DeviceType {
 		try {
 			JSONObject obj=new JSONObject();
 			obj.put("device_agent", uri);
-			obj.put("device_location", location);
+			obj.put("device_location", deviceUserDefinedFields);
 			jsonString = obj.toString();
 		} catch (JSONException e) {
 			e.printStackTrace();

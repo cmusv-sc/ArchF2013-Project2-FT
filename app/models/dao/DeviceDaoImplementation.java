@@ -33,7 +33,7 @@ public class DeviceDaoImplementation implements DeviceDao{
 		Timestamp timestamp = new Timestamp(time);
 		
 		// TODO need to use this in production for SAP HANA
-		final String SQL_INSERT_DEVICE = "INSERT INTO CMU.COURSE_DEVICE (DEVICE_ID, DEVICE_TYPE_ID, URI, REGISTRATION_TIMESTAMP, USER_DEFINED_FIELDS) VALUES (?, ?, ?, ?, ?)";
+		final String SQL_INSERT_DEVICE = "INSERT INTO CMU.COURSE_DEVICE (DEVICE_ID, DEVICE_TYPE_ID, URI, REGISTRATION_TIMESTAMP, DEVICE_USER_DEFINED_FIELDS) VALUES (?, ?, ?, ?, ?)";
 		
 		// for test only
 //		final String SQL_INSERT_DEVICE = "INSERT INTO CMU.COURSE_DEVICE (DEVICE_ID, DEVICE_TYPE_ID, URI, REGISTRATION_TIMESTAMP, USER_DEFINED_FIELDS) VALUES (next value for CMU.COURSE_DEVICE_ID_SEQ, ?, ?, ?, ?)";
@@ -82,6 +82,7 @@ public class DeviceDaoImplementation implements DeviceDao{
 			
 			
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			return false;
 		}
 		return true;
