@@ -22,7 +22,7 @@ public class DeviceDaoTest extends AbstractTest{
 		deviceDaoImplementation.addDevice("device_type1", "testUri", "testUserDefinedFields", 10, 10, 10, "testRepresentation");
 		Device st = deviceDaoImplementation.getDevice("testUri");
 		assertEquals("testUri", st.getUri());
-		assertEquals("testUserDefinedFields", st.getUserDefinedFields());
+		assertEquals("testUserDefinedFields", st.getDeviceUserDefinedFields());
 //		assertEquals("testRepresentation", st.getRepresentation());
 		assertEquals(2, deviceDaoImplementation.getAllDevices().size());
 		

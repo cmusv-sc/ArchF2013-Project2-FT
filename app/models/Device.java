@@ -3,9 +3,9 @@ package models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Device {
+public class Device extends DeviceType {
 	private String uri;
-	private String userDefinedFields;
+	private String deviceUserDefinedFields;
 	private Location location;
 	
 	public Location getLocation() {
@@ -24,12 +24,12 @@ public class Device {
 		this.uri = uri;
 	}
 
-	public String getUserDefinedFields() {
-		return userDefinedFields;
+	public String getDeviceUserDefinedFields() {
+		return deviceUserDefinedFields;
 	}
 
-	public void setUserDefinedFields(String userDefinedFields) {
-		this.userDefinedFields = userDefinedFields;
+	public void setDeviceUserDefinedFields(String deviceUserDefinedFields) {
+		this.deviceUserDefinedFields = deviceUserDefinedFields;
 	}
 		
 	public String getCSVHeader() {
@@ -37,7 +37,7 @@ public class Device {
 	}
 	
 	public String toCSVString() {
-		return uri + "," + userDefinedFields;
+		return uri + "," + deviceUserDefinedFields;
 	}
 	
 	public String toJSONString() {
@@ -45,7 +45,7 @@ public class Device {
 		try {
 			JSONObject obj=new JSONObject();
 			obj.put("device_agent", uri);
-			obj.put("device_location", userDefinedFields);
+			obj.put("device_location", location);
 			jsonString = obj.toString();
 		} catch (JSONException e) {
 			e.printStackTrace();
