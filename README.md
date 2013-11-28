@@ -16,7 +16,7 @@ cloud computing, big data analytics, software as a service, and social services.
 
 Service URL:
 ------------
-[http://einstein.sv.cmu.edu][1]
+[TBD][1]
 
 
 Overview:
