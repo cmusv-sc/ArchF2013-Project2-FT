@@ -43,8 +43,6 @@ Currently we are providing APIs in 3 categores:
    - [Edit a sensor](#13)
    - [Edit a device type](#14)
    - [Edit a device](#15)
-   - 
-   - The following APIs will, at the current time, reserved for internal usage only.
    - [Delete a sensor type](#16)
    - [Delete a sensor](#17)
    - [Delete a device type](#18)
