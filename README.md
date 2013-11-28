@@ -1,5 +1,5 @@
 <b>Released under a Dual Licensing / GPL 3.</b>
-Sensor Service Platform APIs Version 1.0
+Sensor Service Platform APIs Version 1.2
 ========================================
 Advisors: Jia Zhang, Bob Iannucci, Martin Griss, Steven Rosenberg, Anthony Rowe<br/>
 Current contributors: Bo Liu, Lyman Cao, Chris Lee<br/>
