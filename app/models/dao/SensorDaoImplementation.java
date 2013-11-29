@@ -41,10 +41,10 @@ public class SensorDaoImplementation implements SensorDao{
 		int deviceId = simpleJdbcTemplate.queryForInt(GETDEVICEID, deviceUri);
 		
 		final String SQL = "UPDATE CMU.COURSE_SENSOR " 
-				+ "SET SENSOR_TYPE_ID = ? DEVICE_ID = ? USER_DEFINED_FIELDS = ? " 
-				+ "WHERE SENSOR_TYPE_NAME = ?";	
+				+ "SET SENSOR_TYPE_ID = ?, DEVICE_ID = ?, SENSOR_USER_DEFINED_FIELDS = ? " 
+				+ "WHERE SENSOR_NAME = ?";	
 		try{
-			simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorUserDefinedFields);
+			simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorUserDefinedFields, sensorName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
