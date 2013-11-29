@@ -50,6 +50,34 @@ public class SensorCategoryController extends Controller {
 		}
 	}
 	
+	public static Result updateSensorCategory() {
+		JsonNode json = request().body().asJson();
+		if(json == null) {
+			return badRequest("Expecting Json data");
+		} 
+		checkDao();
+
+//		Parse JSON FIle 
+		String sensorCategoryName = json.findPath("sensor_category_name").getTextValue();
+		String purpose = json.findPath("purpose").getTextValue();
+		
+//		Return error message if the SensorCategory does not exist 
+		if(sensorCategoryDao.getSensorCategory(sensorCategoryName) == null){
+			return ok("sensor category not updated: " + sensorCategoryName); 
+		}
+		
+		boolean result = sensorCategoryDao.updateSensorCategory(sensorCategoryName, purpose);
+
+		if(result){
+			System.out.println("sensor category updated");
+			return ok("sensor category updated");
+		}
+		else{
+			System.out.println("sensor category not updated: " + sensorCategoryName);
+			return ok("sensor category not updated: " + sensorCategoryName);
+		}
+	}
+	
 	public static Result getSensorCategory(String SensorCategoryName, String format) {
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();

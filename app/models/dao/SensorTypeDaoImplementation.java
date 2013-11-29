@@ -72,7 +72,41 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 		
 		return true;
 	}
+	
 
+	@Override
+	public boolean updateSensorType(String sensorTypeName,
+			String manufacturer, String version, double maxValue,
+			double minValue, String unit, String interpreter,
+			String userDefinedFields, String sensorCategoryName) {
+//		Find SensorCategoryId by SensorCategoryName, return false if cannot find it
+		int sensorCategoryId = -1;
+		final String SQL_FIND_CATEGORY_ID =
+				"SELECT SENSOR_CATEGORY_ID "
+				+ "FROM CMU.COURSE_SENSOR_CATEGORY "
+				+ "WHERE SENSOR_CATEGORY_NAME = ?";
+		try{
+			sensorCategoryId = simpleJdbcTemplate.queryForInt(SQL_FIND_CATEGORY_ID, sensorCategoryName);
+		}catch(Exception e){
+			return false;
+		}
+		if(sensorCategoryId == -1){
+			return false;
+		}
+		
+		final String SQL = "UPDATE CMU.COURSE_SENSOR_TYPE " 
+				+ "SET MANUFACTURER = ? VERSION = ? MAX_VALUE = ? MIN_VALUE = ? UNIT = ? INTERPRETER = ? USER_DEFINED_FIELDS = ? SENSOR_CATEGORY_ID = ? " 
+				+ "WHERE SENSOR_TYPE_NAME = ?";		
+		try{
+			simpleJdbcTemplate.update(SQL, manufacturer, version, maxValue, minValue, unit, 
+					interpreter, userDefinedFields, sensorCategoryId, sensorTypeName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	@Override
 	public SensorType getSensorType(String sensorTypeName) {
 		List<SensorType> types = getAllSensorTypes();

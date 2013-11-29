@@ -69,6 +69,41 @@ public class SensorController extends Controller {
 		}
 	}
 	
+	public static Result updateSensor() {
+		JsonNode json = request().body().asJson();
+		if(json == null) {
+			return badRequest("Expecting Json data");
+		} 
+		checkDao();
+
+		// Parse JSON FIle 
+		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
+		String deviceUri = json.findPath("device_uri").getTextValue();
+		String sensorName = json.findPath("sensor_name").getTextValue();
+		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
+		ArrayList<String> error = new ArrayList<String>();
+		
+		if(sensorDao.getSensor(sensorName) == null){
+			System.out.println("sensor not updated: " + error.toString());
+			return ok("sensor not updated: " + error.toString());
+		}
+		
+		boolean result = sensorDao.updateSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields);
+
+		if(!result){
+			error.add(sensorTypeName);
+		}
+		
+		if(error.size() == 0){
+			System.out.println("sensor updated");
+			return ok("sensor updated");
+		}
+		else{
+			System.out.println("sensor not updated: " + error.toString());
+			return ok("sensor not updated: " + error.toString());
+		}
+	}
+	
 	public static Result getSensor(String sensorName, String format) {
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();

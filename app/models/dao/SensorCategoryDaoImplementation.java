@@ -2,11 +2,10 @@ package models.dao;
 
 import java.util.List;
 
+import models.SensorCategory;
+
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-
-import models.SensorCategory;
-import models.SensorReading;
 
 public class SensorCategoryDaoImplementation implements SensorCategoryDao{
 	private SimpleJdbcTemplate simpleJdbcTemplate;
@@ -27,6 +26,19 @@ public class SensorCategoryDaoImplementation implements SensorCategoryDao{
 			//simpleJdbcTemplate.update(SQL, sensorCategoryId, sensorCategoryName, purpose);
 			
 			// for test only
+			simpleJdbcTemplate.update(SQL, sensorCategoryName, purpose);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean updateSensorCategory(String sensorCategoryName, String purpose) {
+		final String SQL = "UPDATE CMU.COURSE_SENSOR_CATEGORY " 
+				+ "WHERE SENSOR_CATEGORY_NAME = ? "
+				+ "SET PURPOSE = ?";
+		try{
 			simpleJdbcTemplate.update(SQL, sensorCategoryName, purpose);
 		} catch (Exception e) {
 			return false;
