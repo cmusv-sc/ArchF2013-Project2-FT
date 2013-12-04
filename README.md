@@ -35,14 +35,17 @@ Currently we are providing APIs in 3 categores:
    - [Get latest sensor readings for a sensor type in all registered devices](#7)
     
 **Category 3: Manage metadata---under construction**<br/>
+   - [Add a sensor category](#22)
    - [Add a sensor type](#8)
    - [Add a sensor](#9)
    - [Add a device type](#10)
    - [Add a device](#11)
+   - [Edit a sensor category](#23)
    - [Edit a sensor type](#12)
    - [Edit a sensor](#13)
    - [Edit a device type](#14)
    - [Edit a device](#15)
+   - [Delete a sensor category](#24)
    - [Delete a sensor type](#16)
    - [Delete a sensor](#17)
    - [Delete a device type](#18)
@@ -206,7 +209,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           1. Prepare input sensor type metadata in a json file:
               - "sensor_type.json" file contains: {"sensor_type_name": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximum_value": 100, "minimum_value": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "user_defined_fields": "Testing only", "sensor_category_name": "Environment"}
           2. curl -H "Content-Type: application/json" -d @sensor_type.json "http://einstein.sv.cmu.edu/add_sensor_type"
-      - **Result**: "sensor type saved" if the sensor type metadata has been successfully added to the database.
+      - **Result**: "sensor type saved" if the sensor type metadata has been successfully added to the database
 
 9. <a name="9"></a>**ADD SENSOR**
     - **Purpose**: Add a new sensor to sensor data service platform.
@@ -321,7 +324,37 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           1. Prepare input sensor type metadata in a json file:
               - "sensor_type.json" file contains: {"sensor_type_name": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximum_value": 100, "minimum_value": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "user_defined_fields": "Testing only", "sensor_category_name": "Environment"}
           2. curl -H "Content-Type: application/json" -d @sensor_type.json "http://einstein.sv.cmu.edu/update_sensor_type"
-      - **Result**: "sensor type updated" if the sensor type metadata has been successfully updated to the database.
+      - **Result**: "sensor type updated" if the sensor type metadata has been successfully updated to the database
+
+15. <a name="22"></a>**ADD SENSOR CATEGORY**
+    - **Purpose**: Add a new sensor category to sensor data service platform.
+    - **Method**: POST
+    - **URL**: http://einstein.sv.cmu.edu/add_sensor_category
+    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
+        - **sensor_category_name** (string): Name of the sensor category
+        - **purpose** (string): Purpose of the sensor category
+    - **Sensor type metadata format**: {"sensor_category_name": <"sensor_category">, "purpose": <"purpose">}    
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. Prepare input sensor type metadata in a json file:
+              - "sensor_category.json" file contains: {"sensor_category_name": "Category 1", "purpose": "Test only"}
+          2. curl -H "Content-Type: application/json" -d @sensor_category.json "http://einstein.sv.cmu.edu/add_sensor_category"
+      - **Result**: "sensor category saved" if the sensor category metadata has been successfully added to the database
+
+16. <a name="23"></a>**EDIT SENSOR CATEGORY**
+    - **Purpose**: Edit a sensor category to sensor data service platform.
+    - **Method**: POST
+    - **URL**: http://einstein.sv.cmu.edu/update_sensor_category
+    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
+        - **sensor_category_name** (string): Name of the sensor category, which cannot be changed
+        - **purpose** (string): Purpose of the sensor category
+    - **Sensor type metadata format**: {"sensor_category_name": <"sensor_category">, "purpose": <"purpose">}    
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. Prepare input sensor type metadata in a json file:
+              - "sensor_category.json" file contains: {"sensor_category_name": "Category 1", "purpose": "Test only"}
+          2. curl -H "Content-Type: application/json" -d @sensor_category.json "http://einstein.sv.cmu.edu/update_sensor_category"
+      - **Result**: "sensor category updated" if the sensor category metadata has been successfully updated to the database
 
 [1]: http://einstein.sv.cmu.edu/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 
