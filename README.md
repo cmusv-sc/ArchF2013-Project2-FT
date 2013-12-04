@@ -216,17 +216,17 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Method**: POST
     - **URL**: http://einstein.sv.cmu.edu/add_sensor
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **print_name** (string): Name of the sensor.
-        - **sensor_type** (string): Its sensor type.
-        - **device_id** (string): The device ID it belongs to.
-        - **user_defined_fields** (string): User defined fields. 
-    - **Sensor metadata format**: {"print_name": <"print_name">, "sensor_type": <"sensor_type">, "device_id": <"device_id">, "user_defined_fields": <"user_defined_fields">}    
+        - **sensor_name** (string): Name of the sensor
+        - **sensor_type_name** (string): Name of its sensor type
+        - **device_uri** (string): The device URI it belongs to
+        - **user_defined_fields** (string): User defined fields.
+    - **Sensor metadata format**: {"sensor_name": <"sensor_name">, "sensor_type_name": <"sensor_type_name">, "device_uri": <"device_uri">, "user_defined_fields": <"user_defined_fields">}    
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor metadata in a json file:
-              - "sensor.json" file contains: {"print_name": "test_sensor", "sensor_type": "Humidity", "device_id": "test_id", "user_defined_fields": "For test"}
+              - "sensor.json" file contains: {"sensor_name": "TestSensor", "sensor_type_name": "Humidity", "device_uri": "www.testsensor.com", "user_defined_fields": "Test only"}
           2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu/add_sensor"
-      - **Result**: "sensor saved" if the sensor metadata have been successfully added to the database.
+      - **Result**: "sensor saved" if the sensor metadata have been successfully added to the database
 
 10. <a name="10"></a>**ADD DEVICE TYPE**
     - **Purpose**: Add a new device type to sensor data service platform.
@@ -355,6 +355,23 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
               - "sensor_category.json" file contains: {"sensor_category_name": "Category 1", "purpose": "Test only"}
           2. curl -H "Content-Type: application/json" -d @sensor_category.json "http://einstein.sv.cmu.edu/update_sensor_category"
       - **Result**: "sensor category updated" if the sensor category metadata has been successfully updated to the database
+
+17. <a name="13"></a>**EDIT SENSOR**
+    - **Purpose**: Edit a sensor to sensor data service platform.
+    - **Method**: POST
+    - **URL**: http://einstein.sv.cmu.edu/update_sensor
+    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
+        - **sensor_name** (string): Name of the sensor, which cannot be changed
+        - **sensor_type_name** (string): Name of its sensor type
+        - **device_uri** (string): The device URI it belongs to
+        - **user_defined_fields** (string): User defined fields.
+    - **Sensor metadata format**: {"sensor_name": <"sensor_name">, "sensor_type_name": <"sensor_type_name">, "device_uri": <"device_uri">, "user_defined_fields": <"user_defined_fields">}    
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. Prepare input sensor metadata in a json file:
+              - "sensor.json" file contains: {"sensor_name": "TestSensor", "sensor_type_name": "Humidity", "device_uri": "www.testsensor.com", "user_defined_fields": "Test only"}
+          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu/update_sensor"
+      - **Result**: "sensor updated" if the sensor metadata have been successfully updated to the database
 
 [1]: http://einstein.sv.cmu.edu/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 
