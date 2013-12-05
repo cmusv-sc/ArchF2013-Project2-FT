@@ -38,11 +38,11 @@ Currently we are providing APIs in 3 categores:
    - [Add a sensor](#9)
    - [Add a device type](#10)
    - [Add a device](#11)
-   - [Edit a sensor category](#23)
-   - [Edit a sensor type](#12)
-   - [Edit a sensor](#13)
-   - [Edit a device type](#14)
-   - [Edit a device](#15)
+   - [Update a sensor category](#23)
+   - [Update a sensor type](#12)
+   - [Update a sensor](#13)
+   - [Update a device type](#14)
+   - [Update a device](#15)
    - [Delete a sensor category](#24)
    - [Delete a sensor type](#16)
    - [Delete a sensor](#17)
@@ -300,8 +300,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           ... <br/>
           {"time":05-05-2013T12:00:00,"sensor_type":"temp","value":518,"device_id":"10170102"}]
 
-14. <a name="12"></a>**EDIT SENSOR TYPE**
-    - **Purpose**: Edit a sensor type to sensor data service platform.
+14. <a name="12"></a>**UPDATE SENSOR TYPE**
+    - **Purpose**: Update a sensor type to sensor data service platform.
     - **Method**: POST
     - **URL**: http://einstein.sv.cmu.edu/updateSensorType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
@@ -329,8 +329,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/addSensorCategory"
       - **Result**: HTTP 201 if the sensor category metadata has been successfully added to the database
 
-16. <a name="23"></a>**EDIT SENSOR CATEGORY**
-    - **Purpose**: Edit a sensor category to sensor data service platform.
+16. <a name="23"></a>**UPDATE SENSOR CATEGORY**
+    - **Purpose**: Update a sensor category to sensor data service platform.
     - **Method**: POST
     - **URL**: http://einstein.sv.cmu.edu/updateSensorCategory
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
@@ -343,8 +343,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/updateSensorCategory"
       - **Result**: HTTP 200 if the sensor category metadata has been successfully updated to the database
 
-17. <a name="13"></a>**EDIT SENSOR**
-    - **Purpose**: Edit a sensor to sensor data service platform.
+17. <a name="13"></a>**UPDATE SENSOR**
+    - **Purpose**: Update a sensor to sensor data service platform.
     - **Method**: POST
     - **URL**: http://einstein.sv.cmu.edu/update_sensor
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
