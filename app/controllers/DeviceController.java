@@ -75,9 +75,6 @@ public class DeviceController extends Controller {
 		
 		Device wrapper = gson.fromJson(request().body().asJson().toString(), Device.class);
 		
-		ArrayList<String> error = new ArrayList<String>();
-
-		
 		Device device = deviceDao.updateDevice(deviceUri, wrapper);
 		if(device == null){
 			return notFound("no devices found");
@@ -86,8 +83,9 @@ public class DeviceController extends Controller {
 		if (format.equals("json"))
 		{			
 			ret = new Gson().toJson(device);		
-		} else {			
-				ret = toCsv(Arrays.asList(device));
+		} else {
+			//TODO
+//				ret = toCsv(Arrays.asList(device));
 		}
 		return ok(ret);
 	}

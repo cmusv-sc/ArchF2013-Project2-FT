@@ -7,11 +7,11 @@ import models.SensorReading;
 
 public interface SensorReadingDao {
 	
-	public SensorReading searchReading(String deviceUri, String sensorName, Long timeStamp);
+	public SensorReading searchReading(String sensorName, Long timeStamp);
 	
-	public boolean addReading(String deviceUri, String sensorName, Boolean isIndoor, long timeStamp, String value, Double longitude, Double latitude, Double altitude, String locationInterpreter);
+	public boolean addReading( String sensorName, Boolean isIndoor, long timeStamp, String value, Double longitude, Double latitude, Double altitude, String locationInterpreter);
 
-	public List<SensorReading> searchReading(String deviceUri, String sensorName, Long startTime, Long endTime);
+	public List<SensorReading> searchReading(String sensorName, Long startTime, Long endTime);
 	
 	public List<SensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType);
 

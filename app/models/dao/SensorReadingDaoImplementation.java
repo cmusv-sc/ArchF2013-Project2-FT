@@ -17,10 +17,10 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 	}
 
 	@Override
-	public SensorReading searchReading(String deviceUri, String sensorName, Long timeStamp) {
-		final String SQL = "SELECT * FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_DEVICE D, CMU.COURSE_SENSOR S WHERE DSR.SENSOR_ID=S.SENSOR_ID AND S.DEVICE_ID = D.DEVICE_ID AND D.DEVICE_URI = ? AND S.SENSOR_NAME=? AND DSR.timeStamp<=? ORDER BY timeStamp DESC LIMIT 1";
+	public SensorReading searchReading(String sensorName, Long timeStamp) {
+		final String SQL = "SELECT * FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_SENSOR S WHERE DSR.SENSOR_ID=S.SENSOR_ID AND S.SENSOR_NAME=? AND DSR.timeStamp<=? ORDER BY timeStamp DESC LIMIT 1";
 		try {
-		SensorReading sensorReading = simpleJdbcTemplate.queryForObject(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), deviceUri, sensorName, new Timestamp(timeStamp));
+		SensorReading sensorReading = simpleJdbcTemplate.queryForObject(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), sensorName, new Timestamp(timeStamp));
 		return sensorReading;
 		} catch(EmptyResultDataAccessException e) {
 			e.printStackTrace();
@@ -29,9 +29,9 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 	}
 
 	@Override
-	public boolean addReading(String deviceUri, String sensorName, Boolean isIndoor, long timestamp, String value, Double longitude, Double latitude, Double altitude, String locationInterpreter) {
-		final String FETCH_SENSOR_ID = "SELECT SENSOR_ID FROM CMU.COURSE_SENSOR S, CMU.COURSE_DEVICE D WHERE D.DEVICE_ID = S.DEVICE_ID AND D.DEVICE_URI = ? AND S.SENSOR_NAME = ?";
-		int sensorId = simpleJdbcTemplate.queryForInt(FETCH_SENSOR_ID, deviceUri, sensorName);
+	public boolean addReading(String sensorName, Boolean isIndoor, long timestamp, String value, Double longitude, Double latitude, Double altitude, String locationInterpreter) {
+		final String FETCH_SENSOR_ID = "SELECT SENSOR_ID FROM CMU.COURSE_SENSOR S WHERE S.SENSOR_NAME = ?";
+		int sensorId = simpleJdbcTemplate.queryForInt(FETCH_SENSOR_ID, sensorName);
 		
 		final String SQL = "INSERT INTO CMU.COURSE_DISCRETE_SENSOR_READING (SENSOR_ID, IS_INDOOR, LOCATION_INTERPRETER, TIMESTAMP, VALUE, LONGITUDE, LATITUDE, ALTITUDE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; 
 				
@@ -48,10 +48,10 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 	}
 
 	@Override
-	public List<SensorReading> searchReading(String deviceUri, String sensorName, Long startTime, Long endTime) {
-		final String SQL = "SELECT SENSOR_NAME, IS_INDOOR, LOCATION_INTERPRETER, TIMESTAMP, VALUE, LONGITUDE, LATITUDE, ALTITUDE FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_SENSOR S, CMU.COURSE_DEVICE D" 
-				+ " WHERE S.DEVICE_ID = D.DEVICE_ID AND D.DEVICE_URI = ? AND S.SENSOR_NAME = ? AND DSR.SENSOR_ID = S.SENSOR_ID AND TIMESTAMP >= ? AND TIMESTAMP <= ? ORDER BY TIMESTAMP DESC";
-		List<SensorReading> sensorReadings = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), deviceUri, sensorName, new Timestamp(startTime), new Timestamp(endTime));
+	public List<SensorReading> searchReading(String sensorName, Long startTime, Long endTime) {
+		final String SQL = "SELECT SENSOR_NAME, IS_INDOOR, LOCATION_INTERPRETER, TIMESTAMP, VALUE, LONGITUDE, LATITUDE, ALTITUDE FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_SENSOR S" 
+				+ " WHERE S.SENSOR_NAME = ? AND DSR.SENSOR_ID = S.SENSOR_ID AND TIMESTAMP >= ? AND TIMESTAMP <= ? ORDER BY TIMESTAMP DESC";
+		List<SensorReading> sensorReadings = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), sensorName, new Timestamp(startTime), new Timestamp(endTime));
 		return sensorReadings;
 	}
 

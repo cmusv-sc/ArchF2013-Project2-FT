@@ -194,7 +194,7 @@ public class DeviceDaoImplementation implements DeviceDao{
 		int deviceId = simpleJdbcTemplate.queryForInt(SELECT_DEVICE_ID, deviceUri);
 		final String ADD_NEW_DEVICE_LOCATION = "insert into cmu.course_device_location values(?,?,?,?,?)";
 		try {
-			int num = simpleJdbcTemplate.update(ADD_NEW_DEVICE_LOCATION, deviceId, locationId, new Timestamp(new Date().getTime()), newDevice.getUserDefinedFields(), "true");
+			int num = simpleJdbcTemplate.update(ADD_NEW_DEVICE_LOCATION, deviceId, locationId, new Timestamp(new Date().getTime()), newDevice.getDeviceUserDefinedFields(), "true");
 			if (num < 1) {
 				txManager.rollback(status);
 				return null;
