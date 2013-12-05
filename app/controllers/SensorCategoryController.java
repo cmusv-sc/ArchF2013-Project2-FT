@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
+
 //import app.models.dao.String;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -102,5 +103,17 @@ public class SensorCategoryController extends Controller {
 //				ret += sensorCategory.toCSVString();
 		}
 		return ok(ret);
+	}
+	
+	public static Result deleteSensorCategory(String sensorCategoryName){
+		checkDao();
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		if(sensorCategoryDao.deleteSensorCategory(sensorCategoryName)){
+			System.out.println("sensor deleted");
+			return ok("sensor deleted");
+		}else{
+			System.out.println("sensor is not deleted");
+			return ok("sensor is not deleted");
+		}
 	}
 }

@@ -109,9 +109,15 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 	
 	@Override
 	public SensorType getSensorType(String sensorTypeName) {
-		List<SensorType> types = getAllSensorTypes();
-		
-		return (types.size() == 0)? null : types.get(0);
+		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR_TYPE " 
+				+ "WHERE SENSOR_TYPE_NAME = ?";
+		try{
+			List<SensorType> types = simpleJdbcTemplate.query(SQL, 
+					ParameterizedBeanPropertyRowMapper.newInstance(SensorType.class));
+			return (types.size() == 0)? null : types.get(0);
+		}catch(Exception e){
+			return null;
+		}
 	}
 
 	@Override
@@ -120,7 +126,6 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 		List<SensorType> sensorType = simpleJdbcTemplate.query(SQL, 
 				ParameterizedBeanPropertyRowMapper.newInstance(SensorType.class));
 
-//		TODO: Set SensorCategoryName by its ID
 		for(SensorType type : sensorType){
 			String sensorCategoryName = new String();
 			final String SQL_GET_CATEGORY_ID =
@@ -144,6 +149,18 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 		return sensorType;
 	}
 
+	@Override
+	public boolean deleteSensorType(String sensorTypeName) {
+		final String SQL_DELETE_SENSOR_TYPE = "DELETE FROM CMU.COURSE_SENSOR_TYPE "
+						+ "WHERE SENSOR_TYPE_NAME = ?";
+		try{
+			simpleJdbcTemplate.update(SQL_DELETE_SENSOR_TYPE, sensorTypeName);
+		}catch(Exception e){
+			return false;
+		}
+		return true;
+	}
+	
 	public SimpleJdbcTemplate getSimpleJdbcTemplate() {
 		return simpleJdbcTemplate;
 	}
@@ -151,5 +168,4 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 	public void setSimpleJdbcTemplate(SimpleJdbcTemplate simpleJdbcTemplate) {
 		this.simpleJdbcTemplate = simpleJdbcTemplate;
 	}
-
 }

@@ -7,8 +7,6 @@ import models.SensorCategory;
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
-import models.OldSensorReading;
-
 public class SensorCategoryDaoImplementation implements SensorCategoryDao{
 	private SimpleJdbcTemplate simpleJdbcTemplate;
 	
@@ -50,20 +48,35 @@ public class SensorCategoryDaoImplementation implements SensorCategoryDao{
 	@Override
 	public List<SensorCategory> getAllSensorCategories() {
 		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR_CATEGORY";
-		
-		List<SensorCategory> sensorCategories = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorCategory.class));
-		
-		return sensorCategories;
+		try{
+			List<SensorCategory> sensorCategories = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorCategory.class));
+			return sensorCategories;
+		}catch(Exception e){
+			return null;
+		}
 	}
 
 	@Override
 	public SensorCategory getSensorCategory(String SensorCategoryName) {
-		
 		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR_CATEGORY WHERE SENSOR_CATEGORY_NAME = ?";
-		
-		SensorCategory sensorCategory = simpleJdbcTemplate.queryForObject(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorCategory.class), SensorCategoryName);
-		
-		return sensorCategory;
+		try{
+			SensorCategory sensorCategory = simpleJdbcTemplate.queryForObject(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorCategory.class), SensorCategoryName);
+			return sensorCategory;
+		}catch(Exception e){
+			return null;
+		}
+	}
+	
+	@Override
+	public boolean deleteSensorCategory(String sensorCategoryName) {
+		final String SQL_DELETE_SENSOR_CATEGORY = "DELETE FROM CMU.COURSE_SENSOR_CATEGORY "
+						+ "WHERE SENSOR_CATEGORY_NAME = ?";
+		try{
+			simpleJdbcTemplate.update(SQL_DELETE_SENSOR_CATEGORY, sensorCategoryName);
+		}catch(Exception e){
+			return false;
+		}
+		return true;
 	}
 
 	public SimpleJdbcTemplate getSimpleJdbcTemplate() {

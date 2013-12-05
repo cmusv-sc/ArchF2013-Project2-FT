@@ -56,19 +56,38 @@ public class SensorDaoImplementation implements SensorDao{
 	public Sensor getSensor(String sensorName) {
 		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc WHERE s.sensor_name = ? and s.sensor_type_id = st.sensor_type_id and st.sensor_category_id = sc.sensor_category_id";
 		
-		List<Sensor> sensors = simpleJdbcTemplate.query(SQL, 
-				ParameterizedBeanPropertyRowMapper.newInstance(Sensor.class), 
-				sensorName);
-		
-		return (sensors.size() == 0)? null : sensors.get(0);
+		try{
+			List<Sensor> sensors = simpleJdbcTemplate.query(SQL, 
+					ParameterizedBeanPropertyRowMapper.newInstance(Sensor.class), 
+					sensorName);
+			return (sensors.size() == 0)? null : sensors.get(0);
+		}catch(Exception e){
+			return null;
+		}
 	}
 
 	@Override
 	public List<Sensor> getAllSensors() {
 		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc WHERE s.sensor_type_id = st.sensor_type_id and st.sensor_category_id = sc.sensor_category_id";
-		List<Sensor> sensors = simpleJdbcTemplate.query(SQL, 
-				ParameterizedBeanPropertyRowMapper.newInstance(Sensor.class));
-		return sensors;
+		try{
+			List<Sensor> sensors = simpleJdbcTemplate.query(SQL, 
+					ParameterizedBeanPropertyRowMapper.newInstance(Sensor.class));
+			return sensors;
+		}catch(Exception e){
+			return null;
+		}
+	}
+	
+	@Override
+	public boolean deleteSensor(String sensorName) {
+		final String SQL_DELETE_SENSOR = "DELETE FROM CMU.COURSE_SENSOR "
+						+ "WHERE SENSOR_NAME = ?";
+		try{
+			simpleJdbcTemplate.update(SQL_DELETE_SENSOR, sensorName);
+		}catch(Exception e){
+			return false;
+		}
+		return true;
 	}
 
 	public SimpleJdbcTemplate getSimpleJdbcTemplate() {
