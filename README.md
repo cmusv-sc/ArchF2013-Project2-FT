@@ -38,11 +38,11 @@ Currently we are providing APIs in 3 categores:
    - [Add a sensor](#9)
    - [Add a device type](#10)
    - [Add a device](#11)
-   - [Update a sensor category](#23)
-   - [Update a sensor type](#12)
-   - [Update a sensor](#13)
-   - [Update a device type](#14)
-   - [Update a device](#15)
+   - [Edit a sensor category](#23)
+   - [Edit a sensor type](#12)
+   - [Edit a sensor](#13)
+   - [Edit a device type](#14)
+   - [Edit a device](#15)
    - [Delete a sensor category](#24)
    - [Delete a sensor type](#16)
    - [Delete a sensor](#17)
@@ -227,41 +227,39 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 10. <a name="10"></a>**ADD DEVICE TYPE**
     - **Purpose**: Add a new device type to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/add_device_type
+    - **URL**: http://einstein.sv.cmu.edu/addDeviceType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **device_type_name** (string): Name of the device type.
-        - **manufacturer** (string): Name of the manufacturer.
-        - **version** (string): Version of the device type.
-        - **user_defined_fields** (string): User defined fields. 
-    - **Sensor type metadata format**: {"device_type_name": <"device_type_name">, "manufacturer": <"manufacturer">, "version": <"version">, "user_defined_fields": <"user_defined_fields">}    
+        - **deviceTypeName** (string, not null): Name of the device type.
+        - **manufacturer** (string, optional): Name of the manufacturer.
+        - **version** (string, optional): Version of the device type.
+        - **deviceTypeUserDefinedFields** (string): User defined fields. 
+        - **sensorTypeNames** (list of string, not null): All sensor type names contained in the device.
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input device type metadata in a json file:
-              - "device_type.json" file contains: {"device_type_name": "test_device_type", "manufacturer": "TI", "version": "1.0", "user_defined_fields": "For test"}
-          2. curl -H "Content-Type: application/json" -d @sensor_type.json "http://einstein.sv.cmu.edu/add_device_type"
-      - **Result**: "device type saved" if the device type metadata has been successfully added to the database.
+              - "deviceType.json" file contains: {"deviceTypeName": "device 1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}
+          2. curl -H "Content-Type: application/json" -d @deviceType.json "http://einstein.sv.cmu.edu/addDeviceType"
+      - **Result**: HTTP 201 if the device type metadata has been successfully added to the database.
+
 
 11. <a name="11"></a>**ADD DEVICE**
     - **Purpose**: Add a new device to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/add_device
+    - **URL**: http://einstein.sv.cmu.edu/addDevice
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **device_type** (string): Name of the device type.
-        - **device_agent** (string): Name of the device agent.
-        - **device_id** (string): The device id (i.e., network address, uri, macaddress to date). This device_id will be needed as a reference in all consequent senarios.
-        - **location_description** (string): Location.
-        - **latitude** (string): Latitude.
-        - **longitude** (string): Longitude.
-        - **altitude** (string): Altitude.
-        - **position_format_system** (string): Format of the position.
-        - **user_defined_fields** (string): User defined fields. 
-    - **Sensor metadata format**: {"device_type": <"device_type">, "device_agent": <"device_agent">, "network_address": <"network_address">, "location_description": <"location_description">, "latitude": <"latitude">, "longitude": <"longitude">, "altitude": <"altitude">, "position_format_system": <"position_format_system">, "user_defined_fields": <"user_defined_fields">}    
+        - **deviceTypeName** (string, not null): Name of the device type.
+        - **deviceUri** (string): Unique uri of a device.
+        - **locationInterpreter** (string): Location interpreter.
+        - **latitude** (double): Latitude.
+        - **longitude** (double): Longitude.
+        - **altitude** (double): Altitude.
+        - **deviceUserDefinedFields** (string): User defined fields. 
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input device metadata in a json file:
-              - "device.json" file contains: {"device_type": "test_device_type", "device_agent": "test_device_agent", "device_id": "test_network_address", "location_description": "test_location_description", "latitude": "test_latitude", "longitude": "test_longitude", "altitude": "test_altitude", "position_format_system": "test_position_format_system", "user_defined_fields": "For test"}
-          2. curl -H "Content-Type: application/json" -d @device.json "http://einstein.sv.cmu.edu/add_device"
-      - **Result**: "device saved" if the device metadata have been successfully added to the database.
+              - "device.json" file contains: {"deviceTypeName": "fireimp", "deviceUri": "www.device.com", "locationInterpreter": "test location description", "latitude": 10, "longitude": 10, "altitude": 10, "deviceUserDefinedFields": "For test"}
+          2. curl -H "Content-Type: application/json" -d @device.json "http://einstein.sv.cmu.edu/addDevice"
+      - **Result**: HTTP 201 if the device metadata have been successfully added to the database.
 
 12. <a name="20"></a>**GET SENSOR READINGS OF A TYPE OF SENSOR IN A DEVICE AT A TIME BY READABLE TIME**
     - **Purpose**: Query sensor readings for a specific type of sensor, in a particular device, at a specific time point.
@@ -300,8 +298,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           ... <br/>
           {"time":05-05-2013T12:00:00,"sensor_type":"temp","value":518,"device_id":"10170102"}]
 
-14. <a name="12"></a>**UPDATE SENSOR TYPE**
-    - **Purpose**: Update a sensor type to sensor data service platform.
+14. <a name="12"></a>**EDIT SENSOR TYPE**
+    - **Purpose**: Edit a sensor type to sensor data service platform.
     - **Method**: POST
     - **URL**: http://einstein.sv.cmu.edu/updateSensorType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
@@ -329,8 +327,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/addSensorCategory"
       - **Result**: HTTP 201 if the sensor category metadata has been successfully added to the database
 
-16. <a name="23"></a>**UPDATE SENSOR CATEGORY**
-    - **Purpose**: Update a sensor category to sensor data service platform.
+16. <a name="23"></a>**EDIT SENSOR CATEGORY**
+    - **Purpose**: Edit a sensor category to sensor data service platform.
     - **Method**: POST
     - **URL**: http://einstein.sv.cmu.edu/updateSensorCategory
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
@@ -343,23 +341,51 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/updateSensorCategory"
       - **Result**: HTTP 200 if the sensor category metadata has been successfully updated to the database
 
-17. <a name="13"></a>**UPDATE SENSOR**
-    - **Purpose**: Update a sensor to sensor data service platform.
+17. <a name="13"></a>**EDIT SENSOR**
+    - **Purpose**: Edit a sensor to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/update_sensor
+    - **URL**: http://einstein.sv.cmu.edu/updateSensor
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **sensor_name** (string): Name of the sensor, which cannot be changed
-        - **sensor_type_name** (string): Name of its sensor type
-        - **device_uri** (string): The device URI it belongs to
-        - **user_defined_fields** (string): User defined fields.
-    - **Sensor metadata format**: {"sensor_name": <"sensor_name">, "sensor_type_name": <"sensor_type_name">, "device_uri": <"device_uri">, "user_defined_fields": <"user_defined_fields">}    
+        - **sensorName** (string): Name of the sensor, which cannot be changed
+        - **sensorUserDefinedFields** (string): User defined fields.
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor metadata in a json file:
-              - "sensor.json" file contains: {"sensor_name": "TestSensor", "sensor_type_name": "Humidity", "device_uri": "www.testsensor.com", "user_defined_fields": "Test only"}
-          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu/update_sensor"
-      - **Result**: "sensor updated" if the sensor metadata have been successfully updated to the database
+              - "sensor.json" file contains: {"sensorName": "TestSensor", "sensorUserDefinedFields": "Production only"}
+          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu/updateSensor"
+      - **Result**: HTTP 200 if the sensor metadata have been successfully updated to the database
 
+18. <a name="14"></a>**EDIT DEVICE TYPE**
+    - **Purpose**: Edit an existing device type in sensor data service platform.
+    - **Method**: POST
+    - **URL**: http://einstein.sv.cmu.edu/updateDeviceType
+    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
+        - **deviceTypeName** (string, not null): Name of the device type.
+        - **deviceTypeUserDefinedFields** (string): User defined fields. 
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. Prepare input device type metadata in a json file:
+              - "deviceType.json" file contains: {"deviceTypeName": "device 1", "deviceTypeUserDefinedFields": "For production"}
+          2. curl -H "Content-Type: application/json" -d @deviceType.json "http://einstein.sv.cmu.edu/updateDeviceType"
+      - **Result**: HTTP 200 if the device type metadata has been successfully added to the database.
+
+
+19. <a name="15"></a>**EDIT DEVICE**
+    - **Purpose**: Edit an existing device in sensor data service platform.
+    - **Method**: POST
+    - **URL**: http://einstein.sv.cmu.edu/updateDevice
+    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
+        - **deviceTypeName** (string, not null): Name of the device type.
+        - **deviceUserDefinedFields** (string): User defined fields. 
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. Prepare input device metadata in a json file:
+              - "device.json" file contains: {"deviceTypeName": "fireimp", "deviceUserDefinedFields": "For production"}
+          2. curl -H "Content-Type: application/json" -d @device.json "http://einstein.sv.cmu.edu/updateDevice"
+      - **Result**: HTTP 200 if the device metadata have been successfully added to the database.
+      
+
+      
 [1]: http://einstein.sv.cmu.edu/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 
 Examples:
