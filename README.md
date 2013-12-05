@@ -385,7 +385,85 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Result**: HTTP 200 if the device metadata have been successfully added to the database.
       
 
+31. <a name="31"></a>**GET ALL SENSOR CATEGORIES**
+    - **Purpose**: Query all sensor categories.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu/getAllSensorCategories/<"resultFormat">
+    - **Semantics**: 
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensorCategories/csv<br/>
+      - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
+      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorCategories/json
+      - **Sample json result**: [{"sensorCategoryName":sensorCategory1,"purpose":"temp"}]
       
+32. <a name="32"></a>**GET A SPECIFIC SENSOR CATEGORY**
+    - **Purpose**: Query a specific sensor category.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu/getSensorCategory/sensorCategoryName/<"resultFormat">
+    - **Semantics**: 
+        - **sensorCategoryName**: Sensor category name.
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorCategoryName/sensorCategory1/csv<br/>
+      - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
+      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorCategories/json
+      - **Sample json result**: {"sensorCategoryName":sensorCategory1,"purpose":"temp"}
+      
+33. <a name="33"></a>**GET ALL SENSOR TYPES**
+    - **Purpose**: Query all sensor types.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu/getAllSensorTypes/<"resultFormat">
+    - **Semantics**: 
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensorTypes/csv<br/>
+      - **Sample csv result**: (sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
+      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
+      - **Sample json result**: [{"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}]
+      
+34. <a name="34"></a>**GET A SPECIFIC SENSOR TYPE**
+    - **Purpose**: Query a specific sensor type.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu/getSensorType/<"resultFormat">
+    - **Semantics**: 
+        - **sensorTypeName**" Sensor type name
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/csv<br/>
+      - **Sample csv result**: (sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
+      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
+      - **Sample json result**: {"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
+      
+
+35. <a name="35"></a>**GET ALL SENSORS**
+    - **Purpose**: Query all sensors.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu/getAllSensors/<"resultFormat">
+    - **Semantics**: 
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensors/csv<br/>
+      - **Sample csv result**: (sensorName, sensorUserDefinedFields, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
+      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
+      - **Sample json result**: [{"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}]
+      
+
+36. <a name="36"></a>**GET A SPECIFIC SENSOR**
+    - **Purpose**: Query a specific sensor.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu/getSensor/<"resultFormat">
+    - **Semantics**: 
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu/getSensor/csv<br/>
+      - **Sample csv result**: (sensorName, sensorUserDefinedFields, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
+      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
+      - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
+      
+
+
+
 [1]: http://einstein.sv.cmu.edu/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 
 Examples:
