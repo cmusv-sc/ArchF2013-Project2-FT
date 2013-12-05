@@ -211,19 +211,18 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 9. <a name="9"></a>**ADD SENSOR**
     - **Purpose**: Add a new sensor to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/add_sensor
+    - **URL**: http://einstein.sv.cmu.edu/addSensor
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **sensor_name** (string): Name of the sensor
-        - **sensor_type_name** (string): Name of its sensor type
-        - **device_uri** (string): The device URI it belongs to
-        - **user_defined_fields** (string): User defined fields.
-    - **Sensor metadata format**: {"sensor_name": <"sensor_name">, "sensor_type_name": <"sensor_type_name">, "device_uri": <"device_uri">, "user_defined_fields": <"user_defined_fields">}    
+        - **sensorName** (string, not null): Name of the sensor
+        - **sensorTypeName** (string, not null): Name of its sensor type
+        - **deviceUri** (string, not null): The device URI it belongs to
+        - **sensorUserDefinedFields** (string, optional): User defined fields.
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor metadata in a json file:
-              - "sensor.json" file contains: {"sensor_name": "TestSensor", "sensor_type_name": "Humidity", "device_uri": "www.testsensor.com", "user_defined_fields": "Test only"}
-          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu/add_sensor"
-      - **Result**: "sensor saved" if the sensor metadata have been successfully added to the database
+              - "sensor.json" file contains: {"sensorName": "TestSensor", "sensorTypeName": "Humidity", "deviceUri": "www.testsensor.com", "sensorUserDefinedFields": "Test only"}
+          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu/addSensor"
+      - **Result**: HTTP 201 if the sensor metadata have been successfully added to the database
 
 10. <a name="10"></a>**ADD DEVICE TYPE**
     - **Purpose**: Add a new device type to sensor data service platform.
@@ -307,18 +306,11 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **URL**: http://einstein.sv.cmu.edu/updateSensorType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorTypeName** (string): Name of the sensor type, which cannot be changed
-        - **manufacturer** (string): Name of the manufacturerof this sensor type
-        - **version** (string): Version of the sensor type
-        - **maximumValue** (double): Maximum value of the sensor reading under this sensor type
-        - **minimumValue** (double): Minimum value of the sensor reading under this sensor type
-        - **unit** (string): Unit of the sensor reading under this sensor type
-        - **interpreter** (string): The interpreter used to parse the sensor reading under this sensor type
         - **sensorTypeUserDefinedFields** (string): User defined fields
-        - **sensorCategoryName** (string): The category this sensor type belongs to
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
-              - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Production only", "sensorCategoryName": "Environment"}
+              - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "sensorTypeUserDefinedFields": "Production only"}
           2. curl -H "Content-Type: application/json" -d @sensorType.json "http://einstein.sv.cmu.edu/updateSensorType"
       - **Result**: HTTP 200 if the sensor type metadata has been successfully updated to the database
 
