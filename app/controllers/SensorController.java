@@ -73,11 +73,11 @@ public class SensorController extends Controller {
 		} 
 		checkDao();
 
-//		Parse JSON FIle 
-		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
-		String deviceUri = json.findPath("device_uri").getTextValue();
-		String sensorName = json.findPath("sensor_name").getTextValue();
-		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
+//		Parse JSON File 
+		String sensorTypeName = json.findPath("sensorTypeName").getTextValue();
+		String deviceUri = json.findPath("deviceUri").getTextValue();
+		String sensorName = json.findPath("sensorName").getTextValue();
+		String userDefinedFields = json.findPath("userDefinedFields").getTextValue();
 		ArrayList<String> error = new ArrayList<String>();
 		
 		if (sensorDao.getSensor(sensorName) == null) {
