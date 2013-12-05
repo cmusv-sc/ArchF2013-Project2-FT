@@ -7,8 +7,8 @@ public class SensorType extends SensorCategory{
 	private String sensorTypeName;
 	private String manufacturer;
 	private String version;
-	private double maxValue;
-	private double minValue;
+	private double maximumValue;
+	private double minimumValue;
 	private String unit;
 	private String interpreter;
 	private String sensorTypeUserDefinedFields;
@@ -25,17 +25,17 @@ public class SensorType extends SensorCategory{
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	public double getMaxValue() {
-		return maxValue;
+	public double getMaximumValue() {
+		return maximumValue;
 	}
-	public void setMaxValue(double maxValue) {
-		this.maxValue = maxValue;
+	public void setMaximumValue(double maxValue) {
+		this.maximumValue = maxValue;
 	}
-	public double getMinValue() {
-		return minValue;
+	public double getMinimumValue() {
+		return minimumValue;
 	}
-	public void setMinValue(double minValue) {
-		this.minValue = minValue;
+	public void setMinimumValue(double minValue) {
+		this.minimumValue = minValue;
 	}
 	public String getUnit() {
 		return unit;
@@ -70,9 +70,9 @@ public class SensorType extends SensorCategory{
 		csvString += ",";
 		csvString += version;
 		csvString += ",";
-		csvString += Double.toString(maxValue);
+		csvString += Double.toString(maximumValue);
 		csvString += ",";
-		csvString += Double.toString(minValue);
+		csvString += Double.toString(minimumValue);
 		csvString += ",";
 		csvString += unit;
 		csvString += ",";
@@ -93,8 +93,8 @@ public class SensorType extends SensorCategory{
 			obj.put("sensor_type_name",  sensorTypeName);
 			obj.put("manufacturer", manufacturer);
 			obj.put("version", version);
-			obj.put("maximum_value", maxValue);
-			obj.put("minimum_value", minValue);
+			obj.put("maximum_value", maximumValue);
+			obj.put("minimum_value", minimumValue);
 			obj.put("unit", unit);
 			obj.put("interpreter", interpreter);
 			obj.put("user_defined_fields", sensorTypeUserDefinedFields);

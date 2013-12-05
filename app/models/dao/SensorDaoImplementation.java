@@ -21,10 +21,9 @@ public class SensorDaoImplementation implements SensorDao{
 		final String SQL = "INSERT INTO CMU.COURSE_SENSOR (SENSOR_ID, SENSOR_TYPE_ID, DEVICE_ID, SENSOR_NAME, SENSOR_USER_DEFINED_FIELDS) VALUES (CMU.COURSE_SENSOR_ID_SEQ.NEXTVAL, ?, ?, ?, ?)";
 		try{
 //			TODO: Need to use this in production for SAP HANA
-//			simpleJdbcTemplate.update(SQL, sensorId, sensorTypeId, deviceId, sensorName, userDefinedFields);
-
-//			Test Only
 			simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorName, sensorUserDefinedFields);
+//			Test Only
+//			simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorName, sensorUserDefinedFields);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -55,12 +54,23 @@ public class SensorDaoImplementation implements SensorDao{
 	@Override
 	public Sensor getSensor(String sensorName) {
 		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc WHERE s.sensor_name = ? and s.sensor_type_id = st.sensor_type_id and st.sensor_category_id = sc.sensor_category_id";
+		final String SQL_GET_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_SENSOR WHERE SENSOR_NAME = ?";
+		final String SQL_GET_DEVICE_URI = "SELECT URI FROM CMU.COURSE_DEVICE WHERE DEVICE_ID = ?";
 		
 		try{
+//			Get sensors
 			List<Sensor> sensors = simpleJdbcTemplate.query(SQL, 
 					ParameterizedBeanPropertyRowMapper.newInstance(Sensor.class), 
 					sensorName);
-			return (sensors.size() == 0)? null : sensors.get(0);
+			if(sensors.size() == 0) return null;
+			
+//			Set Sensor.deviceUri by it Device ID
+			Sensor s = sensors.get(0);
+			int deviceId = simpleJdbcTemplate.queryForInt(SQL_GET_DEVICE_ID, s.getSensorName());
+			String uri = simpleJdbcTemplate.queryForObject(SQL_GET_DEVICE_URI, 
+					String.class, deviceId);
+			s.setDeviceUri(uri);
+			return s;
 		}catch(Exception e){
 			return null;
 		}
@@ -69,9 +79,20 @@ public class SensorDaoImplementation implements SensorDao{
 	@Override
 	public List<Sensor> getAllSensors() {
 		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc WHERE s.sensor_type_id = st.sensor_type_id and st.sensor_category_id = sc.sensor_category_id";
+		final String SQL_GET_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_SENSOR WHERE SENSOR_NAME = ?";
+		final String SQL_GET_DEVICE_URI = "SELECT URI FROM CMU.COURSE_DEVICE WHERE DEVICE_ID = ?";
 		try{
 			List<Sensor> sensors = simpleJdbcTemplate.query(SQL, 
 					ParameterizedBeanPropertyRowMapper.newInstance(Sensor.class));
+			
+//			Set Sensor.deviceUri by it Device ID
+			for(Sensor s : sensors){
+				int deviceId = simpleJdbcTemplate.queryForInt(SQL_GET_DEVICE_ID, s.getSensorName());
+				String uri = simpleJdbcTemplate.queryForObject(SQL_GET_DEVICE_URI, 
+						String.class, deviceId);
+				s.setDeviceUri(uri);
+			}
+			
 			return sensors;
 		}catch(Exception e){
 			return null;

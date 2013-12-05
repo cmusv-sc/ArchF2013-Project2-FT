@@ -60,13 +60,15 @@ GET		/last_readings_from_all_devices/:timeStamp/:sensorType/json	controllers.Sen
 
 #Metadata
 #POST	/add_sensor				  controllers.MetadataController.addSensor()
-POST	/add_sensor				  controllers.SensorController.addSensor()
-POST	/update_sensor			  controllers.SensorController.updateSensor()
-GET 	/get_sensor/:sensor_name/json	controllers.SensorController.getSensor(sensor_name: String, format: String="json")
-GET 	/get_sensor/:sensor_name/csv	controllers.SensorController.getSensor(sensor_name: String, format: String="csv")
-GET 	/get_all_sensors/json	controllers.SensorController.getAllSensors(format: String="json")
-GET 	/get_all_sensors/csv	controllers.SensorController.getAllSensors(format: String="csv")
-DELETE  /delete_sensor/:sensorName     controllers.SensorController.deleteSensor(sensorName: String)
+
+# Sensor
+POST	/addSensor				  controllers.SensorController.addSensor()
+POST	/updateSensor			  controllers.SensorController.updateSensor()
+GET 	/getSensor/:sensor_name/json	controllers.SensorController.getSensor(sensor_name: String, format: String="json")
+GET 	/getSensor/:sensor_name/csv	controllers.SensorController.getSensor(sensor_name: String, format: String="csv")
+GET 	/getAllSensors/json	controllers.SensorController.getAllSensors(format: String="json")
+GET 	/getAllSensors/csv	controllers.SensorController.getAllSensors(format: String="csv")
+DELETE  /deleteSensor/:sensorName     controllers.SensorController.deleteSensor(sensorName: String)
 
 POST	/add_device 				controllers.MetadataController.addDevice()
 POST	/add_sensor_category		controllers.SensorCategoryController.addSensorCategory()

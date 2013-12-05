@@ -39,29 +39,28 @@ public class SensorController extends Controller {
 
 	public static Result addSensor() {
 		JsonNode json = request().body().asJson();
-		if(json == null) {
+		if (json == null) {
 			return badRequest("Expecting Json data");
 		} 
 		checkDao();
 
 		// Parse JSON FIle 
-		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
-		String deviceUri = json.findPath("device_uri").getTextValue();
-		String sensorName = json.findPath("sensor_name").getTextValue();
-		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
+		String sensorTypeName = json.findPath("sensorTypeName").getTextValue();
+		String deviceUri = json.findPath("deviceUri").getTextValue();
+		String sensorName = json.findPath("sensorName").getTextValue();
+		String userDefinedFields = json.findPath("sensorUserDefinedFields").getTextValue();
 		ArrayList<String> error = new ArrayList<String>();
 		
 		boolean result = sensorDao.addSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields);
 
-		if(!result){
+		if (!result) {
 			error.add(sensorTypeName);
 		}
 		// Can this error have more than one name in it? I don't understand why error needs to be a list.
-		if(error.size() == 0){
+		if (error.size() == 0) {
 			System.out.println("sensor saved");
 			return ok("sensor saved");
-		}
-		else{
+		} else {
 			System.out.println("sensor not saved: " + error.toString());
 			return ok("sensor not saved: " + error.toString());
 		}
@@ -69,34 +68,33 @@ public class SensorController extends Controller {
 	
 	public static Result updateSensor() {
 		JsonNode json = request().body().asJson();
-		if(json == null) {
+		if (json == null) {
 			return badRequest("Expecting Json data");
 		} 
 		checkDao();
 
-		// Parse JSON FIle 
+//		Parse JSON FIle 
 		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
 		String deviceUri = json.findPath("device_uri").getTextValue();
 		String sensorName = json.findPath("sensor_name").getTextValue();
 		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
 		ArrayList<String> error = new ArrayList<String>();
 		
-		if(sensorDao.getSensor(sensorName) == null){
+		if (sensorDao.getSensor(sensorName) == null) {
 			System.out.println("sensor not updated: " + error.toString());
 			return ok("sensor not updated: " + error.toString());
 		}
 		
 		boolean result = sensorDao.updateSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields);
 
-		if(!result){
+		if (!result) {
 			error.add(sensorTypeName);
 		}
 		
-		if(error.size() == 0){
+		if (error.size() == 0) {
 			System.out.println("sensor updated");
 			return ok("sensor updated");
-		}
-		else{
+		} else {
 			System.out.println("sensor not updated: " + error.toString());
 			return ok("sensor not updated: " + error.toString());
 		}
@@ -110,11 +108,9 @@ public class SensorController extends Controller {
 			return notFound("no sensor found");
 		}
 		String ret = new String();
-		if (format.equals("json"))
-		{			
+		if (format.equals("json")) {			
 			ret = new Gson().toJson(sensor);
-		} 
-		else {			
+		} else {			
 			ret = toCsv(Arrays.asList(sensor));
 		}
 		return ok(ret);
@@ -130,11 +126,9 @@ public class SensorController extends Controller {
 		} 
 		
 		String ret = null;
-		if (format.equals("json"))
-		{			
+		if (format.equals("json")) {			
 			ret = new Gson().toJson(sensors);
-		} 
-		else {			
+		} else {			
 			ret = toCsv(sensors);
 		}
 		return ok(ret);
@@ -143,18 +137,15 @@ public class SensorController extends Controller {
 	private static String toCsv(List<Sensor> sensors) {
 		StringWriter sw = new StringWriter();
 		CellProcessor[] processors = new CellProcessor[] {
-				new Optional(),
-				new Optional(),
-				new Optional(),
-				new Optional(),
-				new Optional(),
-				new Optional(),
-				new Optional(),
-				new Optional()
-				};
+				new Optional(),	new Optional(),	new Optional(),	new Optional(),
+				new Optional(),	new Optional(),	new Optional(),	new Optional(),
+				new Optional(),	new Optional(),	new Optional(), new Optional()};
 		ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
 		try {
-			final String[] header = new String[] { "sensorName", "sensorUserDefinedFields", "sensorTypeName", "sensorTypeUserDefinedFields", "sensorCategoryName", "purpose", "manufacturer", "interpreter", "version", "maxValue", "minValue", "unit"};
+			final String[] header = new String[] {"sensorName", "sensorUserDefinedFields"
+					, "deviceUri" , "sensorTypeName", "manufacturer", "version"
+					, "maximumValue", "minimumValue", "unit", "interpreter"
+					, "sensorTypeUserDefinedFields", "sensorCategoryName"};
 			writer.writeHeader(header);
 			for (Sensor sensor : sensors) {
 				writer.write(sensor, header, processors);
