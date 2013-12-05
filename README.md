@@ -377,6 +377,39 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu/update_sensor"
       - **Result**: "sensor updated" if the sensor metadata have been successfully updated to the database
 
+18. <a name="24"></a>**DELETE SENSOR CATEGORY**
+    - **Purpose**: Delete a sensor category from sensor data service platform.
+    - **Method**: DELETE
+    - **URL**: http://einstein.sv.cmu.edu/delete_sensor_category/<"sensorCategoryName">
+    - **Semantics**: 
+        - **sensorCategoryName**: The name of the sensor category
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. curl -X DELETE http://einstein.sv.cmu.edu/delete_sensor_category/testSensorCategoryName
+      - **Result**: "sensor category deleted" if the sensor category metadata has been successfully deleted
+
+19. <a name="16"></a>**DELETE SENSOR TYPE**
+    - **Purpose**: Delete a sensor type from sensor data service platform.
+    - **Method**: DELETE
+    - **URL**: http://einstein.sv.cmu.edu/delete_sensor_type/<"sensorTypeName">
+    - **Semantics**: 
+        - **sensorTypeName**: The name of the sensor type
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. curl -X DELETE http://einstein.sv.cmu.edu/delete_sensor_type/testSensorTypeName
+      - **Result**: "sensor type deleted" if the sensor type metadata has been successfully deleted
+
+20. <a name="17"></a>**DELETE SENSOR**
+    - **Purpose**: Delete a sensor from sensor data service platform.
+    - **Method**: DELETE
+    - **URL**: http://einstein.sv.cmu.edu/delete_sensor/<"sensorName">
+    - **Semantics**: 
+        - **sensorName**: The name of the sensor
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. curl -X DELETE http://einstein.sv.cmu.edu/delete_sensor/testSensorName
+      - **Result**: "sensor deleted" if the sensor metadata has been successfully deleted
+
 [1]: http://einstein.sv.cmu.edu/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 
 Examples:
