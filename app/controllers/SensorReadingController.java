@@ -1,31 +1,32 @@
 package controllers;
 
-import helper.Utils;
+import helper.Wrapper;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import models.MessageBusHandler;
 import models.SensorReading;
 import models.dao.SensorReadingDao;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.supercsv.cellprocessor.Optional;
+import org.supercsv.cellprocessor.ift.CellProcessor;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-//import models.cmu.sv.sensor.SensorReading;
+
+import com.google.gson.Gson;
 
 
 public class SensorReadingController extends Controller {
-	private static final String ISO8601 = "ISO8601";
 	private static ApplicationContext context;
 	private static SensorReadingDao sensorReadingDao;
 	
@@ -40,7 +41,7 @@ public class SensorReadingController extends Controller {
 		return true;
 	}
 
-	public static Result add(Boolean publish) {
+	public static Result add() {
 		JsonNode json = request().body().asJson();
 		if(json == null) {              
 			return badRequest("Expecting Json data");
@@ -49,26 +50,18 @@ public class SensorReadingController extends Controller {
 			return internalServerError("database conf file not found");
 		}
 		
-		// Parse JSON FIle
-		String deviceId = json.findPath("id").getTextValue();
-		Long timeStamp = json.findPath("timestamp").getLongValue();
-		Iterator<String> it = json.getFieldNames();
+		Gson gson = new Gson();
+		
+		Wrapper[] wrapperArr = gson.fromJson(request().body().asJson().toString(), Wrapper[].class);
+		
 		ArrayList<String> error = new ArrayList<String>();
-		while(it.hasNext()){            
-			String sensorType = it.next();  
-			if(sensorType == "id" || sensorType == "timestamp") continue;
-			double value = json.findPath(sensorType).getDoubleValue();
-			if(!sensorReadingDao.addReading(deviceId, timeStamp, sensorType, value)){            
-				error.add(sensorType + ", " + deviceId + ", " + timeStamp.toString() + ", " + value + "\n");
-			}
 
-			if(publish){                    
-				MessageBusHandler mb = new MessageBusHandler();
-				if(!mb.publish(new models.SensorReading(deviceId, timeStamp, sensorType, value))){       
-					error.add("publish failed");    
-				}                               
+		for (Wrapper w : wrapperArr) {
+			if(!sensorReadingDao.addReading(w.sensorName, w.isIndoor, w.timestamp, w.value, w.longitude, w.latitude, w.altitude, w.locationInterpreter)){            
+				error.add(w.toString() + "\n");
 			}
 		}
+		
 		if(error.size() == 0){          
 			System.out.println("saved");    
 			return ok("saved");             
@@ -79,178 +72,50 @@ public class SensorReadingController extends Controller {
 		}
 	}
 	
-	// search reading at a specific timestamp
-	public static Result searchAtTimestamp(String deviceId, Long timeStamp, String sensorType, String format){
+	public static Result searchAtTime(String sensorName, Long timeStamp, String format){
 		response().setHeader("Access-Control-Allow-Origin", "*");
-//		SensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
 		checkDao();
-		SensorReading reading = sensorReadingDao.searchReading(deviceId, timeStamp, sensorType);
+		SensorReading reading = sensorReadingDao.searchReading(sensorName, timeStamp);
 		
 		if(reading == null){
 			return notFound("no reading found");
 		}
 		
-		String ret = null;
-		
-		if (format.equals("csv")) {
-			ret = reading.getCSVHeader();
-			ret += reading.toCSVString();
-		} else {
-			ret = reading.toJSONString();
-		}
-		return ok(ret);
-	}
-
-	private static Long convertTimeToTimestamp(String timeString) throws ParseException{
-		SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy'T'HH:mm:ss");
-		Long result = null;
-		Date date = dateFormat.parse(timeString);
-		System.out.println(date);
-		Timestamp timestamp = new Timestamp(date.getTime());
-		result = timestamp.getTime();
-		System.out.println(result);
-		return result;
-	}
-
-	// search reading at a specific readable time 
-	public static Result searchAtTime(String deviceId, String time, String sensorType, String format){
-		if (!ISO8601.equals(getDateFormat())) {
-			Long timestamp = null;
-			try {
-				timestamp = Long.parseLong(time, 10);
-			} catch(NumberFormatException ex) {
-				return badRequest("Date format or value is incorrect, please check APIs!");
-			}
-			if (null == timestamp) {
-				return badRequest("Date format or value is incorrect, please check APIs!");
-			}
-			return searchAtTimestamp(deviceId, timestamp, sensorType, format);
+		String ret = new String();
+		if (format.equals("json"))
+		{			
+			ret = new Gson().toJson(reading);
 		} 
-		
-		if(!checkDao()){
-			return internalServerError("database conf file not found");
+		else {			
+			ret = toCsv(Arrays.asList(reading));
 		}
 
-		response().setHeader("Access-Control-Allow-Origin", "*");
-		Long timeStamp = null;
-		try {
-			timeStamp = convertTimeToTimestamp(time);
-		} catch(ParseException ex) {
-			return badRequest("Date format or value is incorrect, please check APIs!");
-		}
-		models.SensorReading reading = sensorReadingDao.searchReading(deviceId, timeStamp, sensorType);
-		if(reading == null){
-			return notFound("no reading found");
-		}
-		String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
-//		String ret = format.equals("json") ? 
-//			Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue()):
-//			Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
-		String ret = null;
-		if (format.equals("csv")) {
-			ret = reading.getCSVHeader();
-			ret += Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
-		} else {
-			ret = Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
-		}
 		return ok(ret);
 	}
 
 	// search readings of timestamp range [startTime, endTime]
-	public static Result searchInTimestampRange(String deviceId, Long startTime, Long endTime, String sensorType, String format){
+	public static Result searchInTimeRange(String sensorName, String startTime, String endTime, String format){
 		response().setHeader("Access-Control-Allow-Origin", "*");
 
 		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
 		
-		List<SensorReading> readings = sensorReadingDao.searchReading(deviceId, startTime, endTime, sensorType);
+		List<SensorReading> readings = sensorReadingDao.searchReading(sensorName, Long.valueOf(startTime), Long.valueOf(endTime));
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
 		}
-		StringBuilder strBuilder = new StringBuilder();
-		if (format.equals("json")) {			
-			for (models.SensorReading reading : readings) {
-				if (strBuilder.length() == 0){
-					strBuilder.append("[");
-				}else{
-					strBuilder.append(",");
-				}				
-				strBuilder.append(reading.toJSONString());
-			}
-			strBuilder.append("]");			
-		} else {
-			for (models.SensorReading reading : readings) {
-				if (strBuilder.length() != 0){
-					strBuilder.append("\n");
-				}else{
-					strBuilder.append(reading.getCSVHeader());
-				} 
-				strBuilder.append(reading.toCSVString());
-			}
-		}
-
-		return ok(strBuilder.toString());
-	}
-
-	// search readings of time range [startTime, endTime]
-	public static Result searchInTimeRange(String deviceId, String startTime, String endTime, String sensorType, String format){
-		if (!ISO8601.equals(getDateFormat())) {
-			Long startTimestamp = null;
-			Long endTimestamp = null;
-			try {
-				startTimestamp = Long.parseLong(startTime, 10);
-				endTimestamp = Long.parseLong(endTime, 10);
-			} catch(NumberFormatException ex) {
-				return badRequest("Date format or value is incorrect, please check APIs!");
-			}
-			if (null == startTimestamp && null == endTimestamp) {
-				return badRequest("Date format or value is incorrect, please check APIs!");
-			}
-			return searchInTimestampRange(deviceId, startTimestamp, endTimestamp, sensorType, format);
-		} 
 		
-		if(!checkDao()){
-			return internalServerError("database conf file not found");
-		}
-		
-		response().setHeader("Access-Control-Allow-Origin", "*");
-		Long startTimestamp = null;
-		Long endTimestamp = null;
-		try {
-			startTimestamp = convertTimeToTimestamp(startTime);
-			endTimestamp = convertTimeToTimestamp(endTime);
-		} catch(ParseException ex) {
-			return badRequest("Date format or value is incorrect, please check APIs!");
-		}
-		List<models.SensorReading> readings = sensorReadingDao.searchReading(deviceId, startTimestamp, endTimestamp, sensorType);
-		if(readings == null || readings.isEmpty()){
-			return notFound("no reading found");
-		}
-		StringBuilder strBuilder = new StringBuilder();
+		String ret = new String();
 		if (format.equals("json"))
 		{			
-			for (models.SensorReading reading : readings) {
-				if (strBuilder.length() == 0)
-					strBuilder.append("[");
-				else				
-					strBuilder.append(",");
-				String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
-				strBuilder.append(Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue()));
-			}
-			strBuilder.append("]");			
-		} else {
-			for (models.SensorReading reading : readings) {
-				if (strBuilder.length() != 0)
-					strBuilder.append("\n");
-				else 
-					strBuilder.append(reading.getCSVHeader());
-				String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
-				strBuilder.append(Utils.getCSVString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue()));
-			}
+			ret = new Gson().toJson(readings);
+		} 
+		else {			
+			ret = toCsv(readings);
 		}
 
-		return ok(strBuilder.toString());
+		return ok(ret);
 	}
 
 	public static Result lastReadingFromAllDevices(Long timeStamp, String sensorType, String format) {
@@ -286,20 +151,10 @@ public class SensorReadingController extends Controller {
 		return ok(ret);
 	}
 
-	private static String getDateFormat() {
-		String dateFormat = null;
-		final Map<String,String[]> entries = request().queryString();
-		if (!entries.isEmpty() && entries.containsKey("dateformat")) {
-			dateFormat = entries.get("dateformat")[0];
-		}
-		return dateFormat;
-
-	}	
 	public static Result lastestReadingFromAllDevices(String sensorType, String format) {
 		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
-		String dateFormat = getDateFormat();
 
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();
@@ -308,34 +163,48 @@ public class SensorReadingController extends Controller {
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
 		}
-		StringBuilder sb = new StringBuilder();
-		if (format.equals("json")) {			
-			for (models.SensorReading reading : readings) {
-				if (sb.length() == 0) {
-					sb.append("[");
-				} else {
-					sb.append(",");
-				}		
-				if (ISO8601.equals(dateFormat)) {
-					String readableTime = Utils.convertTimestampToReadable(reading.getTimeStamp());
-					String jsonString = Utils.getJSONString(reading.getDeviceId(), readableTime, reading.getSensorType(), reading.getValue());
-					sb.append(jsonString);
-				} else {
-				 	sb.append(reading.toJSONString());
-				}
+		
+		String ret = new String();
+		if (format.equals("json"))
+		{			
+			ret = new Gson().toJson(readings);
+		} 
+		else {			
+			ret = toCsv(readings);
+		}
+
+		return ok(ret);
+	}	
+	
+		
+	private static String toCsv(List<SensorReading> readings) {
+		StringWriter sw = new StringWriter();
+		CellProcessor[] processors = new CellProcessor[] {
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional()
+				};
+		ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
+		try {
+			final String[] header = new String[] { "sensorName", "isIndoor", "timeStamp", "value", "longitude", "latitude", "altitude", "locationInterpreter"};
+			writer.writeHeader(header);
+			for (SensorReading reading : readings) {
+				writer.write(reading, header, processors);
 			}
-			sb.append("]");
-		} else {
-			for (models.SensorReading reading : readings) {
-				if (sb.length() > 0) {
-					sb.append('\n');
-				} else {
-					sb.append(reading.getCSVHeader());
-				}
-				sb.append(reading.toCSVString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
-		return ok(sb.toString());
-	}	
-		
+		return sw.getBuffer().toString();
+	}
 }

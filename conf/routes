@@ -14,11 +14,14 @@ GET		/get_device_type/:device_type_name/json 			controllers.DeviceTypeController
 GET		/get_device_type/:device_type_name/csv 			controllers.DeviceTypeController.getDeviceType(device_type_name: String, format: String="csv")
 GET		/get_all_device_types/json 			controllers.DeviceTypeController.getAllDeviceTypes(format: String="json")
 GET		/get_all_device_types/csv 			controllers.DeviceTypeController.getAllDeviceTypes(format: String="csv")
+PUT		/update_device_type/:device_type_name 	controllers.DeviceTypeController.updateDeviceType(device_type_name: String, format: String="csv")
+PUT		/update_device_type/:device_type_name/csv 	controllers.DeviceTypeController.updateDeviceType(device_type_name: String, format: String="csv")
+PUT		/update_device_type/:device_type_name/json 	controllers.DeviceTypeController.updateDeviceType(device_type_name: String, format: String="json")
 
 #DEVICE
-GET     /get_devices          controllers.DeviceController.getAllDevices(format: String = "csv")
-GET     /get_devices/csv      controllers.DeviceController.getAllDevices(format: String = "csv")
-GET     /get_devices/json     controllers.DeviceController.getAllDevices(format: String = "json")
+GET     /get_all_devices          controllers.DeviceController.getAllDevices(format: String = "csv")
+GET     /get_all_devices/csv      controllers.DeviceController.getAllDevices(format: String = "csv")
+GET     /get_all_devices/json     controllers.DeviceController.getAllDevices(format: String = "json")
 GET     /get_device/:uri          controllers.DeviceController.getDevice(uri: String, format: String = "csv")
 GET     /get_device/:uri/csv      controllers.DeviceController.getDevice(uri: String, format: String = "csv")
 GET     /get_device/:uri/json     controllers.DeviceController.getDevice(uri: String,format: String = "json")
@@ -35,22 +38,24 @@ GET     /get_sensor_types/json controllers.SensorTypeController.getAllSensorType
 POST	/add_sensor_type controllers.SensorTypeController.addSensorType()
 
 # SensorReading
-GET		/sensors/:deviceId/:timeStamp/:sensorType			controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
-GET     /sensors/:deviceId/:timeStamp/:sensorType/csv       controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
-GET		/sensors/:deviceId/:timeStamp/:sensorType/json	controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "json")
-GET 	/sensors/:deviceId/:startTime/:endTime/:sensorType	controllers.SensorReadingController.searchInTimeRange(deviceId: String, startTime: String, endTime: String, sensorType: String, format: String = "csv")
-GET     /sensors/:deviceId/:startTime/:endTime/:sensorType/csv  controllers.SensorReadingController.searchInTimeRange(deviceId: String, startTime: String, endTime: String, sensorType: String, format: String = "csv")
-GET 	/sensors/:deviceId/:startTime/:endTime/:sensorType/json	controllers.SensorReadingController.searchInTimeRange(deviceId: String, startTime: String, endTime: String, sensorType: String, format: String = "json")
-GET		/last_readings_from_all_devices/:timeStamp/:sensorType	controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "csv")
-GET     /last_readings_from_all_devices/:timeStamp/:sensorType/csv  controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "csv")
-GET		/last_readings_from_all_devices/:timeStamp/:sensorType/json	controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "json")
+POST	/sensor_reading				  			controllers.SensorReadingController.add()
+
+GET 	/sensor_reading_range/:sensorName/:startTime/:endTime	controllers.SensorReadingController.searchInTimeRange(sensorName: String, startTime: String, endTime: String, format: String = "csv")
+GET 	/sensor_reading_range/:sensorName/:startTime/:endTime/json	controllers.SensorReadingController.searchInTimeRange(sensorName: String, startTime: String, endTime: String, format: String = "json")
 GET     /lastest_readings_from_all_devices/:sensorType  controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "csv")
 GET     /lastest_readings_from_all_devices/:sensorType/csv  controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "csv")
 GET     /lastest_readings_from_all_devices/:sensorType/json controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "json")
-POST	/sensors/				  			controllers.SensorReadingController.add(publish:Boolean = false)
-POST	/sensors				  			controllers.SensorReadingController.add(publish:Boolean = false)
-POST	/sensors_save/				  		controllers.SensorReadingController.add(publish:Boolean = false)
-POST	/sensors_save				  		controllers.SensorReadingController.add(publish:Boolean = false)
+GET		/sensor_reading/:sensorName/:timeStamp			controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "csv")
+GET     /sensor_reading/:sensorName/:timeStamp/csv      controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "csv")
+GET		/sensor_reading/:sensorName/:timeStamp/json		controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "json")
+
+# Old SensorReading
+#GET		/sensors/:deviceId/:timeStamp/:sensorType			controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
+#GET     /sensors/:deviceId/:timeStamp/:sensorType/csv       controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
+#GET		/sensors/:deviceId/:timeStamp/:sensorType/json	controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "json")
+GET		/last_readings_from_all_devices/:timeStamp/:sensorType	controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "csv")
+GET     /last_readings_from_all_devices/:timeStamp/:sensorType/csv  controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "csv")
+GET		/last_readings_from_all_devices/:timeStamp/:sensorType/json	controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "json")
 
 #Metadata
 #POST	/add_sensor				  controllers.MetadataController.addSensor()

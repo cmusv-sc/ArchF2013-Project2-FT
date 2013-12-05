@@ -181,7 +181,7 @@ public class MetadataController extends Controller {
 			return internalServerError("database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		models.SensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
+		models.OldSensorReading reading = dbHandler.searchReading(deviceId, timeStamp, sensorType);
 		if(reading == null){
 			return notFound("no reading found");
 		}

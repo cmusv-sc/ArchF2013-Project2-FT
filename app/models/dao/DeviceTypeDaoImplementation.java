@@ -9,6 +9,7 @@ import java.util.Map;
 import models.DeviceType;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -19,6 +20,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 
 	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 	private DataSourceTransactionManager txManager;
 
 	public DataSourceTransactionManager getTxManager() {
@@ -36,7 +38,7 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 		
 		Map<String, DeviceType> deviceTypesMap = new HashMap<String, DeviceType>();
 		for (DeviceType deviceType : deviceTypes) {
-			if (deviceType.getSensorTypes() == null) {
+			if (deviceType.getSensorTypeNames() == null) {
 				deviceType.addSensorTypes(new LinkedList<String>());
 			}
 			deviceTypesMap.put(deviceType.getDeviceTypeName(), deviceType);
@@ -45,7 +47,7 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 		List<Map<String,Object>> deviceTypeSensorTypeMap = getAllDevicesSensorTypes();
 		
 		for (Map<String, Object> map : deviceTypeSensorTypeMap) {
-			deviceTypesMap.get(map.get("DEVICE_TYPE_NAME")).getSensorTypes().add((String)map.get("SENSOR_TYPE_NAME"));
+			deviceTypesMap.get(map.get("DEVICE_TYPE_NAME")).getSensorTypeNames().add((String)map.get("SENSOR_TYPE_NAME"));
 		}
 		
 		List<DeviceType> result = new ArrayList<DeviceType>();
@@ -61,13 +63,13 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 		String sqlStatement = "select * from cmu.course_device_type where device_type_name = ?";
 		DeviceType deviceType = simpleJdbcTemplate.queryForObject(sqlStatement, ParameterizedBeanPropertyRowMapper.newInstance(DeviceType.class), deviceTypeName);
 		
-		if (deviceType.getSensorTypes() == null) {
+		if (deviceType.getSensorTypeNames() == null) {
 			deviceType.addSensorTypes(new ArrayList<String>());
 		}
 		List<Map<String, Object>> deviceTypeSensorTypeMap = getDeviceSensorTypes(deviceTypeName);
 		
 		for (Map<String, Object> map : deviceTypeSensorTypeMap) {
-			deviceType.getSensorTypes().add((String)map.get("SENSOR_TYPE_NAME"));
+			deviceType.getSensorTypeNames().add((String)map.get("SENSOR_TYPE_NAME"));
 		}
 		
 		return deviceType;
@@ -139,6 +141,39 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 
 	public void setSimpleJdbcTemplate(SimpleJdbcTemplate simpleJdbcTemplate) {
 		this.simpleJdbcTemplate = simpleJdbcTemplate;
+	}
+
+	//TODO
+	@Override
+	public DeviceType updateDeviceType(String deviceTypeName, DeviceType newDeviceType) {
+		TransactionDefinition def = new DefaultTransactionDefinition();
+	    TransactionStatus status = txManager.getTransaction(def);
+	    
+		final String UPDATE_DEVICE_TYPE = "update cmu.course_device_type set manufacturer = ?,device_type_user_defined_fields = ? where device_type_name = ?";
+
+		try {
+			int num = simpleJdbcTemplate.update(UPDATE_DEVICE_TYPE, newDeviceType.getManufacturer(), newDeviceType.getDeviceTypeUserDefinedFields(), deviceTypeName);
+			if (num < 1) {
+				txManager.rollback(status);
+				return null;
+			}
+			
+		} catch(DataAccessException e) {
+			txManager.rollback(status);
+			return null;
+		}
+		
+		
+		txManager.commit(status);
+		return getDeviceType(deviceTypeName);
+	}
+
+	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+		return namedParameterJdbcTemplate;
+	}
+
+	public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
 }

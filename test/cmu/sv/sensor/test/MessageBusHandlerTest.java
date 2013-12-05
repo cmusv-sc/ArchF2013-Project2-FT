@@ -2,7 +2,7 @@ package cmu.sv.sensor.test;
 
 import static org.junit.Assert.assertEquals;
 import models.MessageBusHandler;
-import models.SensorReading;
+import models.OldSensorReading;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -28,7 +28,7 @@ public class MessageBusHandlerTest {
 	}
 	@Test
 	public void testPublishData(){
-		SensorReading reading = new SensorReading("test-Device", new Long(1), "test-topic", 1.0);
+		OldSensorReading reading = new OldSensorReading("test-Device", new Long(1), "test-topic", 1.0);
 		assertEquals(true, handler.publish(reading));
 		
 	}

@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import models.SensorCategory;
-import models.SensorReading;
+import models.OldSensorReading;
 
 public class SensorCategoryDaoImplementation implements SensorCategoryDao{
 	private SimpleJdbcTemplate simpleJdbcTemplate;

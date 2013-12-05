@@ -27,9 +27,9 @@ public class DeviceTypeDaoTest extends AbstractTest{
 		assertEquals("testDeviceTypeName", st.getDeviceTypeName());
 		assertEquals("testManufacturer", st.getManufacturer());
 		assertEquals("0.1", st.getVersion());
-		assertEquals("testUserDefinedFields", st.getUserDefinedFields());
-		assertEquals(1, st.getSensorTypes().size());
-		assertEquals("texas instrument temp", st.getSensorTypes().get(0));
+		assertEquals("testUserDefinedFields", st.getDeviceTypeUserDefinedFields());
+		assertEquals(1, st.getSensorTypeNames().size());
+		assertEquals("texas instrument temp", st.getSensorTypeNames().get(0));
 		assertEquals(2, deviceTypeDaoImplementation.getAllDeviceTypes().size());
 		
 		deviceTypeDaoImplementation.addDeviceType("testDeviceTypeName2", "testManufacturer2", "0.1", "testUserDefinedFields2", Arrays.asList("temp", "light"));

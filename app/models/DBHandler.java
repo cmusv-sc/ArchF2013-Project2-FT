@@ -356,7 +356,7 @@ public class DBHandler {
 		}
 	}
 	
-	public SensorReading searchReading(String deviceId, Long timeStamp, String sensorType){
+	public OldSensorReading searchReading(String deviceId, Long timeStamp, String sensorType){
 		Connection connection = getConnection();
 		try{
 			if (connection == null) return null;
@@ -375,7 +375,7 @@ public class DBHandler {
 			double rs_value = resultSet.getDouble(4);			
 			connection.close();
 			//System.out.println("Connection closed.");
-			return new SensorReading(rs_deviceId, rs_timeStamp, rs_sensorType, rs_value);			
+			return new OldSensorReading(rs_deviceId, rs_timeStamp, rs_sensorType, rs_value);			
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
@@ -388,7 +388,7 @@ public class DBHandler {
 		}
 	}
 
-	public ArrayList<SensorReading> searchReading(String deviceId, Long startTime, long endTime, String sensorType){		
+	public ArrayList<OldSensorReading> searchReading(String deviceId, Long startTime, long endTime, String sensorType){		
 		Connection connection = getConnection();
 		try{
 			if (connection == null) return null;
@@ -403,11 +403,11 @@ public class DBHandler {
 			preparedStatement.setString(4, sensorType);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			long finishQueryTime = System.nanoTime();
-			ArrayList<SensorReading> readings = new ArrayList<SensorReading>();
+			ArrayList<OldSensorReading> readings = new ArrayList<OldSensorReading>();
 			while(resultSet.next()){
 				Long rs_timeStamp = resultSet.getLong(1);
 				double rs_value = resultSet.getDouble(2);
-				readings.add(new SensorReading(deviceId, rs_timeStamp, sensorType, rs_value));
+				readings.add(new OldSensorReading(deviceId, rs_timeStamp, sensorType, rs_value));
 			}
 			connection.close();
 			System.out.println(readings.size() + " reading(s) fetched in searchReading." + 
@@ -430,7 +430,7 @@ public class DBHandler {
 	// avoid network traffic. However, this method may not be scalable when the number of devices keeps on
 	// increase.
 	// TODO: Consider publisher/subscriber pattern to refind this set of queries.
-	public ArrayList<SensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType){
+	public ArrayList<OldSensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType){
 		Connection connection = getConnection();
 		try{
 			if (connection == null) return null;
@@ -458,12 +458,12 @@ public class DBHandler {
 			preparedStatement.setString(4, sensorType);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			long finishQueryTime = System.nanoTime();
-			ArrayList<SensorReading> readings = new ArrayList<SensorReading>();			
+			ArrayList<OldSensorReading> readings = new ArrayList<OldSensorReading>();			
 			while(resultSet.next()){
 				String rs_deviceId = resultSet.getString(1);
 				Long rs_timeStamp = resultSet.getLong(2);
 				double rs_value = resultSet.getDouble(3);
-				readings.add(new SensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
+				readings.add(new OldSensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
 			}
 			System.out.println(readings.size() + " reading(s) fetched in last_readings_from_all_devices." + 
 					" queryTime=" + (finishQueryTime - startTime) / 1000000 + 
@@ -483,7 +483,7 @@ public class DBHandler {
 		}
 	}	
 	
-	public ArrayList<SensorReading> lastestReadingFromAllDevices(String sensorType){
+	public ArrayList<OldSensorReading> lastestReadingFromAllDevices(String sensorType){
         Connection connection = getConnection();
         try{
                 if (connection == null) return null;
@@ -507,12 +507,12 @@ public class DBHandler {
                 preparedStatement.setString(2, sensorType);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 long finishQueryTime = System.nanoTime();
-                ArrayList<SensorReading> readings = new ArrayList<SensorReading>();                        
+                ArrayList<OldSensorReading> readings = new ArrayList<OldSensorReading>();                        
                 while(resultSet.next()){
                         String rs_deviceId = resultSet.getString(1);
                         Long rs_timeStamp = resultSet.getLong(2);
                         double rs_value = resultSet.getDouble(3);
-                        readings.add(new SensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
+                        readings.add(new OldSensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
                 }
                 System.out.println(readings.size() + " reading(s) fetched in lastest_readings_from_all_devices." + 
                                 " queryTime=" + (finishQueryTime - startTime) / 1000000 + 

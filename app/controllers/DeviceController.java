@@ -1,14 +1,20 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 
 //import models.DBHandler;
 import models.Device;
+import models.DeviceType;
 import models.dao.DeviceDao;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.google.gson.Gson;
 
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -28,13 +34,6 @@ public class DeviceController extends Controller {
 		}
 		return true;
 	}
-	
-//	private static boolean testDBHandler(){
-//		if(dbHandler == null){
-//			dbHandler = new DBHandler("conf/database.properties");
-//		}
-//		return true;
-//	}
 	
 	public static Result add() {
 		JsonNode json = request().body().asJson();
@@ -66,6 +65,31 @@ public class DeviceController extends Controller {
 			return ok("device not saved");
 		 } 
          return ok("device saved");		 
+	}
+	
+	public static Result updateDevice(String deviceUri, String format) {
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		checkDao();
+		
+		Gson gson = new Gson();
+		
+		Device wrapper = gson.fromJson(request().body().asJson().toString(), Device.class);
+		
+		ArrayList<String> error = new ArrayList<String>();
+
+		
+		Device device = deviceDao.updateDevice(deviceUri, wrapper);
+		if(device == null){
+			return notFound("no devices found");
+		}
+		String ret = new String();
+		if (format.equals("json"))
+		{			
+			ret = new Gson().toJson(device);		
+		} else {			
+				ret = toCsv(Arrays.asList(device));
+		}
+		return ok(ret);
 	}
 
 	public static Result getAllDevices(String format) {

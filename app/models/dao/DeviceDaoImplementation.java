@@ -5,17 +5,29 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import models.Device;
+import models.Location;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-
-import models.Device;
-import models.DeviceType;
-import models.Location;
-import models.SensorCategory;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 public class DeviceDaoImplementation implements DeviceDao{
+	
 	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private DataSourceTransactionManager txManager;
+
+	public DataSourceTransactionManager getTxManager() {
+		return txManager;
+	}
+
+	public void setTxManager(DataSourceTransactionManager txManager) {
+		this.txManager = txManager;
+	}
 
 	@Override
 	public boolean addDevice(String deviceTypeName, String uri,
@@ -138,6 +150,61 @@ public class DeviceDaoImplementation implements DeviceDao{
 
 	public void setSimpleJdbcTemplate(SimpleJdbcTemplate simpleJdbcTemplate) {
 		this.simpleJdbcTemplate = simpleJdbcTemplate;
+	}
+
+	//TODO to test
+	@Override
+	public Device updateDevice(String deviceUri, Device newDevice) {
+		TransactionDefinition def = new DefaultTransactionDefinition();
+	    TransactionStatus status = txManager.getTransaction(def);
+	    
+	    //1. set current (device, location) as not active
+	    final String UPDATE_LOCATION_AS_INACTIVE = "update cmu.course_device_location set is_active = 'false' where is_active = 'true'";
+
+		try {
+			int num = simpleJdbcTemplate.update(UPDATE_LOCATION_AS_INACTIVE);
+			if (num < 1) {
+				txManager.rollback(status);
+				return null;
+			}
+			
+		} catch(DataAccessException e) {
+			txManager.rollback(status);
+			return null;
+		}
+	    //2. add new location
+		final String ADD_NEW_LOCATION = "insert into cmu.course_location values(cmu.course_location_id_sq.nextVal, ?, ?, ?, ?)";
+		try {
+			int num = simpleJdbcTemplate.update(ADD_NEW_LOCATION, newDevice.getLocation().getLongitude(), newDevice.getLocation().getLatitude(), newDevice.getLocation().getAltitude(), newDevice.getLocation().getRepresentation());
+			if (num < 1) {
+				txManager.rollback(status);
+				return null;
+			}
+			
+		} catch(DataAccessException e) {
+			txManager.rollback(status);
+			return null;
+		}
+		
+		//2. add new location
+		final String SELECT_NEW_LOCATION_ID = "select location_id from cmu.course_location where longitude = ? and latitude = ? and altitude = ?)";
+		final String SELECT_DEVICE_ID = "select device_id from cmu.course_device where device_uri = ?)";
+		int locationId = simpleJdbcTemplate.queryForInt(SELECT_NEW_LOCATION_ID, newDevice.getLocation().getLongitude(), newDevice.getLocation().getLatitude(), newDevice.getLocation().getAltitude(), newDevice.getLocation().getRepresentation());
+		int deviceId = simpleJdbcTemplate.queryForInt(SELECT_DEVICE_ID, deviceUri);
+		final String ADD_NEW_DEVICE_LOCATION = "insert into cmu.course_device_location values(?,?,?,?,?)";
+		try {
+			int num = simpleJdbcTemplate.update(ADD_NEW_DEVICE_LOCATION, deviceId, locationId, new Timestamp(new Date().getTime()), newDevice.getUserDefinedFields(), "true");
+			if (num < 1) {
+				txManager.rollback(status);
+				return null;
+			}
+			
+		} catch(DataAccessException e) {
+			txManager.rollback(status);
+			return null;
+		}
+		txManager.commit(status);
+		return getDevice(deviceUri);
 	}
 
 }

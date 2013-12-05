@@ -155,7 +155,7 @@ public class MessageBusHandler {
 		 }
 		 return false;
 	}
-	private String createPublishData(SensorReading reading){
+	private String createPublishData(OldSensorReading reading){
 		StringBuilder builder = new StringBuilder();
 		builder.append("deviceId:");
 		builder.append(reading.getDeviceId());
@@ -197,7 +197,7 @@ public class MessageBusHandler {
 	      //Reading Content
 	    
 	}
-	public boolean publish(SensorReading reading){
+	public boolean publish(OldSensorReading reading){
 		if(!isTopicExists(reading.getSensorType())){
 			addTopic(reading.getSensorType());
 		}

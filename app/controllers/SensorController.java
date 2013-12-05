@@ -110,10 +110,6 @@ public class SensorController extends Controller {
 	private static String toCsv(List<Sensor> sensors) {
 		StringWriter sw = new StringWriter();
 		CellProcessor[] processors = new CellProcessor[] {
-				new UniqueHashCode(),
-				new Optional(),
-				new Optional(),
-				new Optional(),
 				new Optional(),
 				new Optional(),
 				new Optional(),

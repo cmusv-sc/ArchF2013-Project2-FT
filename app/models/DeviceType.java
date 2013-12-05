@@ -10,8 +10,11 @@ public class DeviceType {
 	private String deviceTypeName;
 	private String manufacturer;
 	private String version;
-	private String userDefinedFields;
-	private List<String> sensorTypes;
+	private String deviceTypeUserDefinedFields;
+	private List<String> sensorTypeNames;
+	public void setSensorTypeNames(List<String> sensorTypeNames) {
+		this.sensorTypeNames = sensorTypeNames;
+	}
 	public String getDeviceTypeName() {
 		return deviceTypeName;
 	}
@@ -30,17 +33,17 @@ public class DeviceType {
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	public String getUserDefinedFields() {
-		return userDefinedFields;
+	public String getDeviceTypeUserDefinedFields() {
+		return deviceTypeUserDefinedFields;
 	}
-	public void setUserDefinedFields(String userDefinedFields) {
-		this.userDefinedFields = userDefinedFields;
+	public void setDeviceTypeUserDefinedFields(String userDefinedFields) {
+		this.deviceTypeUserDefinedFields = userDefinedFields;
 	}
-	public List<String> getSensorTypes() {
-		return sensorTypes;
+	public List<String> getSensorTypeNames() {
+		return sensorTypeNames;
 	}
 	public void addSensorTypes(List<String> sensorTypes) {
-		this.sensorTypes = sensorTypes;
+		this.sensorTypeNames = sensorTypes;
 	}
 	
 	public String toCSVString() {
@@ -57,12 +60,12 @@ public class DeviceType {
 			obj.put("device_type_name",  deviceTypeName);
 			obj.put("manufacturer", manufacturer);
 			obj.put("version", version);
-			obj.put("user_defined_fields", userDefinedFields);
+			obj.put("user_defined_fields", deviceTypeUserDefinedFields);
 			
-			if (sensorTypes.size() > 0) {
-				Object[] content = new Object[sensorTypes.size()];
+			if (sensorTypeNames.size() > 0) {
+				Object[] content = new Object[sensorTypeNames.size()];
 				int i = 0;
-				for (String sensorType : sensorTypes) {
+				for (String sensorType : sensorTypeNames) {
 					content[i] = sensorType;
 					i++;
 				}
