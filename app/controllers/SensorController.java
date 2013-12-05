@@ -12,7 +12,6 @@ import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.supercsv.cellprocessor.Optional;
-import org.supercsv.cellprocessor.constraint.UniqueHashCode;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
@@ -21,7 +20,6 @@ import org.supercsv.prefs.CsvPreference;
 import play.mvc.Controller;
 import play.mvc.Result;
 //import models.cmu.sv.sensor.SensorReading;
-
 
 import com.google.gson.Gson;
 
@@ -172,5 +170,16 @@ public class SensorController extends Controller {
 		}
 		return sw.getBuffer().toString();
 	}
-
+	
+	public static Result deleteSensor(String sensorName){
+		checkDao();
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		if(sensorDao.deleteSensor(sensorName)){
+			System.out.println("sensor deleted");
+			return ok("sensor deleted");
+		}else{
+			System.out.println("sensor is not deleted");
+			return ok("sensor is not deleted");
+		}
+	}
 }

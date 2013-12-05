@@ -97,7 +97,7 @@ public class SensorTypeController extends Controller {
 
 		if(error.size() == 0){
 			System.out.println("sensor type updated");
-			return ok("sensor type updaed");
+			return ok("sensor type updated");
 		}
 		else{
 			System.out.println("sensor type not updated: " + error.toString());
@@ -154,5 +154,19 @@ public class SensorTypeController extends Controller {
 			}
 		}
 		return ok(ret);
+	}
+	
+	public static Result deleteSensorType(String sensorTypeName){
+		if(!checkDao()){
+			return internalServerError("database conf file not found");
+		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		if(sensorTypeDao.deleteSensorType(sensorTypeName)){
+			System.out.println("sensor type deleted");
+			return ok("sensor type deleted");
+		}else{
+			System.out.println("sensor type is not deleted");
+			return ok("sensor type is not deleted");
+		}
 	}
 }

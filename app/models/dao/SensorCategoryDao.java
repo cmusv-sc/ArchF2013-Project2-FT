@@ -9,4 +9,5 @@ public interface SensorCategoryDao {
 	public boolean updateSensorCategory(String sensorCategoryName, String purpose);
 	public List<SensorCategory> getAllSensorCategories();
 	public SensorCategory getSensorCategory(String SensorCategoryName);
+	public boolean deleteSensorCategory(String sensorCategoryName);
 }

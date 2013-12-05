@@ -37,6 +37,7 @@ GET     /get_sensor_types/csv controllers.SensorTypeController.getAllSensorTypes
 GET     /get_sensor_types/json controllers.SensorTypeController.getAllSensorTypes(format: String = "json")
 POST	/add_sensor_type controllers.SensorTypeController.addSensorType()
 POST	/update_sensor_type controllers.SensorTypeController.updateSensorType()
+DELETE	/delete_sensor_type/:sensorTypeName controllers.SensorTypeController.deleteSensorType(sensorTypeName: String)
 
 # SensorReading
 POST	/sensor_reading				  			controllers.SensorReadingController.add()
@@ -66,11 +67,13 @@ GET 	/get_sensor/:sensor_name/json	controllers.SensorController.getSensor(sensor
 GET 	/get_sensor/:sensor_name/csv	controllers.SensorController.getSensor(sensor_name: String, format: String="csv")
 GET 	/get_all_sensors/json	controllers.SensorController.getAllSensors(format: String="json")
 GET 	/get_all_sensors/csv	controllers.SensorController.getAllSensors(format: String="csv")
+DELETE  /delete_sensor/:sensorName     controllers.SensorController.deleteSensor(sensorName: String)
 
-POST	/add_device 			controllers.MetadataController.addDevice()
+POST	/add_device 				controllers.MetadataController.addDevice()
 POST	/add_sensor_category		controllers.SensorCategoryController.addSensorCategory()
 POST	/update_sensor_category		controllers.SensorCategoryController.updateSensorCategory()
 GET		/get_sensor_category/:sensor_category_name/json		controllers.SensorCategoryController.getSensorCategory(sensor_category_name: String, format: String="json")
+DELETE	/delete_sensor_category/:sensorCategoryName 		controllers.SensorCategoryController.deleteSensorCategory(sensorCategoryName: String)
 
 # WorkFlow
 POST	/workflow/							controllers.WorkFlowRunnerController.changeInterval()
