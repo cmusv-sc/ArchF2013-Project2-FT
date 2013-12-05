@@ -2,7 +2,7 @@
 Sensor Service Platform APIs Version 1.2
 ========================================
 Advisors: Jia Zhang, Bob Iannucci, Martin Griss, Steven Rosenberg, Anthony Rowe<br/>
-Current contributors: Bo Liu, Lyman Cao, Chris Lee<br/>
+Current contributors: Bo Liu, Ching Lun Lin, Chris Lee, David Lee, Lyman Cao, <br/>
 Past Contributors: Yuan Ren, Mark Hennessy, Kaushik Gopal, Sean Xiao, Sumeet Kumar, David Pfeffer, Basmah Aljedia
 
 EXECUTIVE SUMMARY
