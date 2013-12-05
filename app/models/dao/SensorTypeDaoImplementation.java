@@ -41,9 +41,9 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 		int sensorTypeId = simpleJdbcTemplate.queryForInt(SQL_SEQUENCE);
 		
 //		TODO: Need to use this in production for SAP HANA
-		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_TYPE (SENSOR_TYPE_ID, SENSOR_TYPE_NAME, MANUFACTURER, VERSION, MAX_VALUE, MIN_VALUE, UNIT, INTERPRETER, USER_DEFINED_FIELDS, SENSOR_CATEGORY_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";		
+		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_TYPE (SENSOR_TYPE_ID, SENSOR_TYPE_NAME, MANUFACTURER, VERSION, MAX_VALUE, MIN_VALUE, UNIT, INTERPRETER, SENSOR_TYPE_USER_DEFINED_FIELDS, SENSOR_CATEGORY_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";		
 //		Test Only
-//		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_TYPE (SENSOR_TYPE_ID, SENSOR_TYPE_NAME, MANUFACTURER, VERSION, MAX_VALUE, MIN_VALUE, UNIT, INTERPRETER, USER_DEFINED_FIELDS, SENSOR_CATEGORY_ID) VALUES (NEXT VALUE FOR CMU.COURSE_SENSOR_TYPE_ID_SEQ, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_TYPE (SENSOR_TYPE_ID, SENSOR_TYPE_NAME, MANUFACTURER, VERSION, MAX_VALUE, MIN_VALUE, UNIT, INTERPRETER, SENSOR_TYPE_USER_DEFINED_FIELDS, SENSOR_CATEGORY_ID) VALUES (NEXT VALUE FOR CMU.COURSE_SENSOR_TYPE_ID_SEQ, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try{
 			
 //			TODO: Need to use this in production for SAP HANA
@@ -72,7 +72,41 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 		
 		return true;
 	}
+	
 
+	@Override
+	public boolean updateSensorType(String sensorTypeName,
+			String manufacturer, String version, double maxValue,
+			double minValue, String unit, String interpreter,
+			String userDefinedFields, String sensorCategoryName) {
+//		Find SensorCategoryId by SensorCategoryName, return false if cannot find it
+		int sensorCategoryId = -1;
+		final String SQL_FIND_CATEGORY_ID =
+				"SELECT SENSOR_CATEGORY_ID "
+				+ "FROM CMU.COURSE_SENSOR_CATEGORY "
+				+ "WHERE SENSOR_CATEGORY_NAME = ?";
+		try{
+			sensorCategoryId = simpleJdbcTemplate.queryForInt(SQL_FIND_CATEGORY_ID, sensorCategoryName);
+		}catch(Exception e){
+			return false;
+		}
+		if(sensorCategoryId == -1){
+			return false;
+		}
+		
+		final String SQL = "UPDATE CMU.COURSE_SENSOR_TYPE " 
+				+ "SET MANUFACTURER = ?, VERSION = ?, MAX_VALUE = ?, MIN_VALUE = ?, UNIT = ?, INTERPRETER = ?, SENSOR_TYPE_USER_DEFINED_FIELDS = ?, SENSOR_CATEGORY_ID = ? " 
+				+ "WHERE SENSOR_TYPE_NAME = ?";		
+		try{
+			simpleJdbcTemplate.update(SQL, manufacturer, version, maxValue, minValue, unit, 
+					interpreter, userDefinedFields, sensorCategoryId, sensorTypeName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	@Override
 	public SensorType getSensorType(String sensorTypeName) {
 		List<SensorType> types = getAllSensorTypes();

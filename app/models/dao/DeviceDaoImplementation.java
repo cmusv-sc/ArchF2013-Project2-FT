@@ -45,7 +45,7 @@ public class DeviceDaoImplementation implements DeviceDao{
 		Timestamp timestamp = new Timestamp(time);
 		
 		// TODO need to use this in production for SAP HANA
-		final String SQL_INSERT_DEVICE = "INSERT INTO CMU.COURSE_DEVICE (DEVICE_ID, DEVICE_TYPE_ID, URI, REGISTRATION_TIMESTAMP, USER_DEFINED_FIELDS) VALUES (?, ?, ?, ?, ?)";
+		final String SQL_INSERT_DEVICE = "INSERT INTO CMU.COURSE_DEVICE (DEVICE_ID, DEVICE_TYPE_ID, URI, REGISTRATION_TIMESTAMP, DEVICE_USER_DEFINED_FIELDS) VALUES (?, ?, ?, ?, ?)";
 		
 		// for test only
 //		final String SQL_INSERT_DEVICE = "INSERT INTO CMU.COURSE_DEVICE (DEVICE_ID, DEVICE_TYPE_ID, URI, REGISTRATION_TIMESTAMP, USER_DEFINED_FIELDS) VALUES (next value for CMU.COURSE_DEVICE_ID_SEQ, ?, ?, ?, ?)";
@@ -94,6 +94,7 @@ public class DeviceDaoImplementation implements DeviceDao{
 			
 			
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			return false;
 		}
 		return true;
@@ -102,7 +103,7 @@ public class DeviceDaoImplementation implements DeviceDao{
 
 	@Override
 	public List<Device> getAllDevices() {
-		final String SQL = "SELECT * FROM CMU.COURSE_DEVICE";
+		final String SQL = "SELECT * FROM CMU.COURSE_DEVICE d, CMU.COURSE_DEVICE_TYPE dt WHERE d.DEVICE_TYPE_ID = dt.DEVICE_TYPE_ID";
 		final String SQL_SELECT_DEVICE_LOCATION = "SELECT LOCATION_ID FROM CMU.COURSE_DEVICE_LOCATION WHERE DEVICE_ID = ? AND IS_ACTIVE = 'Y'";
 		final String SQL_SELECT_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_DEVICE WHERE URI = ?";
 		final String SQL_SELECT_LOCATION = "SELECT * FROM CMU.COURSE_LOCATION WHERE LOCATION_ID = ?";
@@ -127,7 +128,7 @@ public class DeviceDaoImplementation implements DeviceDao{
 	@Override
 	public Device getDevice(String uri) {
 		
-		final String SQL_SELECT_DEVICE = "SELECT * FROM CMU.COURSE_DEVICE WHERE URI = ?";
+		final String SQL_SELECT_DEVICE = "SELECT * FROM CMU.COURSE_DEVICE d, CMU.COURSE_DEVICE_TYPE dt WHERE d.DEVICE_TYPE_ID = dt.DEVICE_TYPE_ID AND URI = ?";
 		final String SQL_SELECT_DEVICE_LOCATION = "SELECT LOCATION_ID FROM CMU.COURSE_DEVICE_LOCATION WHERE DEVICE_ID = ? AND IS_ACTIVE = 'Y'";
 		final String SQL_SELECT_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_DEVICE WHERE URI = ?";
 		final String SQL_SELECT_LOCATION = "SELECT * FROM CMU.COURSE_LOCATION WHERE LOCATION_ID = ?";

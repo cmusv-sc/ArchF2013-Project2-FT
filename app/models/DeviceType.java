@@ -36,8 +36,8 @@ public class DeviceType {
 	public String getDeviceTypeUserDefinedFields() {
 		return deviceTypeUserDefinedFields;
 	}
-	public void setDeviceTypeUserDefinedFields(String userDefinedFields) {
-		this.deviceTypeUserDefinedFields = userDefinedFields;
+	public void setDeviceTypeUserDefinedFields(String deviceTypeUserDefinedFields) {
+		this.deviceTypeUserDefinedFields = deviceTypeUserDefinedFields;
 	}
 	public List<String> getSensorTypeNames() {
 		return sensorTypeNames;
@@ -60,7 +60,11 @@ public class DeviceType {
 			obj.put("device_type_name",  deviceTypeName);
 			obj.put("manufacturer", manufacturer);
 			obj.put("version", version);
+<<<<<<< HEAD
 			obj.put("user_defined_fields", deviceTypeUserDefinedFields);
+=======
+			obj.put("device_type_user_defined_fields", deviceTypeUserDefinedFields);
+>>>>>>> 9c23068d1719b8d9c3e2596b91ba4faa71721045
 			
 			if (sensorTypeNames.size() > 0) {
 				Object[] content = new Object[sensorTypeNames.size()];

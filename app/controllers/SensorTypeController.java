@@ -36,7 +36,7 @@ public class SensorTypeController extends Controller {
 			return internalServerError("database conf file not found");
 		}
 
-		// Parse JSON FIle
+		// Parse JSON File
 		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
 		String manufacturer = json.findPath("manufacturer").getTextValue();
 		String version = json.findPath("version").getTextValue();
@@ -61,6 +61,47 @@ public class SensorTypeController extends Controller {
 		else{
 			System.out.println("some sensor types not saved: " + error.toString());
 			return ok("some sensor types not saved: " + error.toString());
+		}
+	}
+	
+	public static Result updateSensorType() {
+		JsonNode json = request().body().asJson();
+		if(json == null) {
+			return badRequest("Expecting Json data");
+		} 
+		if(!checkDao()){
+			return internalServerError("database conf file not found");
+		}
+
+		// Parse JSON File
+		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
+		String manufacturer = json.findPath("manufacturer").getTextValue();
+		String version = json.findPath("version").getTextValue();
+		Double maxValue = json.findPath("maximum_value").getDoubleValue();
+		Double minValue = json.findPath("minimum_value").getDoubleValue();
+		String unit = json.findPath("unit").getTextValue();
+		String interpreter = json.findPath("interpreter").getTextValue();
+		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
+		String sensorCategoryName = json.findPath("sensor_category_name").getTextValue();
+		ArrayList<String> error = new ArrayList<String>();
+		
+		if(sensorTypeDao.getSensorType(sensorTypeName) == null){
+			error.add(sensorTypeName);
+		}
+
+		boolean result = sensorTypeDao.updateSensorType(sensorTypeName, manufacturer, version, maxValue, minValue, unit, interpreter, userDefinedFields, sensorCategoryName);
+
+		if(!result){
+			error.add(sensorTypeName);
+		}
+
+		if(error.size() == 0){
+			System.out.println("sensor type updated");
+			return ok("sensor type updaed");
+		}
+		else{
+			System.out.println("sensor type not updated: " + error.toString());
+			return ok("sensor type not updated: " + error.toString());
 		}
 	}
 	

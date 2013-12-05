@@ -31,20 +31,36 @@ public class SensorDaoImplementation implements SensorDao{
 		}
 		return true;		
 	}
+	
+	@Override
+	public boolean updateSensor(String sensorTypeName, String deviceUri, String sensorName, String sensorUserDefinedFields) {
+		final String GETSENSORTYPEID = "select sensor_type_id from cmu.course_sensor_type where sensor_type_name = ?";
+		int sensorTypeId = simpleJdbcTemplate.queryForInt(GETSENSORTYPEID, sensorTypeName);
+		
+		final String GETDEVICEID = "select device_id from cmu.course_device where uri = ?";
+		int deviceId = simpleJdbcTemplate.queryForInt(GETDEVICEID, deviceUri);
+		
+		final String SQL = "UPDATE CMU.COURSE_SENSOR " 
+				+ "SET SENSOR_TYPE_ID = ?, DEVICE_ID = ?, SENSOR_USER_DEFINED_FIELDS = ? " 
+				+ "WHERE SENSOR_NAME = ?";	
+		try{
+			simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorUserDefinedFields, sensorName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;		
+	}
 
 	@Override
 	public Sensor getSensor(String sensorName) {
 		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc WHERE s.sensor_name = ? and s.sensor_type_id = st.sensor_type_id and st.sensor_category_id = sc.sensor_category_id";
-		Sensor sensor = new Sensor();
 		
 		List<Sensor> sensors = simpleJdbcTemplate.query(SQL, 
 				ParameterizedBeanPropertyRowMapper.newInstance(Sensor.class), 
 				sensorName);
-		if(sensors.size() > 0){
-//			Returns the first item if duplicate SensorType exists, it should never happen
-			sensor = sensors.get(0);
-		}
-		return sensor;
+		
+		return (sensors.size() == 0)? null : sensors.get(0);
 	}
 
 	@Override
