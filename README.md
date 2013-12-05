@@ -48,6 +48,16 @@ Currently we are providing APIs in 3 categores:
    - [Delete a sensor](#17)
    - [Delete a device type](#18)
    - [Delete a device](#19)
+   - [Add all sensor categories](#31)
+   - [Add a specific sensor category](#32)
+   - [Add all sensor types](#33)
+   - [Add a specific sensor type](#34)
+   - [Add all sensors](#35)
+   - [Add a specific sensor](#36)
+   - [Add all device types](#37)
+   - [Add a specific device type](#38)
+   - [Add all devices](#39)
+   - [Add a specific device](#40)
 
 
 Detailed Usages:
@@ -400,7 +410,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 32. <a name="32"></a>**GET A SPECIFIC SENSOR CATEGORY**
     - **Purpose**: Query a specific sensor category.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getSensorCategory/sensorCategoryName/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu/getSensorCategory/<"sensorCategoryName">/<"resultFormat">
     - **Semantics**: 
         - **sensorCategoryName**: Sensor category name.
         - **resultFormat**: Either JSON or CSV.
@@ -425,14 +435,14 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 34. <a name="34"></a>**GET A SPECIFIC SENSOR TYPE**
     - **Purpose**: Query a specific sensor type.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getSensorType/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu/getSensorType/<"sensorTypeName">/<"resultFormat">
     - **Semantics**: 
         - **sensorTypeName**" Sensor type name
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/csv<br/>
       - **Sample csv result**: (sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
-      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
+      - **Sample json request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/json
       - **Sample json result**: {"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
       
 
@@ -452,15 +462,73 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 36. <a name="36"></a>**GET A SPECIFIC SENSOR**
     - **Purpose**: Query a specific sensor.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getSensor/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu/getSensor/<"sensorName">/<"resultFormat">
+    - **Semantics**: 
+        - **sensorName**: Sensor name
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu/sensor1/getSensor/csv<br/>
+      - **Sample csv result**: (sensorName, sensorUserDefinedFields, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor1, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
+      - **Sample json request**: http://einstein.sv.cmu.edu/getSensor/<"sensorName">/json
+      - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
+      
+
+      
+37. <a name="37"></a>**GET ALL DEVICE TYPES**
+    - **Purpose**: Query all device types.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu/getAllDeviceTypes/<"resultFormat">
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getSensor/csv<br/>
-      - **Sample csv result**: (sensorName, sensorUserDefinedFields, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
-      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
-      - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
+      - **Sample csv request**: http://einstein.sv.cmu.edu/getAllDeviceTypes/csv<br/>
+      - **Sample csv result**: (deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>device type 1, TI, 1.0, For Test, [temp, light]
+      - **Sample json request**: http://einstein.sv.cmu.edu/getAllDeviceTypes/json
+      - **Sample json result**: [{"deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}]
+     
+
       
+38. <a name="38"></a>**GET A SPECIFIC DEVICE TYPE**
+    - **Purpose**: Query a specific device type.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu/getDeviceType/<"deviceTypeName">/<"resultFormat">
+    - **Semantics**: 
+        - **deviceTypeName**: Device type name.
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu/getDeviceType/device type 1/csv<br/>
+      - **Sample csv result**: (deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>device 1, TI, 1.0, For Test, [temp, light]
+      - **Sample json request**: http://einstein.sv.cmu.edu/getDeviceType/<"deviceTypeName">/json
+      - **Sample json result**: {"deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}
+      
+
+
+39. <a name="39"></a>**GET ALL DEVICES**
+    - **Purpose**: Query all device types.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu/getAllDevices/<"resultFormat">
+    - **Semantics**: 
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu/getAllDevices/csv<br/>
+      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter device type 1, TI, 1.0, For Test, [temp, light]
+      - **Sample json request**: http://einstein.sv.cmu.edu/getAllDevices/json
+      - **Sample json result**: [{"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "locationInterpreter": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}]
+      
+
+
+40. <a name="40"></a>**GET A SPECIFIC DEVICE**
+    - **Purpose**: Query a specific device.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu/getDevice/<"deviceUri">/<"resultFormat">
+    - **Semantics**: 
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/csv<br/>
+      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter device type 1, TI, 1.0, For Test, [temp, light]
+      - **Sample json request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/json
+      - **Sample json result**: {"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "locationInterpreter": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}
+
 
 
 
