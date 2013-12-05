@@ -96,14 +96,18 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 3. <a name="3"></a>**PUBLISH SENSOR READINGS**
     - **Purpose**: Publish sensor readings to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/sensors
+    - **URL**: http://einstein.sv.cmu.edu/sensor_reading
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **device_id** (string): Unique device uri/id.
-        - **timestamp** (int): Recording timestamp of the sensor reading in Unix epoch timestamp format. 
-        - **sensor_type** (string): Type of the sensor, e.g., temperature, CO2 Levels, etc. It is user's responsibility to tag the correct sensor type to the sensor reading.
-        - **sensor_value** (double): The value of the sensor reading. It is user's responsibility to calibrate the sensor readings before publishing.
-    - **Sensor data format**: {"id": <"device_id">, "timestamp": <"timestamp">, <"sensor_type">: <"sensor_value">} 
-        <br/> Note: more than one (sensor_type:sensor_value) pairs can be included in a json file.   
+        - **sensorName** (string, not null): Unique sensor name.
+        - **timestamp** (int, not null): Recording timestamp of the sensor reading in Unix epoch timestamp format. 
+        - **value** (string, not null): The value of the sensor reading. It is user's responsibility to calibrate the sensor readings before publishing.
+        - **isIndoor** (boolean, optional): Sent from indoor or not.
+        - **longitude** (double, optional): Longitude of the sensor reading.
+        - **latitude** (double, optional): Longitude of the sensor reading.
+        - **altitude** (double, optional): Longitude of the sensor reading.
+        - **locationInterpreter** (string, optional): Interpreter information of location.
+    - **Sensor data format**: [{"sensorName": "sensorName", "timestamp": 1368568896000, "value": "16", "isIndoor":true, "longitude":10, "latitude":10, "altitude", 10, "locationInterpreter":"GPS"}] 
+        <br/> Note: more than one sensor reading can be included in a json.   
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor reading data in a json file (**please modify the timestamp to a different value**):
