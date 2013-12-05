@@ -304,24 +304,23 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 14. <a name="12"></a>**EDIT SENSOR TYPE**
     - **Purpose**: Edit a sensor type to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/update_sensor_type
+    - **URL**: http://einstein.sv.cmu.edu/updateSensorType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **sensor_type_name** (string): Name of the sensor type, which cannot be changed
+        - **sensorTypeName** (string): Name of the sensor type, which cannot be changed
         - **manufacturer** (string): Name of the manufacturerof this sensor type
         - **version** (string): Version of the sensor type
-        - **maximum_value** (double): Maximum value of the sensor reading under this sensor type
-        - **minimum_value** (double): Minimum value of the sensor reading under this sensor type
+        - **maximumValue** (double): Maximum value of the sensor reading under this sensor type
+        - **minimumValue** (double): Minimum value of the sensor reading under this sensor type
         - **unit** (string): Unit of the sensor reading under this sensor type
         - **interpreter** (string): The interpreter used to parse the sensor reading under this sensor type
-        - **user_defined_fields** (string): User defined fields
-        - **sensor_category_name** (string): The category this sensor type belongs to
-    - **Sensor type metadata format**: {"sensor_type_name": <"sensor_type">, "manufacturer": <"manufacturer">, "version": <"version">, "maximum_value": maximum_value, "minimum_value": minimum_value, "unit": <"unit">, "interpreter": <"interpreter">, "user_defined_fields": <"user_defined_fields">, "sensor_category_name": <"sensor_category_name">}    
+        - **sensorTypeUserDefinedFields** (string): User defined fields
+        - **sensorCategoryName** (string): The category this sensor type belongs to
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
-              - "sensor_type.json" file contains: {"sensor_type_name": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximum_value": 100, "minimum_value": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "user_defined_fields": "Testing only", "sensor_category_name": "Environment"}
-          2. curl -H "Content-Type: application/json" -d @sensor_type.json "http://einstein.sv.cmu.edu/update_sensor_type"
-      - **Result**: "sensor type updated" if the sensor type metadata has been successfully updated to the database
+              - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Production only", "sensorCategoryName": "Environment"}
+          2. curl -H "Content-Type: application/json" -d @sensorType.json "http://einstein.sv.cmu.edu/updateSensorType"
+      - **Result**: HTTP 200 if the sensor type metadata has been successfully updated to the database
 
 15. <a name="22"></a>**ADD SENSOR CATEGORY**
     - **Purpose**: Add a new sensor category to sensor data service platform.
