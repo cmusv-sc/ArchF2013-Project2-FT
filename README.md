@@ -314,18 +314,11 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **URL**: http://einstein.sv.cmu.edu/updateSensorType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorTypeName** (string, not null): Name of the sensor type, which cannot be changed
-        - **manufacturer** (string, optional): Name of the manufacturerof this sensor type
-        - **version** (string, optional): Version of the sensor type
-        - **maximumValue** (double, optional): Maximum value of the sensor reading under this sensor type
-        - **minimumValue** (double, optional): Minimum value of the sensor reading under this sensor type
-        - **unit** (string, optional): Unit of the sensor reading under this sensor type
-        - **interpreter** (string, optional): The interpreter used to parse the sensor reading under this sensor type
         - **sensorTypeUserDefinedFields** (string): User defined fields
-        - **sensorCategoryName** (string, not null): The category this sensor type belongs to
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
-              - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
+              - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "sensorTypeUserDefinedFields": "Testing only"}
           2. curl -H "Content-Type: application/json" -d @sensorType.json "http://einstein.sv.cmu.edu/updateSensorType"
       - **Result**: HTTP 200 if the sensor type metadata has been successfully updated to the database
 
