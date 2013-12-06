@@ -333,7 +333,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
-              - "sensorCategory.json" file contains: {"sensorCategory_name": "Category 1", "purpose": "Test only"}
+              - "sensorCategory.json" file contains: {"sensorCategoryName": "Category 1", "purpose": "Test only"}
           2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/addSensorCategory"
       - **Result**: HTTP 201 if the sensor category metadata has been successfully added to the database
 
@@ -417,7 +417,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorCategoryName/sensorCategory1/csv<br/>
       - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
-      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorCategories/json
+      - **Sample json request**: http://einstein.sv.cmu.edu/getSensorCategoryName/sensorCategory1/json
       - **Sample json result**: {"sensorCategoryName":sensorCategory1,"purpose":"temp"}
       
 33. <a name="33"></a>**GET ALL SENSOR TYPES**
@@ -529,6 +529,16 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample json request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/json
       - **Sample json result**: {"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "locationInterpreter": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}
 
+41. <a name="24"></a>**DELETE SENSOR CATEGORY**
+    - **Purpose**: Delete a sensor category from sensor data service platform.
+    - **Method**: DELETE
+    - **URL**: http://einstein.sv.cmu.edu/deleteSensorCategory/<"sensorCategoryName">
+    - **Semantics**
+        - **sensorCategoryName** (string, not null): Name of the sensor category
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. curl -X DELETE http://localhost:9000/deleteSensorCategory/testSensorCategoryName
+      - **Result**: HTTP 201 if the sensor category metadata has been successfully deleted from the database
 
 
 
