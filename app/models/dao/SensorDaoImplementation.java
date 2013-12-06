@@ -12,8 +12,15 @@ public class SensorDaoImplementation implements SensorDao{
 	
 	@Override
 	public boolean addSensor(String sensorTypeName, String deviceUri, String sensorName, String sensorUserDefinedFields) {
-		final String GETSENSORTYPEID = "select sensor_type_id from cmu.course_sensor_type where sensor_type_name = ?";
-		int sensorTypeId = simpleJdbcTemplate.queryForInt(GETSENSORTYPEID, sensorTypeName);
+//		Check if the sensor type exists
+		int sensorTypeId = -1;
+		try{
+			final String GETSENSORTYPEID = "select sensor_type_id from cmu.course_sensor_type where sensor_type_name = ?";
+			sensorTypeId = simpleJdbcTemplate.queryForInt(GETSENSORTYPEID, sensorTypeName);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
 		
 		final String GETDEVICEID = "select device_id from cmu.course_device where uri = ?";
 		int deviceId = simpleJdbcTemplate.queryForInt(GETDEVICEID, deviceUri);
