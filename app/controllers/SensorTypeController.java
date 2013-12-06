@@ -1,14 +1,25 @@
 package controllers;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import models.SensorCategory;
 import models.SensorType;
 import models.dao.SensorTypeDao;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.supercsv.cellprocessor.Optional;
+import org.supercsv.cellprocessor.ift.CellProcessor;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
+
+import com.google.gson.Gson;
 
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -37,16 +48,26 @@ public class SensorTypeController extends Controller {
 		}
 
 		// Parse JSON File
-		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
+		String sensorTypeName = json.findPath("sensorTypeName").getTextValue();
 		String manufacturer = json.findPath("manufacturer").getTextValue();
 		String version = json.findPath("version").getTextValue();
-		Double maxValue = json.findPath("maximum_value").getDoubleValue();
-		Double minValue = json.findPath("minimum_value").getDoubleValue();
+		Double maxValue = json.findPath("maximumValue").getDoubleValue();
+		Double minValue = json.findPath("minimumValue").getDoubleValue();
 		String unit = json.findPath("unit").getTextValue();
 		String interpreter = json.findPath("interpreter").getTextValue();
-		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
-		String sensorCategoryName = json.findPath("sensor_category_name").getTextValue();
+		String userDefinedFields = json.findPath("userDefinedFields").getTextValue();
+		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
 		ArrayList<String> error = new ArrayList<String>();
+		
+		if(sensorTypeName == null || sensorTypeName.length() == 0){
+			System.out.println("sensor type not saved: null name");
+			return ok("sensor type not saved: null name");
+		}
+		
+		if(sensorCategoryName == null || sensorCategoryName.length() == 0){
+			System.out.println("sensor type not saved: null sensor category name");
+			return ok("sensor type not saved: null sensor category name");
+		}
 
 		boolean result = sensorTypeDao.addSensorType(sensorTypeName, manufacturer, version, maxValue, minValue, unit, interpreter, userDefinedFields, sensorCategoryName);
 
@@ -74,15 +95,15 @@ public class SensorTypeController extends Controller {
 		}
 
 		// Parse JSON File
-		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
+		String sensorTypeName = json.findPath("sensorTypeName").getTextValue();
 		String manufacturer = json.findPath("manufacturer").getTextValue();
 		String version = json.findPath("version").getTextValue();
-		Double maxValue = json.findPath("maximum_value").getDoubleValue();
-		Double minValue = json.findPath("minimum_value").getDoubleValue();
+		Double maxValue = json.findPath("maximumValue").getDoubleValue();
+		Double minValue = json.findPath("minimumValue").getDoubleValue();
 		String unit = json.findPath("unit").getTextValue();
 		String interpreter = json.findPath("interpreter").getTextValue();
-		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
-		String sensorCategoryName = json.findPath("sensor_category_name").getTextValue();
+		String userDefinedFields = json.findPath("userDefinedFields").getTextValue();
+		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
 		ArrayList<String> error = new ArrayList<String>();
 		
 		if(sensorTypeDao.getSensorType(sensorTypeName) == null){
@@ -98,8 +119,7 @@ public class SensorTypeController extends Controller {
 		if(error.size() == 0){
 			System.out.println("sensor type updated");
 			return ok("sensor type updated");
-		}
-		else{
+		}else{
 			System.out.println("sensor type not updated: " + error.toString());
 			return ok("sensor type not updated: " + error.toString());
 		}
@@ -111,18 +131,17 @@ public class SensorTypeController extends Controller {
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		// case insensitive search. device types in the database are in lower case
-		sensorTypeName = sensorTypeName.toLowerCase();
+//		sensorTypeName = sensorTypeName.toLowerCase();
 		SensorType sensorType = sensorTypeDao.getSensorType(sensorTypeName);
 		if(sensorType == null){
-			return notFound("No sensor type found for " + sensorTypeName);
+			return notFound("No sensor type found for: " + sensorTypeName);
 		}
 		
 		String ret = new String();
 		if (format.equals("json")) {
-			ret = "[{\"sensor_type\":\"" + sensorType.toJSONString() + "\"}]";
+			ret = new Gson().toJson(sensorType);
 		} else {
-			ret += sensorType.getCSVHeader();
-			ret += sensorType.toCSVString();
+			ret = toCsv(Arrays.asList(sensorType));
 		}
 		return ok(ret);
 	}
@@ -132,26 +151,15 @@ public class SensorTypeController extends Controller {
 			return internalServerError("database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		// case insensitive search. device types in the database are in lower case
 		List<SensorType> sensorTypes = sensorTypeDao.getAllSensorTypes();
 		if(sensorTypes == null || sensorTypes.isEmpty()){
 			return notFound("No sensor type found");
 		}
 		String ret = new String();
 		if(format.equals("json")){
-			String sensorTypesStr = "";
-			for (SensorType sensorType : sensorTypes) {
-				if (!sensorTypesStr.isEmpty()) sensorTypesStr += ',';
-				sensorTypesStr += sensorType.toJSONString();
-			}
-			ret = "[{\"sensor_type\":\"" + sensorTypesStr + "\"}]";
+			ret = new Gson().toJson(sensorTypes);
 		} else {
-//			ret += sensorType.getCSVHeader();
-			
-			for (SensorType sensorType : sensorTypes) {
-				ret += "\n";
-				ret += sensorType.toCSVString();
-			}
+			ret = toCsv(sensorTypes);
 		}
 		return ok(ret);
 	}
@@ -168,5 +176,33 @@ public class SensorTypeController extends Controller {
 			System.out.println("sensor type is not deleted");
 			return ok("sensor type is not deleted");
 		}
+	}
+	
+	private static String toCsv(List<SensorType> types) {
+		StringWriter sw = new StringWriter();
+		CellProcessor[] processors = new CellProcessor[] {
+				new Optional(),	new Optional(), new Optional(),	new Optional(),
+				new Optional(),	new Optional(), new Optional(),	new Optional(),
+				new Optional()};
+		ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
+		
+		try {
+			final String[] header = new String[] {"sensorTypeName", "manufacturer"
+					, "version", "maximumValue", "minimumValue", "unit"
+					, "interpreter", "sensorTypeUserDefinedFields", "sensorCategoryName"};
+			writer.writeHeader(header);
+			for(SensorType type : types){
+				writer.write(type, header, processors);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return sw.getBuffer().toString();
 	}
 }

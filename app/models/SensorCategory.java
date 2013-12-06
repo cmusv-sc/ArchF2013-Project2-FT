@@ -2,12 +2,13 @@ package models;
 
 
 public class SensorCategory {
-	private String sensorCategoryName;
+	protected String sensorCategoryName;
 	private String purpose;
 	
 	public String getSensorCategoryName() {
 		return sensorCategoryName;
 	}
+	
 	public void setSensorCategoryName(String sensorCategoryName) {
 		this.sensorCategoryName = sensorCategoryName;
 	}

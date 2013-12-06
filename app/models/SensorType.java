@@ -1,7 +1,5 @@
 package models;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class SensorType extends SensorCategory{
 	private String sensorTypeName;
@@ -28,13 +26,14 @@ public class SensorType extends SensorCategory{
 	public double getMaximumValue() {
 		return maximumValue;
 	}
-	public void setMaximumValue(double maxValue) {
+//	MAX_VALUE/MIN_VALUE is used in the database, thus the setters have to be named so, instead of setMaximumValue()
+	public void setMaxValue(double maxValue) {
 		this.maximumValue = maxValue;
 	}
 	public double getMinimumValue() {
 		return minimumValue;
 	}
-	public void setMinimumValue(double minValue) {
+	public void setMinValue(double minValue) {
 		this.minimumValue = minValue;
 	}
 	public String getUnit() {
@@ -61,48 +60,51 @@ public class SensorType extends SensorCategory{
 	public void setSensorTypeName(String sensorTypeName) {
 		this.sensorTypeName = sensorTypeName;
 	}
-	
-	public String toCSVString() {
-		String csvString = new String();
-		csvString += sensorTypeName;
-		csvString += ",";
-		csvString += manufacturer;
-		csvString += ",";
-		csvString += version;
-		csvString += ",";
-		csvString += Double.toString(maximumValue);
-		csvString += ",";
-		csvString += Double.toString(minimumValue);
-		csvString += ",";
-		csvString += unit;
-		csvString += ",";
-		csvString += interpreter;
-		csvString += ",";
-		csvString += sensorTypeUserDefinedFields;
-		return csvString;
+	public String getSensorCategoryName() {
+		return sensorCategoryName;
 	}
 	
-	public String getCSVHeader() {
-		return "sensor_type_name,manufacturer,version,maximum_value,minimum_value,unit,interpreter,user_defined_fields, sensor_category_name";
-	}
-	
-	public String toJSONString() {
-		String jsonString = new String();
-		try {
-			JSONObject obj=new JSONObject();
-			obj.put("sensor_type_name",  sensorTypeName);
-			obj.put("manufacturer", manufacturer);
-			obj.put("version", version);
-			obj.put("maximum_value", maximumValue);
-			obj.put("minimum_value", minimumValue);
-			obj.put("unit", unit);
-			obj.put("interpreter", interpreter);
-			obj.put("user_defined_fields", sensorTypeUserDefinedFields);
-			jsonString = obj.toString();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return jsonString;
-	}
-	
+//	No more used
+//	public String toCSVString() {
+//		String csvString = new String();
+//		csvString += sensorTypeName;
+//		csvString += ",";
+//		csvString += manufacturer;
+//		csvString += ",";
+//		csvString += version;
+//		csvString += ",";
+//		csvString += Double.toString(maximumValue);
+//		csvString += ",";
+//		csvString += Double.toString(minimumValue);
+//		csvString += ",";
+//		csvString += unit;
+//		csvString += ",";
+//		csvString += interpreter;
+//		csvString += ",";
+//		csvString += sensorTypeUserDefinedFields;
+//		return csvString;
+//	}
+//	
+//	public String getCSVHeader() {
+//		return "sensor_type_name,manufacturer,version,maximum_value,minimum_value,unit,interpreter,user_defined_fields, sensor_category_name";
+//	}
+//	
+//	public String toJSONString() {
+//		String jsonString = new String();
+//		try {
+//			JSONObject obj=new JSONObject();
+//			obj.put("sensor_type_name",  sensorTypeName);
+//			obj.put("manufacturer", manufacturer);
+//			obj.put("version", version);
+//			obj.put("maximum_value", maximumValue);
+//			obj.put("minimum_value", minimumValue);
+//			obj.put("unit", unit);
+//			obj.put("interpreter", interpreter);
+//			obj.put("user_defined_fields", sensorTypeUserDefinedFields);
+//			jsonString = obj.toString();
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+//		return jsonString;
+//	}
 }

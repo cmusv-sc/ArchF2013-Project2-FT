@@ -313,12 +313,19 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Method**: POST
     - **URL**: http://einstein.sv.cmu.edu/updateSensorType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **sensorTypeName** (string): Name of the sensor type, which cannot be changed
+        - **sensorTypeName** (string, not null): Name of the sensor type, which cannot be changed
+        - **manufacturer** (string, optional): Name of the manufacturerof this sensor type
+        - **version** (string, optional): Version of the sensor type
+        - **maximumValue** (double, optional): Maximum value of the sensor reading under this sensor type
+        - **minimumValue** (double, optional): Minimum value of the sensor reading under this sensor type
+        - **unit** (string, optional): Unit of the sensor reading under this sensor type
+        - **interpreter** (string, optional): The interpreter used to parse the sensor reading under this sensor type
         - **sensorTypeUserDefinedFields** (string): User defined fields
+        - **sensorCategoryName** (string, not null): The category this sensor type belongs to
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
-              - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "sensorTypeUserDefinedFields": "Production only"}
+              - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
           2. curl -H "Content-Type: application/json" -d @sensorType.json "http://einstein.sv.cmu.edu/updateSensorType"
       - **Result**: HTTP 200 if the sensor type metadata has been successfully updated to the database
 
@@ -428,7 +435,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensorTypes/csv<br/>
-      - **Sample csv result**: (sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
+      - **Sample csv result**: (sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
       - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
       - **Sample json result**: [{"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}]
       
@@ -540,7 +547,16 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           1. curl -X DELETE http://localhost:9000/deleteSensorCategory/testSensorCategoryName
       - **Result**: HTTP 201 if the sensor category metadata has been successfully deleted from the database
 
-
+42. <a name="16"></a>**DELETE SENSOR TYPE**
+    - **Purpose**: Delete a sensor type from sensor data service platform.
+    - **Method**: DELETE
+    - **URL**: http://einstein.sv.cmu.edu/deleteSensorType/<"sensorTypeName">
+    - **Semantics**
+        - **sensorTypeName** (string, not null): Name of the sensor category
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. curl -X DELETE http://localhost:9000/deleteSensorType/testSensorTypeName
+      - **Result**: HTTP 201 if the sensor type metadata has been successfully deleted from the database
 
 [1]: http://einstein.sv.cmu.edu/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 

@@ -50,7 +50,7 @@ public class SensorCategoryController extends Controller {
 		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
 		String purpose = json.findPath("purpose").getTextValue();
 		
-		if(sensorCategoryName == null){
+		if(sensorCategoryName == null || sensorCategoryName.length() == 0){
 			System.out.println("sensor category not saved: null name");
 			return ok("sensor category not saved: null name");
 		}
