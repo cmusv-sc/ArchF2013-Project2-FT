@@ -113,7 +113,7 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 				+ "WHERE SENSOR_TYPE_NAME = ?";
 		try{
 			List<SensorType> types = simpleJdbcTemplate.query(SQL, 
-					ParameterizedBeanPropertyRowMapper.newInstance(SensorType.class));
+					ParameterizedBeanPropertyRowMapper.newInstance(SensorType.class), sensorTypeName);
 			return (types.size() == 0)? null : types.get(0);
 		}catch(Exception e){
 			return null;

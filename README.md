@@ -313,12 +313,12 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Method**: POST
     - **URL**: http://einstein.sv.cmu.edu/updateSensorType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **sensorTypeName** (string): Name of the sensor type, which cannot be changed
+        - **sensorTypeName** (string, not null): Name of the sensor type, which cannot be changed
         - **sensorTypeUserDefinedFields** (string): User defined fields
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
-              - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "sensorTypeUserDefinedFields": "Production only"}
+              - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "sensorTypeUserDefinedFields": "Testing only"}
           2. curl -H "Content-Type: application/json" -d @sensorType.json "http://einstein.sv.cmu.edu/updateSensorType"
       - **Result**: HTTP 200 if the sensor type metadata has been successfully updated to the database
 
@@ -333,7 +333,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
-              - "sensorCategory.json" file contains: {"sensorCategory_name": "Category 1", "purpose": "Test only"}
+              - "sensorCategory.json" file contains: {"sensorCategoryName": "Category 1", "purpose": "Test only"}
           2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/addSensorCategory"
       - **Result**: HTTP 201 if the sensor category metadata has been successfully added to the database
 
@@ -417,7 +417,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorCategoryName/sensorCategory1/csv<br/>
       - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
-      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorCategories/json
+      - **Sample json request**: http://einstein.sv.cmu.edu/getSensorCategoryName/sensorCategory1/json
       - **Sample json result**: {"sensorCategoryName":sensorCategory1,"purpose":"temp"}
       
 33. <a name="33"></a>**GET ALL SENSOR TYPES**
@@ -428,7 +428,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensorTypes/csv<br/>
-      - **Sample csv result**: (sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
+      - **Sample csv result**: (sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
       - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
       - **Sample json result**: [{"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}]
       
@@ -441,7 +441,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/csv<br/>
-      - **Sample csv result**: (sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
+      - **Sample csv result**: (sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
       - **Sample json request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/json
       - **Sample json result**: {"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
       
@@ -454,9 +454,9 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensors/csv<br/>
-      - **Sample csv result**: (sensorName, sensorUserDefinedFields, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
+      - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor01, for test, www.device.com/001, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment, test only
       - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
-      - **Sample json result**: [{"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}]
+      - **Sample json result**: [{"sensorName": "sensor01", "sensorUserDefinedFields": "for test", "deviceUri": "www.device.com/001","sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment", "purpose": "test only"}]
       
 
 36. <a name="36"></a>**GET A SPECIFIC SENSOR**
@@ -468,9 +468,9 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/sensor1/getSensor/csv<br/>
-      - **Sample csv result**: (sensorName, sensorUserDefinedFields, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor1, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
+      - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor1, for test, www.device.com, Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
       - **Sample json request**: http://einstein.sv.cmu.edu/getSensor/<"sensorName">/json
-      - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
+      - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "deviceUri":"www.device.com", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
       
 
       
@@ -511,9 +511,9 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getAllDevices/csv<br/>
-      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter device type 1, TI, 1.0, For Test, [temp, light]
+      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter device type 1, TI, 1.0, For Test, [temp, light], [sensor1, sensor2]
       - **Sample json request**: http://einstein.sv.cmu.edu/getAllDevices/json
-      - **Sample json result**: [{"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "locationInterpreter": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}]
+      - **Sample json result**: [{"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "locationInterpreter": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}]
       
 
 
@@ -525,12 +525,31 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/csv<br/>
-      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter device type 1, TI, 1.0, For Test, [temp, light]
+      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter device type 1, TI, 1.0, For Test, [temp, light], [sensor1, sensor2]
       - **Sample json request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/json
-      - **Sample json result**: {"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "locationInterpreter": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}
+      - **Sample json result**: {"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "locationInterpreter": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}
 
+41. <a name="24"></a>**DELETE SENSOR CATEGORY**
+    - **Purpose**: Delete a sensor category from sensor data service platform.
+    - **Method**: DELETE
+    - **URL**: http://einstein.sv.cmu.edu/deleteSensorCategory/<"sensorCategoryName">
+    - **Semantics**
+        - **sensorCategoryName** (string, not null): Name of the sensor category
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. curl -X DELETE http://localhost:9000/deleteSensorCategory/testSensorCategoryName
+      - **Result**: HTTP 201 if the sensor category metadata has been successfully deleted from the database
 
-
+42. <a name="16"></a>**DELETE SENSOR TYPE**
+    - **Purpose**: Delete a sensor type from sensor data service platform.
+    - **Method**: DELETE
+    - **URL**: http://einstein.sv.cmu.edu/deleteSensorType/<"sensorTypeName">
+    - **Semantics**
+        - **sensorTypeName** (string, not null): Name of the sensor category
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. curl -X DELETE http://localhost:9000/deleteSensorType/testSensorTypeName
+      - **Result**: HTTP 201 if the sensor type metadata has been successfully deleted from the database
 
 [1]: http://einstein.sv.cmu.edu/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 
