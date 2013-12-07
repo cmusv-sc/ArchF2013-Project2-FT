@@ -59,8 +59,8 @@ GET     /last_readings_from_all_devices/:timeStamp/:sensorType/csv  controllers.
 GET		/last_readings_from_all_devices/:timeStamp/:sensorType/json	controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "json")
 
 #Metadata
-#POST	/add_sensor				  controllers.MetadataController.addSensor()
 POST	/add_sensor				  controllers.SensorController.addSensor()
+POST	/add_sensor/:userName				  controllers.SensorController.addSensor(userName: String)
 POST	/update_sensor			  controllers.SensorController.updateSensor()
 GET 	/get_sensor/:sensor_name/json	controllers.SensorController.getSensor(sensor_name: String, format: String="json")
 GET 	/get_sensor/:sensor_name/csv	controllers.SensorController.getSensor(sensor_name: String, format: String="csv")

@@ -37,6 +37,36 @@ public class SensorController extends Controller {
 		}
 	}
 
+	public static Result addSensor(String userName) {
+		JsonNode json = request().body().asJson();
+		if(json == null) {
+			return badRequest("Expecting Json data");
+		} 
+		checkDao();
+
+		// Parse JSON FIle 
+		String sensorTypeName = json.findPath("sensor_type_name").getTextValue();
+		String deviceUri = json.findPath("device_uri").getTextValue();
+		String sensorName = json.findPath("sensor_name").getTextValue();
+		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
+		ArrayList<String> error = new ArrayList<String>();
+		
+		boolean result = sensorDao.addSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields);
+
+		if(!result){
+			error.add(sensorTypeName);
+		}
+		// Can this error have more than one name in it? I don't understand why error needs to be a list.
+		if(error.size() == 0){
+			System.out.println("sensor saved");
+			return ok("sensor saved");
+		}
+		else{
+			System.out.println("sensor not saved: " + error.toString());
+			return ok("sensor not saved: " + error.toString());
+		}
+	}
+	
 	public static Result addSensor() {
 		JsonNode json = request().body().asJson();
 		if(json == null) {
