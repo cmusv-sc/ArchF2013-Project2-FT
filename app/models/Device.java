@@ -1,5 +1,7 @@
 package models;
 
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,6 +9,7 @@ public class Device extends DeviceType {
 	private String uri;
 	private String deviceUserDefinedFields;
 	private Location location;
+	private List<String> sensorNames;
 	
 	public Location getLocation() {
 		return location;
@@ -51,6 +54,14 @@ public class Device extends DeviceType {
 			e.printStackTrace();
 		}
 		return jsonString;
+	}
+
+	public List<String> getSensorNames() {
+		return sensorNames;
+	}
+
+	public void setSensorNames(List<String> sensorNames) {
+		this.sensorNames = sensorNames;
 	}
 
 }

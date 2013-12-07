@@ -1,27 +1,22 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 
 //import models.DBHandler;
 import models.Device;
-import models.DeviceType;
 import models.dao.DeviceDao;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.google.gson.Gson;
-
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.defaultpages.error;
 
+import com.google.gson.Gson;
+
 public class DeviceController extends Controller {
-//	private static DBHandler dbHandler = null;
 	private static ApplicationContext context;
 	private static DeviceDao deviceDao;
 	
@@ -46,8 +41,6 @@ public class DeviceController extends Controller {
 		 }
 
 		 
-		 // Parse JSON FIle 
-//		 String deviceId = json.findPath("device_id").getTextValue();
 		 String deviceTypeName = json.findPath("device_type_name").getTextValue();
 		 String uri= json.findPath("uri").getTextValue();
 //		 String deviceTypeId = json.findPath("device_type_id").getTextValue();
@@ -104,14 +97,7 @@ public class DeviceController extends Controller {
 		String ret = new String();
 		if (format.equals("json"))
 		{			
-			for (models.Device device : devices) {
-				if (ret.isEmpty())
-					ret += "[";
-				else				
-					ret += ',';			
-				ret += device.toJSONString();
-			}
-			ret += "]";			
+			ret = new Gson().toJson(devices);		
 		} else {			
 			for (models.Device device : devices) {
 				if (!ret.isEmpty())
@@ -129,7 +115,6 @@ public class DeviceController extends Controller {
 			return internalServerError("database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-	    // case insensitive search. device types in the database are in lower case
 		
 		Device device = deviceDao.getDevice(uri);
 		if(device == null){
@@ -138,7 +123,7 @@ public class DeviceController extends Controller {
 		String ret = new String();
 		if (format.equals("json"))
 		{							
-				ret = device.toJSONString();
+			ret = new Gson().toJson(device);
 							
 		} else {						
 				ret = device.toCSVString();			
@@ -146,37 +131,5 @@ public class DeviceController extends Controller {
 		return ok(ret);
 	}
 
-//	public static Result getSensorType(String deviceType, String format) {
-//		if(!checkDao()){
-//			return internalServerError("database conf file not found");
-//		}
-//		response().setHeader("Access-Control-Allow-Origin", "*");
-//		// case insensitive search. device types in the database are in lower case
-//		deviceType = deviceType.toLowerCase();
-//		ArrayList<String> sensorTypes = deviceDao.getSensorType(deviceType);
-//		if(sensorTypes == null || sensorTypes.isEmpty()){
-//			return notFound("No sensor type found for " + deviceType);
-//		}
-//		String ret = new String();
-//		if (format.equals("json"))
-//		{
-//			String sensorTypesStr = "";
-//			for (String sensorType : sensorTypes) {
-//				if (!sensorTypesStr.isEmpty())
-//					sensorTypesStr += ',';
-//				sensorTypesStr += sensorType;
-//			}
-//			ret = "{\"device_type\":\"" + deviceType + "\", \"sensor_type\":\"" + sensorTypesStr + "\"}";
-//		} else {
-//			for (String sensorType : sensorTypes) {
-//				if (!ret.isEmpty())
-//					ret += '\n';
-//				else
-//					ret += "sensor_types\n";
-//				ret += sensorType;
-//			}
-//		}
-//		return ok(ret);
-//	}	
 	
 }

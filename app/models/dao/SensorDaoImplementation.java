@@ -4,12 +4,25 @@ import java.util.List;
 
 import models.Sensor;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 public class SensorDaoImplementation implements SensorDao{
 	private SimpleJdbcTemplate simpleJdbcTemplate;
-	
+	private DataSourceTransactionManager txManager;
+
+	public DataSourceTransactionManager getTxManager() {
+		return txManager;
+	}
+
+	public void setTxManager(DataSourceTransactionManager txManager) {
+		this.txManager = txManager;
+	}
 	@Override
 	public boolean addSensor(String sensorTypeName, String deviceUri, String sensorName, String sensorUserDefinedFields) {
 //		Find SensorTypeId by SensorTypeName, return false if SensorTypeId is not found
@@ -43,6 +56,41 @@ public class SensorDaoImplementation implements SensorDao{
 			return false;
 		}
 		return true;		
+	}
+	
+	@Override
+	public boolean addSensor(String sensorTypeName, String deviceUri, String sensorName, String sensorUserDefinedFields, String userName) {
+		TransactionDefinition def = new DefaultTransactionDefinition();
+	    TransactionStatus status = txManager.getTransaction(def);
+	    
+		try {
+			//1. check if userName exist
+			final String SELECT_USER_ID = "select user_id from cmu.course_user where user_name = ?";
+			int userId = simpleJdbcTemplate.queryForInt(SELECT_USER_ID, userName);
+			
+			//2. get deviceId
+			final String SELECT_DEVICE_ID = "select device_id from cmu.course_device where uri = ?";
+			int deviceId = simpleJdbcTemplate.queryForInt(SELECT_DEVICE_ID, deviceUri);
+			
+			//3. insert sensor
+			final String GETSENSORTYPEID = "select sensor_type_id from cmu.course_sensor_type where sensor_type_name = ?";
+			int sensorTypeId = simpleJdbcTemplate.queryForInt(GETSENSORTYPEID, sensorTypeName);
+			final String SQL = "INSERT INTO CMU.COURSE_SENSOR (SENSOR_ID, SENSOR_TYPE_ID, DEVICE_ID, SENSOR_NAME, SENSOR_USER_DEFINED_FIELDS) VALUES (CMU.COURSE_SENSOR_ID_SEQ.NEXTVAL, ?, ?, ?, ?)";
+			simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorName, sensorUserDefinedFields);
+			
+			//4. inser sensor owner
+			final String GET_SENSOR_ID = "select sensor_id from cmu.course_sensor where sensor_name = ?";
+			int sensorId = simpleJdbcTemplate.queryForInt(GET_SENSOR_ID, sensorName);
+			final String INSERT_SENSOR_OWNER = "insert into cmu.course_sensor_owner values (?, ?)";
+			simpleJdbcTemplate.update(INSERT_SENSOR_OWNER, sensorId, userId);
+
+		} catch (EmptyResultDataAccessException e) {
+			txManager.rollback(status);
+			return false;
+		}
+		
+		txManager.commit(status);
+		return false;
 	}
 	
 	@Override
@@ -102,7 +150,30 @@ public class SensorDaoImplementation implements SensorDao{
 			}
 			
 			return sensors;
-		}catch(Exception e){
+		}catch(EmptyResultDataAccessException e){
+			return null;
+		}
+	}
+	
+	@Override
+	public List<Sensor> getAllSensors(String userName) {
+		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc, cmu.course_sensor_owner so, cmu.course_user "
+				+ " WHERE s.sensor_id = so.sensor_id and so.user_id = u.user_id and u.user_name = ? and s.sensor_type_id = st.sensor_type_id and st.sensor_category_id = sc.sensor_category_id";
+		final String SQL_GET_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_SENSOR WHERE SENSOR_NAME = ?";
+		final String SQL_GET_DEVICE_URI = "SELECT URI FROM CMU.COURSE_DEVICE WHERE DEVICE_ID = ?";
+		try{
+			List<Sensor> sensors = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(Sensor.class), userName);
+			
+//			Set Sensor.deviceUri by it Device ID
+			for(Sensor s : sensors){
+				int deviceId = simpleJdbcTemplate.queryForInt(SQL_GET_DEVICE_ID, s.getSensorName());
+				String uri = simpleJdbcTemplate.queryForObject(SQL_GET_DEVICE_URI, 
+						String.class, deviceId);
+				s.setDeviceUri(uri);
+			}
+			
+			return sensors;
+		}catch(EmptyResultDataAccessException e){
 			return null;
 		}
 	}
@@ -126,5 +197,30 @@ public class SensorDaoImplementation implements SensorDao{
 	public void setSimpleJdbcTemplate(SimpleJdbcTemplate simpleJdbcTemplate) {
 		this.simpleJdbcTemplate = simpleJdbcTemplate;
 	}
+
+	@Override
+	public Sensor getSensor(String sensorName, String userName) {
+		final String SQL_GET_SENSOR = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc, cmu.course_sensor_owner so, cmu.course_user "
+				+ " WHERE s.sensor_id = so.sensor_id and so.user_id = u.user_id and u.user_name = ? and s.sensor_name = ? and s.sensor_type_id = st.sensor_type_id and st.sensor_category_id = sc.sensor_category_id";
+		final String SQL_GET_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_SENSOR WHERE SENSOR_NAME = ?";
+		final String SQL_GET_DEVICE_URI = "SELECT URI FROM CMU.COURSE_DEVICE WHERE DEVICE_ID = ?";
+		
+		try{
+//			Get sensors
+			Sensor sensor = simpleJdbcTemplate.queryForObject(SQL_GET_SENSOR, 
+					ParameterizedBeanPropertyRowMapper.newInstance(Sensor.class), 
+					userName, 
+					sensorName);
+//			Set Sensor.deviceUri by it Device ID
+			int deviceId = simpleJdbcTemplate.queryForInt(SQL_GET_DEVICE_ID, sensor.getSensorName());
+			String uri = simpleJdbcTemplate.queryForObject(SQL_GET_DEVICE_URI, 
+					String.class, deviceId);
+			sensor.setDeviceUri(uri);
+			return sensor;
+		}catch(EmptyResultDataAccessException e){
+			return null;
+		}
+	}
+
 
 }

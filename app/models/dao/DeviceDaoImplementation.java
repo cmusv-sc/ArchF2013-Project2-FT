@@ -1,5 +1,7 @@
 package models.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
@@ -10,6 +12,7 @@ import models.Location;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -104,22 +107,37 @@ public class DeviceDaoImplementation implements DeviceDao{
 	@Override
 	public List<Device> getAllDevices() {
 		final String SQL = "SELECT * FROM CMU.COURSE_DEVICE d, CMU.COURSE_DEVICE_TYPE dt WHERE d.DEVICE_TYPE_ID = dt.DEVICE_TYPE_ID";
-		final String SQL_SELECT_DEVICE_LOCATION = "SELECT LOCATION_ID FROM CMU.COURSE_DEVICE_LOCATION WHERE DEVICE_ID = ? AND IS_ACTIVE = 'Y'";
+		final String SQL_SELECT_DEVICE_LOCATION = "SELECT LOCATION_ID FROM CMU.COURSE_DEVICE_LOCATION WHERE DEVICE_ID = ? AND IS_ACTIVE = 'TRUE'";
 		final String SQL_SELECT_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_DEVICE WHERE URI = ?";
 		final String SQL_SELECT_LOCATION = "SELECT * FROM CMU.COURSE_LOCATION WHERE LOCATION_ID = ?";
-		
-		List<Device> devices = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(Device.class));
-		
-		Iterator<Device> iter = devices.iterator();
-		while(iter.hasNext()) {
-			Device device = iter.next();
+		final String SQL_SELECT_SENSOR_NAMES = "SELECT SENSOR_NAME FROM CMU.COURSE_SENSOR WHERE DEVICE_ID = ?";
+
+		List<Device> devices = null;
+		try {
+			devices = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(Device.class));
 			
-			int deviceId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_ID, device.getUri());
-			int locationId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_LOCATION, deviceId);
-			
-			Location location = simpleJdbcTemplate.queryForObject(SQL_SELECT_LOCATION, ParameterizedBeanPropertyRowMapper.newInstance(Location.class), locationId);
-			
-			device.setLocation(location);
+			Iterator<Device> iter = devices.iterator();
+			while(iter.hasNext()) {
+				Device device = iter.next();
+				
+				int deviceId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_ID, device.getUri());
+				int locationId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_LOCATION, deviceId);
+				
+				Location location = simpleJdbcTemplate.queryForObject(SQL_SELECT_LOCATION, ParameterizedBeanPropertyRowMapper.newInstance(Location.class), locationId);
+				List<String> sensorNames = simpleJdbcTemplate.query(SQL_SELECT_SENSOR_NAMES, new ParameterizedRowMapper<String>() {
+	
+					@Override
+					public String mapRow(ResultSet rs, int row)
+							throws SQLException {
+						return rs.getString("SENSOR_NAME");
+					}
+					
+				}, deviceId);
+				device.setLocation(location);
+				device.setSensorNames(sensorNames);
+			}
+		} catch(Exception e) {
+			return null;
 		}
 		
 		return devices;
@@ -129,18 +147,34 @@ public class DeviceDaoImplementation implements DeviceDao{
 	public Device getDevice(String uri) {
 		
 		final String SQL_SELECT_DEVICE = "SELECT * FROM CMU.COURSE_DEVICE d, CMU.COURSE_DEVICE_TYPE dt WHERE d.DEVICE_TYPE_ID = dt.DEVICE_TYPE_ID AND URI = ?";
-		final String SQL_SELECT_DEVICE_LOCATION = "SELECT LOCATION_ID FROM CMU.COURSE_DEVICE_LOCATION WHERE DEVICE_ID = ? AND IS_ACTIVE = 'Y'";
+		final String SQL_SELECT_DEVICE_LOCATION = "SELECT LOCATION_ID FROM CMU.COURSE_DEVICE_LOCATION WHERE DEVICE_ID = ? AND IS_ACTIVE = 'TRUE'";
 		final String SQL_SELECT_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_DEVICE WHERE URI = ?";
 		final String SQL_SELECT_LOCATION = "SELECT * FROM CMU.COURSE_LOCATION WHERE LOCATION_ID = ?";
+		final String SQL_SELECT_SENSOR_NAMES = "SELECT SENSOR_NAME FROM CMU.COURSE_SENSOR WHERE DEVICE_ID = ?";
 		
-		Device device = simpleJdbcTemplate.queryForObject(SQL_SELECT_DEVICE, ParameterizedBeanPropertyRowMapper.newInstance(Device.class), uri);
+		Device device = null;
+		try {
+			device = simpleJdbcTemplate.queryForObject(SQL_SELECT_DEVICE, ParameterizedBeanPropertyRowMapper.newInstance(Device.class), uri);
+	
+			int deviceId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_ID, device.getUri());
+			int locationId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_LOCATION, deviceId);
+			
+			Location location = simpleJdbcTemplate.queryForObject(SQL_SELECT_LOCATION, ParameterizedBeanPropertyRowMapper.newInstance(Location.class), locationId);
+			
+			List<String> sensorNames = simpleJdbcTemplate.query(SQL_SELECT_SENSOR_NAMES, new ParameterizedRowMapper<String>() {
 
-		int deviceId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_ID, device.getUri());
-		int locationId = simpleJdbcTemplate.queryForInt(SQL_SELECT_DEVICE_LOCATION, deviceId);
-		
-		Location location = simpleJdbcTemplate.queryForObject(SQL_SELECT_LOCATION, ParameterizedBeanPropertyRowMapper.newInstance(Location.class), locationId);
-		
-		device.setLocation(location);
+				@Override
+				public String mapRow(ResultSet rs, int row)
+						throws SQLException {
+					return rs.getString("SENSOR_NAME");
+				}
+				
+			}, deviceId);
+			device.setLocation(location);
+			device.setSensorNames(sensorNames);
+		} catch(Exception e) {
+			return null;
+		}
 		
 		return device;
 	}
