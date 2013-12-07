@@ -314,7 +314,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **URL**: http://einstein.sv.cmu.edu/updateSensorType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorTypeName** (string, not null): Name of the sensor type, which cannot be changed
-        - **sensorTypeUserDefinedFields** (string): User defined fields
+        - **sensorTypeUserDefinedFields** (string, not null): User defined fields
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
@@ -356,8 +356,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Method**: POST
     - **URL**: http://einstein.sv.cmu.edu/updateSensor
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **sensorName** (string): Name of the sensor, which cannot be changed
-        - **sensorUserDefinedFields** (string): User defined fields.
+        - **sensorName** (string, not null): Name of the sensor, which cannot be changed
+        - **sensorUserDefinedFields** (string, not null): User defined fields.
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor metadata in a json file:
@@ -545,11 +545,22 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Method**: DELETE
     - **URL**: http://einstein.sv.cmu.edu/deleteSensorType/<"sensorTypeName">
     - **Semantics**
-        - **sensorTypeName** (string, not null): Name of the sensor category
+        - **sensorTypeName** (string, not null): Name of the sensor type
     - **Sample Usages**:
       - **Command Line Example**: 
           1. curl -X DELETE http://localhost:9000/deleteSensorType/testSensorTypeName
       - **Result**: HTTP 201 if the sensor type metadata has been successfully deleted from the database
+
+43. <a name="17"></a>**DELETE SENSOR**
+    - **Purpose**: Delete a sensor from sensor data service platform.
+    - **Method**: DELETE
+    - **URL**: http://einstein.sv.cmu.edu/deleteSensor/<"sensorName">
+    - **Semantics**
+        - **sensorName** (string, not null): Name of the sensor
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. curl -X DELETE http://localhost:9000/deleteSensor/testSensorName
+      - **Result**: HTTP 201 if the sensor metadata has been successfully deleted from the database
 
 [1]: http://einstein.sv.cmu.edu/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 

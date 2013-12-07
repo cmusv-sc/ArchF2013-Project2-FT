@@ -28,14 +28,14 @@ GET     /getDevice/:uri/json     controllers.DeviceController.getDevice(uri: Str
 POST    /addDevice               controllers.DeviceController.add()
 
 # SensorType
+POST	/addSensorType 							controllers.SensorTypeController.addSensorType()
+POST	/updateSensorType 						controllers.SensorTypeController.updateSensorType()
 GET     /getSensorType/:sensorTypeName			controllers.SensorTypeController.getSensorType(sensorTypeName: String, format: String = "csv")
 GET     /getSensorType/:sensorTypeName/csv		controllers.SensorTypeController.getSensorType(sensorTypeName: String, format: String = "csv")
 GET     /getSensorType/:sensorTypeName/json		controllers.SensorTypeController.getSensorType(sensorTypeName: String, format: String = "json")
 GET     /getAllSensorTypes						controllers.SensorTypeController.getAllSensorTypes(format: String = "csv")
 GET     /getAllSensorTypes/csv 					controllers.SensorTypeController.getAllSensorTypes(format: String = "csv")
 GET     /getAllSensorTypes/json 				controllers.SensorTypeController.getAllSensorTypes(format: String = "json")
-POST	/addSensorType 							controllers.SensorTypeController.addSensorType()
-POST	/updateSensorType 						controllers.SensorTypeController.updateSensorType()
 DELETE	/deleteSensorType/:sensorTypeName 		controllers.SensorTypeController.deleteSensorType(sensorTypeName: String)
 
 # SensorReading

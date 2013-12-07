@@ -12,18 +12,25 @@ public class SensorDaoImplementation implements SensorDao{
 	
 	@Override
 	public boolean addSensor(String sensorTypeName, String deviceUri, String sensorName, String sensorUserDefinedFields) {
-//		Check if the sensor type exists
+//		Find SensorTypeId by SensorTypeName, return false if SensorTypeId is not found
 		int sensorTypeId = -1;
 		try{
-			final String GETSENSORTYPEID = "select sensor_type_id from cmu.course_sensor_type where sensor_type_name = ?";
-			sensorTypeId = simpleJdbcTemplate.queryForInt(GETSENSORTYPEID, sensorTypeName);
+			final String SQL_GET_SENSOR_TYPE_ID = "select sensor_type_id from cmu.course_sensor_type where sensor_type_name = ?";
+			sensorTypeId = simpleJdbcTemplate.queryForInt(SQL_GET_SENSOR_TYPE_ID, sensorTypeName);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
 		
-		final String GETDEVICEID = "select device_id from cmu.course_device where uri = ?";
-		int deviceId = simpleJdbcTemplate.queryForInt(GETDEVICEID, deviceUri);
+//		Find DeviceId by URI, return false if uri is not found
+		int deviceId = -1;
+		try{
+			final String SQL_GET_DEVICE_ID = "select device_id from cmu.course_device where uri = ?";
+			deviceId = simpleJdbcTemplate.queryForInt(SQL_GET_DEVICE_ID, deviceUri);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
 		
 		final String SQL = "INSERT INTO CMU.COURSE_SENSOR (SENSOR_ID, SENSOR_TYPE_ID, DEVICE_ID, SENSOR_NAME, SENSOR_USER_DEFINED_FIELDS) VALUES (CMU.COURSE_SENSOR_ID_SEQ.NEXTVAL, ?, ?, ?, ?)";
 		try{
@@ -39,18 +46,12 @@ public class SensorDaoImplementation implements SensorDao{
 	}
 	
 	@Override
-	public boolean updateSensor(String sensorTypeName, String deviceUri, String sensorName, String sensorUserDefinedFields) {
-		final String GETSENSORTYPEID = "select sensor_type_id from cmu.course_sensor_type where sensor_type_name = ?";
-		int sensorTypeId = simpleJdbcTemplate.queryForInt(GETSENSORTYPEID, sensorTypeName);
-		
-		final String GETDEVICEID = "select device_id from cmu.course_device where uri = ?";
-		int deviceId = simpleJdbcTemplate.queryForInt(GETDEVICEID, deviceUri);
-		
+	public boolean updateSensor(String sensorName, String sensorUserDefinedFields) {
 		final String SQL = "UPDATE CMU.COURSE_SENSOR " 
-				+ "SET SENSOR_TYPE_ID = ?, DEVICE_ID = ?, SENSOR_USER_DEFINED_FIELDS = ? " 
+				+ "SET SENSOR_USER_DEFINED_FIELDS = ? " 
 				+ "WHERE SENSOR_NAME = ?";	
 		try{
-			simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorUserDefinedFields, sensorName);
+			simpleJdbcTemplate.update(SQL, sensorUserDefinedFields, sensorName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

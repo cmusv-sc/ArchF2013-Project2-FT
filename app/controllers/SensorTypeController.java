@@ -2,11 +2,9 @@ package controllers;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import models.SensorCategory;
 import models.SensorType;
 import models.dao.SensorTypeDao;
 
@@ -19,21 +17,26 @@ import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
-import com.google.gson.Gson;
-
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import com.google.gson.Gson;
 
 public class SensorTypeController extends Controller {
 	private static ApplicationContext context;
 	private static SensorTypeDao sensorTypeDao;
 	
 	private static boolean checkDao(){
-		if (context == null) {
-			context = new ClassPathXmlApplicationContext("application-context.xml");
-		}
-		if (sensorTypeDao == null) {
-			sensorTypeDao = (SensorTypeDao) context.getBean("sensorTypeDaoImplementation");
+		try{
+			if (context == null) {
+				context = new ClassPathXmlApplicationContext("application-context.xml");
+			}
+			if (sensorTypeDao == null) {
+				sensorTypeDao = (SensorTypeDao) context.getBean("sensorTypeDaoImplementation");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
 		}
 		return true;
 	}
@@ -41,10 +44,12 @@ public class SensorTypeController extends Controller {
 	public static Result addSensorType() {
 		JsonNode json = request().body().asJson();
 		if(json == null) {
-			return badRequest("Expecting Json data");
+			System.out.println("Sensor type not saved, expecting Json data");
+			return badRequest("Sensor type not saved, expecting Json data");
 		} 
 		if(!checkDao()){
-			return internalServerError("database conf file not found");
+			System.out.println("Sensor type not saved, database conf file not found");
+			return internalServerError("Sensor type not saved, database conf file not found");
 		}
 
 		// Parse JSON File
@@ -57,84 +62,83 @@ public class SensorTypeController extends Controller {
 		String interpreter = json.findPath("interpreter").getTextValue();
 		String userDefinedFields = json.findPath("userDefinedFields").getTextValue();
 		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
-		ArrayList<String> error = new ArrayList<String>();
 		
 		if(sensorTypeName == null || sensorTypeName.length() == 0){
-			System.out.println("sensor type not saved: null name");
-			return ok("sensor type not saved: null name");
+			System.out.println("Sensor type not saved, null sensorTypeName");
+			return ok("Sensor type not saved, null sensorTypeName");
 		}
 		
 		if(sensorCategoryName == null || sensorCategoryName.length() == 0){
-			System.out.println("sensor type not saved: null sensor category name");
-			return ok("sensor type not saved: null sensor category name");
+			System.out.println("Sensor type not saved: null sensorCategoryName");
+			return ok("Sensor type not saved: null sensorCategoryName");
 		}
 
 		boolean result = sensorTypeDao.addSensorType(sensorTypeName, manufacturer, version, maxValue, minValue, unit, interpreter, userDefinedFields, sensorCategoryName);
 
-		if(!result){
-			error.add(sensorTypeName);
-		}
-
-		if(error.size() == 0){
-			System.out.println("sensor type saved");
-			return ok("sensor type saved");
-		}
-		else{
-			System.out.println("some sensor types not saved: " + error.toString());
-			return ok("some sensor types not saved: " + error.toString());
+		if(result){
+			System.out.println("Sensor type saved: " + sensorTypeName);
+			return ok("Sensor type saved: " + sensorTypeName);
+		}else{
+			System.out.println("Sensor type not saved: " + sensorTypeName);
+			return ok("Sensor type not saved: " + sensorTypeName);
 		}
 	}
 	
 	public static Result updateSensorType() {
 		JsonNode json = request().body().asJson();
 		if(json == null) {
-			return badRequest("Expecting Json data");
-		} 
+			System.out.println("Sensor type is not updated, expecting Json data");
+			return badRequest("Sensor type is not updated, expecting Json data");
+		}
 		if(!checkDao()){
-			return internalServerError("database conf file not found");
+			System.out.println("Sensor type not updated, database conf file not found");
+			return internalServerError("Sensor type not updated, database conf file not found");
 		}
 
 		// Parse JSON File
 		String sensorTypeName = json.findPath("sensorTypeName").getTextValue();
-		String manufacturer = json.findPath("manufacturer").getTextValue();
-		String version = json.findPath("version").getTextValue();
-		Double maxValue = json.findPath("maximumValue").getDoubleValue();
-		Double minValue = json.findPath("minimumValue").getDoubleValue();
-		String unit = json.findPath("unit").getTextValue();
-		String interpreter = json.findPath("interpreter").getTextValue();
-		String userDefinedFields = json.findPath("userDefinedFields").getTextValue();
-		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
-		ArrayList<String> error = new ArrayList<String>();
+		String userDefinedFields = json.findPath("sensorTypeUserDefinedFields").getTextValue();
+		
+		if(sensorTypeName == null || sensorTypeName.length() == 0){
+			System.out.println("Sensor type not updated, null sensorTypeName");
+			return ok("Sensor type not updated, null sensorTypeName");
+		}
+		if(userDefinedFields == null || userDefinedFields.length() == 0){
+			System.out.println("Sensor type not updated, null sensorTypeUserDefinedFields: " + sensorTypeName);
+			return ok("Sensor type not updated, null sensorTypeUserDefinedFields: " + sensorTypeName);
+		}
 		
 		if(sensorTypeDao.getSensorType(sensorTypeName) == null){
-			error.add(sensorTypeName);
+			System.out.println("Sensor type not updated, sensor type does not exist: " + sensorTypeName);
+			return ok("Sensor type not updated, sensor type does not exist: " + sensorTypeName); 
 		}
 
-		boolean result = sensorTypeDao.updateSensorType(sensorTypeName, manufacturer, version, maxValue, minValue, unit, interpreter, userDefinedFields, sensorCategoryName);
+		boolean result = sensorTypeDao.updateSensorType(sensorTypeName, userDefinedFields);
 
-		if(!result){
-			error.add(sensorTypeName);
-		}
-
-		if(error.size() == 0){
-			System.out.println("sensor type updated");
-			return ok("sensor type updated");
+		if(result){
+			System.out.println("Sensor type updated: " + sensorTypeName);
+			return ok("Sensor type updated: " + sensorTypeName);
 		}else{
-			System.out.println("sensor type not updated: " + error.toString());
-			return ok("sensor type not updated: " + error.toString());
+			System.out.println("Sensor type not updated: " + sensorTypeName);
+			return ok("Sensor type not updated: " + sensorTypeName);
 		}
 	}
 	
 	public static Result getSensorType(String sensorTypeName, String format) {
+		if(sensorTypeName == null || sensorTypeName.length() == 0){
+			System.out.println("Sensor type not found, null sensorTypeName");
+			return ok("Sensor type not found, null sensorTypeName");
+		}
 		if(!checkDao()){
-			return internalServerError("database conf file not found");
+			System.out.println("Sensor type not found, database conf file not found");
+			return internalServerError("Sensor type not found, database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		// case insensitive search. device types in the database are in lower case
-//		sensorTypeName = sensorTypeName.toLowerCase();
+		
 		SensorType sensorType = sensorTypeDao.getSensorType(sensorTypeName);
 		if(sensorType == null){
-			return notFound("No sensor type found for: " + sensorTypeName);
+			System.out.println("Sensor type is not found: " + sensorTypeName);
+			return notFound("Sensor type is not found: " + sensorTypeName);
 		}
 		
 		String ret = new String();
@@ -148,13 +152,18 @@ public class SensorTypeController extends Controller {
 	
 	public static Result getAllSensorTypes(String format) {
 		if(!checkDao()){
-			return internalServerError("database conf file not found");
+			System.out.println("Sensor type not found, database conf file not found");
+			return internalServerError("Sensor type not found, database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
+		
 		List<SensorType> sensorTypes = sensorTypeDao.getAllSensorTypes();
+		
 		if(sensorTypes == null || sensorTypes.isEmpty()){
-			return notFound("No sensor type found");
+			System.out.println("No sensor type is found");
+			return notFound("No sensor type is found");
 		}
+		
 		String ret = new String();
 		if(format.equals("json")){
 			ret = new Gson().toJson(sensorTypes);
@@ -165,16 +174,27 @@ public class SensorTypeController extends Controller {
 	}
 	
 	public static Result deleteSensorType(String sensorTypeName){
+		if(sensorTypeName == null || sensorTypeName.length() == 0){
+			System.out.println("Sensor type not deleted, null sensorTypeName");
+			return ok("Sensor type not deleted, null sensorTypeName");
+		}
 		if(!checkDao()){
-			return internalServerError("database conf file not found");
+			System.out.println("Sensor type not deleted, database conf file not found");
+			return internalServerError("Sensor type not deleted, database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
+		
+		if(sensorTypeDao.getSensorType(sensorTypeName) == null){
+			System.out.println("Sensor type not deleted, sensor type does not exist: " + sensorTypeName);
+			return ok("Sensor type not deleted, sensor type does not exist: " + sensorTypeName);
+		}
+		
 		if(sensorTypeDao.deleteSensorType(sensorTypeName)){
-			System.out.println("sensor type deleted");
-			return ok("sensor type deleted");
+			System.out.println("Sensor type deleted: " + sensorTypeName);
+			return ok("Sensor type deleted: " + sensorTypeName);
 		}else{
-			System.out.println("sensor type is not deleted");
-			return ok("sensor type is not deleted");
+			System.out.println("Sensor type not deleted: " + sensorTypeName);
+			return ok("Sensor type not deleted: " + sensorTypeName);
 		}
 	}
 	
