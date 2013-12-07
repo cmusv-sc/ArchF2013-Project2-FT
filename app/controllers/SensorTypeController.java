@@ -103,7 +103,7 @@ public class SensorTypeController extends Controller {
 			System.out.println("Sensor type not updated, null sensorTypeName");
 			return ok("Sensor type not updated, null sensorTypeName");
 		}
-		if(userDefinedFields == null || userDefinedFields.length() == 0){
+		if(userDefinedFields == null){
 			System.out.println("Sensor type not updated, null sensorTypeUserDefinedFields: " + sensorTypeName);
 			return ok("Sensor type not updated, null sensorTypeUserDefinedFields: " + sensorTypeName);
 		}
@@ -137,8 +137,8 @@ public class SensorTypeController extends Controller {
 		
 		SensorType sensorType = sensorTypeDao.getSensorType(sensorTypeName);
 		if(sensorType == null){
-			System.out.println("Sensor type is not found: " + sensorTypeName);
-			return notFound("Sensor type is not found: " + sensorTypeName);
+			System.out.println("Sensor type not found: " + sensorTypeName);
+			return notFound("Sensor type not found: " + sensorTypeName);
 		}
 		
 		String ret = new String();
