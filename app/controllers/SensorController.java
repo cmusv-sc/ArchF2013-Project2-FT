@@ -60,20 +60,6 @@ public class SensorController extends Controller {
 		String userDefinedFields = json.findPath("sensorUserDefinedFields").getTextValue();
 		String userName = json.findPath("userName").getTextValue();
 
-		
-		ArrayList<String> error = new ArrayList<String>();
-		
-		boolean result;
-		
-		if (userName != null && !userName.equals("")) {
-			result = sensorDao.addSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields, userName);
-		} else {
-			result = sensorDao.addSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields);
-		}
-		
-		if (!result) {
-			error.add(sensorTypeName);
-    }	
 		if(sensorName == null || sensorName.length() == 0){
 			System.out.println("Sensor not saved, null sensorName");
 			return ok("Sensor not saved, null sensorName");
@@ -89,7 +75,13 @@ public class SensorController extends Controller {
 			return ok("Sensor not saved, null deviceUri: " + deviceUri);
 		}
 		
-		boolean result = sensorDao.addSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields);
+		boolean result;
+		
+		if (userName != null && !userName.equals("")) {
+			result = sensorDao.addSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields, userName);
+		} else {
+			result = sensorDao.addSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields);
+		}
 		
 		if (result) {
 			System.out.println("Sensor saved: " + sensorTypeName);
@@ -139,14 +131,6 @@ public class SensorController extends Controller {
 	public static Result getSensor(String sensorName, String format) {
 		String[] userNames = request().headers().get("Authorization");
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		checkDao();
-		
-		Sensor sensor = null;
-		if (userNames.length > 0) {
-			sensor = sensorDao.getSensor(sensorName, userNames[0]);
-		} else {
-			sensor = sensorDao.getSensor(sensorName);
-		}
 		
 		if(!checkDao()){
 			System.out.println("Sensor not found, database conf file not found");
@@ -159,7 +143,13 @@ public class SensorController extends Controller {
 			return ok("Sensor not found, null sensorName");
 		}
 		
-		Sensor sensor = sensorDao.getSensor(sensorName);
+		
+		Sensor sensor = null;
+		if (userNames == null) {
+			sensor = sensorDao.getSensor(sensorName);
+		} else if (userNames.length > 0) {
+			sensor = sensorDao.getSensor(sensorName, userNames[0]);
+		}
 		
 		if(sensor == null){
 			System.out.println("Sensor not found: " + sensorName);

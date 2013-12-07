@@ -61,7 +61,7 @@ GET		/last_readings_from_all_devices/:timeStamp/:sensorType/json	controllers.Sen
 
 # Sensor
 POST	/addSensor					  		controllers.SensorController.addSensor()
-POST	/addSensor/:userName				  controllers.SensorController.addSensor(userName: String)
+#POST	/addSensor/:userName				controllers.SensorController.addSensor(userName: String)
 POST	/updateSensor				  		controllers.SensorController.updateSensor()
 GET 	/getSensor/:sensorName				controllers.SensorController.getSensor(sensorName: String, format: String="csv")
 GET 	/getSensor/:sensorName/json			controllers.SensorController.getSensor(sensorName: String, format: String="json")
