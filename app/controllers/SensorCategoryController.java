@@ -29,30 +29,39 @@ public class SensorCategoryController extends Controller {
 	private static SensorCategoryDao sensorCategoryDao;
 	
 	private static boolean checkDao(){
-		if (context == null) {
-			context = new ClassPathXmlApplicationContext("application-context.xml");
+		try{
+			if (context == null) {
+				context = new ClassPathXmlApplicationContext("application-context.xml");
+			}
+			if (sensorCategoryDao == null) {
+				sensorCategoryDao = (SensorCategoryDao) context.getBean("sensorCategoryDaoImplementation");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
 		}
-		if (sensorCategoryDao == null) {
-			sensorCategoryDao = (SensorCategoryDao) context.getBean("sensorCategoryDaoImplementation");
-		}
-		
 		return true;
 	}
 	
 	public static Result addSensorCategory() {
 		JsonNode json = request().body().asJson();
 		if(json == null) {
-			return badRequest("Expecting Json data");
-		} 
-		checkDao();
-
+			System.out.println("Sensor category not saved, expecting Json data");
+			return badRequest("Sensor category not saved, expecting Json data");
+		}
+		
+		if(!checkDao()){
+			System.out.println("Sensor category not saved, database conf file not found");
+			return internalServerError("Sensor category not saved, database conf file not found");
+		}
+		
 		// Parse JSON FIle 
 		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
 		String purpose = json.findPath("purpose").getTextValue();
 		
 		if(sensorCategoryName == null || sensorCategoryName.length() == 0){
-			System.out.println("sensor category not saved: null name");
-			return ok("sensor category not saved: null name");
+			System.out.println("Sensor category not saved, null name");
+			return ok("Sensor category not saved, null name");
 		}
 		
 		boolean result = sensorCategoryDao.addSensorCategory(sensorCategoryName, purpose);
@@ -60,48 +69,71 @@ public class SensorCategoryController extends Controller {
 //		TODO API document says it should return a HTTP 201 here. However, Play does not have a class for it
 //		Is HTTP 200 (implemented by Result.Ok) fine?
 		if(result){
-			System.out.println("sensor category saved");
-			return ok("sensor category saved");
-		}
-		else{
-			System.out.println("sensor category not saved: " + sensorCategoryName);
-			return ok("sensor category not saved: " + sensorCategoryName);
+			System.out.println("Sensor category saved: " + sensorCategoryName);
+			return ok("Sensor category saved: " + sensorCategoryName);
+		}else{
+			System.out.println("Sensor category not saved: " + sensorCategoryName);
+			return ok("Sensor category not saved: " + sensorCategoryName);
 		}
 	}
 	
 	public static Result updateSensorCategory() {
 		JsonNode json = request().body().asJson();
 		if(json == null) {
-			return badRequest("Expecting Json data");
-		} 
-		checkDao();
+			System.out.println("Sensor category not saved, expecting Json data");
+			return badRequest("Sensor category not saved, expecting Json data");
+		}
+		
+		if(!checkDao()){
+			System.out.println("Sensor category not updated, database conf file not found");
+			return internalServerError("Sensor category not updated, database conf file not found");
+		}
 
 //		Parse JSON FIle 
 		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
 		String purpose = json.findPath("purpose").getTextValue();
 		
-//		Return error message if the SensorCategory does not exist 
+		if(sensorCategoryName == null || sensorCategoryName.length() == 0){
+			System.out.println("Sensor category not updated, null sensorCategoryName");
+			return ok("Sensor category not updated: null sensorCategoryName");
+		}else if(purpose == null || purpose.length() == 0){
+			System.out.println("Sensor category not updated, null purpose: " + sensorCategoryName);
+			return ok("Sensor category not updated: null purpose: " + sensorCategoryName);
+		}
+		
+//		Return error message if the SensorCategory is not found 
 		if(sensorCategoryDao.getSensorCategory(sensorCategoryName) == null){
-			return ok("sensor category not updated: " + sensorCategoryName); 
+			System.out.println("Sensor category not updated, sensor category not found: " + sensorCategoryName);
+			return ok("Sensor category not updated, sensor category not found: " + sensorCategoryName); 
 		}
 		
 		boolean result = sensorCategoryDao.updateSensorCategory(sensorCategoryName, purpose);
 
 		if(result){
-			System.out.println("sensor category updated");
-			return ok("sensor category updated");
+			System.out.println("Sensor category updated: " + sensorCategoryName);
+			return ok("Sensor category updated: " + sensorCategoryName);
 		}else{
-			System.out.println("sensor category not updated: " + sensorCategoryName);
-			return ok("sensor category not updated: " + sensorCategoryName);
+			System.out.println("Sensor category not updated: " + sensorCategoryName);
+			return ok("Sensor category not updated: " + sensorCategoryName);
 		}
 	}
 	
-	public static Result getSensorCategory(String SensorCategoryName, String format) {
+	public static Result getSensorCategory(String sensorCategoryName, String format) {
+		if(sensorCategoryName == null || sensorCategoryName.length() == 0){
+			System.out.println("Sensor category not found, null sensorCategoryName");
+			return ok("Sensor category not found, null sensorCategoryName");
+		}
+		
+		if(!checkDao()){
+			System.out.println("Sensor category not found, database conf file not found");
+			return internalServerError("Sensor category not found, database conf file not found");
+		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		checkDao();
-		SensorCategory sensorCategory = sensorCategoryDao.getSensorCategory(SensorCategoryName);
+		
+		SensorCategory sensorCategory = sensorCategoryDao.getSensorCategory(sensorCategoryName);
 		if(sensorCategory == null){
-			return notFound("no sensor categories found");
+			System.out.println("Sensor category not found: " + sensorCategoryName);
+			return notFound("Sensor category not found: " + sensorCategoryName);
 		}
 		String ret = new String();
 		if (format.equals("json")){
@@ -113,9 +145,19 @@ public class SensorCategoryController extends Controller {
 	}
 	
 	public static Result getAllSensorCategories(String format) {
+		if(!checkDao()){
+			System.out.println("Sensor category not found, database conf file not found");
+			return internalServerError("Sensor category not found, database conf file not found");
+		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		checkDao();
+		
 		List<SensorCategory> categories = sensorCategoryDao.getAllSensorCategories();
+		
+		if(categories == null || categories.isEmpty()){
+			System.out.println("No sensor category found");
+			return notFound("No sensor category found");
+		}
+		
 		String ret = new String();
 		if (format.equals("json")){
 			ret = new Gson().toJson(categories);
@@ -126,14 +168,31 @@ public class SensorCategoryController extends Controller {
 	}
 	
 	public static Result deleteSensorCategory(String sensorCategoryName){
-		checkDao();
+		if(sensorCategoryName == null || sensorCategoryName.length() == 0){
+			System.out.println("Sensor category not deleted, null sensorCategoryName");
+			return ok("Sensor category not deleted, null sensorCategoryName");
+		}
+		
+		if(!checkDao()){
+			System.out.println("Sensor category not deleted, database conf file not found");
+			return internalServerError("Sensor category not deleted, database conf file not found");
+		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		if(sensorCategoryDao.deleteSensorCategory(sensorCategoryName)){
-			System.out.println("sensor deleted");
-			return ok("sensor deleted");
+		
+//		Return error message if the SensorCategory is not found 
+		if(sensorCategoryDao.getSensorCategory(sensorCategoryName) == null){
+			System.out.println("Sensor category not deleted, sensor category not found: " + sensorCategoryName);
+			return ok("Sensor category not deleted, sensor category not found: " + sensorCategoryName); 
+		}
+		
+		boolean result = sensorCategoryDao.deleteSensorCategory(sensorCategoryName);
+		
+		if(result){
+			System.out.println("Sensor category is deleted: " + sensorCategoryName);
+			return ok("Sensor category is deleted: " + sensorCategoryName);
 		}else{
-			System.out.println("sensor is not deleted");
-			return ok("sensor is not deleted");
+			System.out.println("Sensor category is not deleted: " + sensorCategoryName);
+			return ok("Sensor category is not deleted: " + sensorCategoryName);
 		}
 	}
 	

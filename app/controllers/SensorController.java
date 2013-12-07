@@ -1,7 +1,6 @@
 package controllers;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,21 +27,31 @@ public class SensorController extends Controller {
 	private static ApplicationContext context;
 	private static SensorDao sensorDao;
 	
-	private static void checkDao(){
-		if (context == null) {
-			context = new ClassPathXmlApplicationContext("application-context.xml");
+	private static boolean checkDao(){
+		try{
+			if (context == null) {
+				context = new ClassPathXmlApplicationContext("application-context.xml");
+			}
+			if (sensorDao == null) {
+				sensorDao = (SensorDao) context.getBean("sensorDaoImplementation");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
 		}
-		if (sensorDao == null) {
-			sensorDao = (SensorDao) context.getBean("sensorDaoImplementation");
-		}
+		return true;
 	}
 
 	public static Result addSensor() {
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data");
-		} 
-		checkDao();
+			System.out.println("Sensor not saved, expecting Json data");
+			return badRequest("Sensor not saved, expecting Json data");
+		}
+		if(!checkDao()){
+			System.out.println("Sensor not saved, database conf file not found");
+			return internalServerError("Sensor not saved, database conf file not found");
+		}
 
 		// Parse JSON FIle 
 		String sensorTypeName = json.findPath("sensorTypeName").getTextValue();
@@ -64,48 +73,66 @@ public class SensorController extends Controller {
 		
 		if (!result) {
 			error.add(sensorTypeName);
+    }	
+		if(sensorName == null || sensorName.length() == 0){
+			System.out.println("Sensor not saved, null sensorName");
+			return ok("Sensor not saved, null sensorName");
 		}
-		// Can this error have more than one name in it? I don't understand why error needs to be a list.
-		if (error.size() == 0) {
-			System.out.println("sensor saved");
-			return ok("sensor saved");
+		
+		if(sensorTypeName == null || sensorTypeName.length() == 0){
+			System.out.println("Sensor not saved, null sensorTypeName: " + sensorName);
+			return ok("Sensor not saved, null sensorTypeName: " + sensorName);
+		}
+		
+		if(deviceUri == null || deviceUri.length() == 0){
+			System.out.println("Sensor not saved, null deviceUri: " + deviceUri);
+			return ok("Sensor not saved, null deviceUri: " + deviceUri);
+		}
+		
+		boolean result = sensorDao.addSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields);
+		
+		if (result) {
+			System.out.println("Sensor saved: " + sensorTypeName);
+			return ok("Sensor saved: " + sensorTypeName);
 		} else {
-			System.out.println("sensor not saved: " + error.toString());
-			return ok("sensor not saved: " + error.toString());
+			System.out.println("Sensor not saved: " + sensorTypeName);
+			return ok("Sensor not saved: " + sensorTypeName);
 		}
 	}
 	
 	public static Result updateSensor() {
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data");
-		} 
-		checkDao();
+			System.out.println("Sensor not updated, expecting Json data");
+			return badRequest("Sensor not updated, expecting Json data");
+		}
+		if(!checkDao()){
+			System.out.println("Sensor not updated, database conf file not found");
+			return internalServerError("Sensor not updated, database conf file not found");
+		}
 
 //		Parse JSON File 
-		String sensorTypeName = json.findPath("sensorTypeName").getTextValue();
-		String deviceUri = json.findPath("deviceUri").getTextValue();
 		String sensorName = json.findPath("sensorName").getTextValue();
-		String userDefinedFields = json.findPath("userDefinedFields").getTextValue();
-		ArrayList<String> error = new ArrayList<String>();
+		String userDefinedFields = json.findPath("sensorUserDefinedFields").getTextValue();
 		
-		if (sensorDao.getSensor(sensorName) == null) {
-			System.out.println("sensor not updated: " + error.toString());
-			return ok("sensor not updated: " + error.toString());
+		if(sensorName == null || sensorName.length() == 0){
+			System.out.println("Sensor not saved, null sensorName");
+			return ok("Sensor not saved, null sensorName");
 		}
 		
-		boolean result = sensorDao.updateSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields);
+		if(userDefinedFields == null || userDefinedFields.length() == 0){
+			System.out.println("Sensor not updated, null userDefinedFields: " + sensorName);
+			return ok("Sensor not updated, null userDefinedFields: " + sensorName);
+		}
+		
+		boolean result = sensorDao.updateSensor(sensorName, userDefinedFields);
 
-		if (!result) {
-			error.add(sensorTypeName);
-		}
-		
-		if (error.size() == 0) {
-			System.out.println("sensor updated");
-			return ok("sensor updated");
+		if (result) {
+			System.out.println("Sensor updated: " + sensorName);
+			return ok("Sensor updated: " + sensorName);
 		} else {
-			System.out.println("sensor not updated: " + error.toString());
-			return ok("sensor not updated: " + error.toString());
+			System.out.println("Sensor not updated: " + sensorName);
+			return ok("Sensor not updated: " + sensorName);
 		}
 	}
 	
@@ -121,8 +148,22 @@ public class SensorController extends Controller {
 			sensor = sensorDao.getSensor(sensorName);
 		}
 		
+		if(!checkDao()){
+			System.out.println("Sensor not found, database conf file not found");
+			return internalServerError("Sensor not found, database conf file not found");
+		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		
+		if(sensorName == null || sensorName.length() == 0){
+			System.out.println("Sensor not found, null sensorName");
+			return ok("Sensor not found, null sensorName");
+		}
+		
+		Sensor sensor = sensorDao.getSensor(sensorName);
+		
 		if(sensor == null){
-			return notFound("no sensor found");
+			System.out.println("Sensor not found: " + sensorName);
+			return notFound("Sensor not found: " + sensorName);
 		}
 		String ret = new String();
 		if (format.equals("json")) {			
@@ -134,12 +175,17 @@ public class SensorController extends Controller {
 	}
 	
 	public static Result getAllSensors(String format) {
+		if(!checkDao()){
+			System.out.println("Sensor not found, database conf file not found");
+			return internalServerError("Sensor not found, database conf file not found");
+		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		checkDao();
+		
 		List<Sensor> sensors = sensorDao.getAllSensors();
 		
 		if(sensors == null || sensors.isEmpty()){
-			return notFound("no sensor found");
+			System.out.println("No sensor found");
+			return notFound("No sensor found");
 		} 
 		
 		String ret = null;
@@ -149,6 +195,29 @@ public class SensorController extends Controller {
 			ret = toCsv(sensors);
 		}
 		return ok(ret);
+	}
+	
+	public static Result deleteSensor(String sensorName){
+		if(!checkDao()){
+			System.out.println("Sensor not deleted, database conf file not found");
+			return internalServerError("Sensor not deleted, database conf file not found");
+		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		
+		if(sensorName == null || sensorName.length() == 0){
+			System.out.println("Sensor not deleted, null sensorName");
+			return ok("Sensor not deleted, null sensorName");
+		}
+		
+		boolean result = sensorDao.deleteSensor(sensorName); 
+		
+		if(result){
+			System.out.println("Sensor deleted: " + sensorName);
+			return ok("Sensor deleted: " + sensorName);
+		}else{
+			System.out.println("Sensor not deleted: " + sensorName);
+			return ok("Sensor not deleted: " + sensorName);
+		}
 	}
 	
 	private static String toCsv(List<Sensor> sensors) {
@@ -177,17 +246,5 @@ public class SensorController extends Controller {
 			}
 		}
 		return sw.getBuffer().toString();
-	}
-	
-	public static Result deleteSensor(String sensorName){
-		checkDao();
-		response().setHeader("Access-Control-Allow-Origin", "*");
-		if(sensorDao.deleteSensor(sensorName)){
-			System.out.println("sensor deleted");
-			return ok("sensor deleted");
-		}else{
-			System.out.println("sensor is not deleted");
-			return ok("sensor is not deleted");
-		}
 	}
 }
