@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import models.DeviceType;
 import models.User;
 import models.dao.UserDao;
 
@@ -51,7 +50,7 @@ public class UserController extends Controller {
 		
 		ArrayList<String> error = new ArrayList<String>();
 		
-		boolean result = UserDao.addUser(user.getUserName(), user.getProfile());
+		boolean result = UserDao.addUser(user.getUserName(), user.getUserProfile());
 
 		if(!result){
 			error.add(user.getUserName());

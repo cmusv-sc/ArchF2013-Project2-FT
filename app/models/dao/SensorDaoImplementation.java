@@ -90,7 +90,7 @@ public class SensorDaoImplementation implements SensorDao{
 		}
 		
 		txManager.commit(status);
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -157,7 +157,7 @@ public class SensorDaoImplementation implements SensorDao{
 	
 	@Override
 	public List<Sensor> getAllSensors(String userName) {
-		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc, cmu.course_sensor_owner so, cmu.course_user "
+		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc, cmu.course_sensor_owner so, cmu.course_user u "
 				+ " WHERE s.sensor_id = so.sensor_id and so.user_id = u.user_id and u.user_name = ? and s.sensor_type_id = st.sensor_type_id and st.sensor_category_id = sc.sensor_category_id";
 		final String SQL_GET_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_SENSOR WHERE SENSOR_NAME = ?";
 		final String SQL_GET_DEVICE_URI = "SELECT URI FROM CMU.COURSE_DEVICE WHERE DEVICE_ID = ?";
@@ -200,7 +200,7 @@ public class SensorDaoImplementation implements SensorDao{
 
 	@Override
 	public Sensor getSensor(String sensorName, String userName) {
-		final String SQL_GET_SENSOR = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc, cmu.course_sensor_owner so, cmu.course_user "
+		final String SQL_GET_SENSOR = "SELECT * FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc, cmu.course_sensor_owner so, cmu.course_user u "
 				+ " WHERE s.sensor_id = so.sensor_id and so.user_id = u.user_id and u.user_name = ? and s.sensor_name = ? and s.sensor_type_id = st.sensor_type_id and st.sensor_category_id = sc.sensor_category_id";
 		final String SQL_GET_DEVICE_ID = "SELECT DEVICE_ID FROM CMU.COURSE_SENSOR WHERE SENSOR_NAME = ?";
 		final String SQL_GET_DEVICE_URI = "SELECT URI FROM CMU.COURSE_DEVICE WHERE DEVICE_ID = ?";

@@ -72,4 +72,10 @@
       class="models.dao.SensorReadingDaoImplementation">
       <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
    </bean>
+   
+   <!-- Definition for userDaoImplementation bean -->
+   <bean id="userDaoImplementation" 
+      class="models.dao.UserDaoImplementation">
+      <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
+   </bean>
 </beans>

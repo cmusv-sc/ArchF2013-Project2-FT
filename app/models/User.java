@@ -2,17 +2,17 @@ package models;
 
 public class User {
 	private String userName;
-	private String profile;
+	private String userProfile;
 	public String getUserName() {
 		return userName;
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	public String getProfile() {
-		return profile;
+	public String getUserProfile() {
+		return userProfile;
 	}
-	public void setProfile(String profile) {
-		this.profile = profile;
+	public void setUserProfile(String profile) {
+		this.userProfile = profile;
 	}
 }

@@ -1,6 +1,7 @@
 package controllers;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -89,7 +90,6 @@ public class SensorController extends Controller {
 			return ok("Sensor not saved, null deviceUri: " + deviceUri);
 		}
 		
-		boolean result = sensorDao.addSensor(sensorTypeName, deviceUri, sensorName, userDefinedFields);
 		
 		if (result) {
 			System.out.println("Sensor saved: " + sensorTypeName);
@@ -159,7 +159,6 @@ public class SensorController extends Controller {
 			return ok("Sensor not found, null sensorName");
 		}
 		
-		Sensor sensor = sensorDao.getSensor(sensorName);
 		
 		if(sensor == null){
 			System.out.println("Sensor not found: " + sensorName);
@@ -175,13 +174,21 @@ public class SensorController extends Controller {
 	}
 	
 	public static Result getAllSensors(String format) {
+		String[] userNames = request().headers().get("Authorization");
+
 		if(!checkDao()){
 			System.out.println("Sensor not found, database conf file not found");
 			return internalServerError("Sensor not found, database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		
-		List<Sensor> sensors = sensorDao.getAllSensors();
+		List<Sensor> sensors = null;
+		
+		if (userNames.length > 0) {
+			sensors = sensorDao.getAllSensors(userNames[0]);
+		} else {
+			sensors = sensorDao.getAllSensors();
+		}
 		
 		if(sensors == null || sensors.isEmpty()){
 			System.out.println("No sensor found");
