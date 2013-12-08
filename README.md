@@ -335,7 +335,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           1. Prepare input sensor type metadata in a json file:
               - "sensorCategory.json" file contains: {"sensorCategoryName": "Category 1", "purpose": "Test only"}
           2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/addSensorCategory"
-      - **Result**: HTTP 201 if the sensor category metadata has been successfully added to the database
+      - **Result**: HTTP 201 if the sensor category metadata has been successfully added to the database, HTTP 400 if the sensorCategoryName is already been used
 
 16. <a name="23"></a>**EDIT SENSOR CATEGORY**
     - **Purpose**: Edit a sensor category to sensor data service platform.
