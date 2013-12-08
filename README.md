@@ -401,7 +401,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **URL**: http://einstein.sv.cmu.edu/getAllSensorCategories/<"resultFormat">
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
-    - **Sample Usages**: 
+    - **Sample Usages**:  
       - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensorCategories/csv<br/>
       - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
       - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorCategories/json
@@ -415,6 +415,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **sensorCategoryName**: Sensor category name.
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
+      - **Result**: HTTP 200 if the sensorCategoryName exists, HTTP 404 if not found
       - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorCategoryName/sensorCategory1/csv<br/>
       - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
       - **Sample json request**: http://einstein.sv.cmu.edu/getSensorCategoryName/sensorCategory1/json
@@ -439,7 +440,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Semantics**: 
         - **sensorTypeName**" Sensor type name
         - **resultFormat**: Either JSON or CSV.
-    - **Sample Usages**: 
+    - **Sample Usages**:  
+      - **Result**: HTTP 200 if the sensorTypeName exists, HTTP 404 if not found
       - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/csv<br/>
       - **Sample csv result**: (sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
       - **Sample json request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/json
@@ -466,7 +468,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Semantics**: 
         - **sensorName**: Sensor name
         - **resultFormat**: Either JSON or CSV.
-    - **Sample Usages**: 
+    - **Sample Usages**:  
+      - **Result**: HTTP 200 if the sensorName exists, HTTP 404 if not found
       - **Sample csv request**: http://einstein.sv.cmu.edu/sensor1/getSensor/csv<br/>
       - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor1, for test, www.device.com, Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
       - **Sample json request**: http://einstein.sv.cmu.edu/getSensor/<"sensorName">/json
@@ -495,7 +498,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Semantics**: 
         - **deviceTypeName**: Device type name.
         - **resultFormat**: Either JSON or CSV.
-    - **Sample Usages**: 
+    - **Sample Usages**:  
+      - **Result**: HTTP 200 if the deviceTypeName exists, HTTP 404 if not found
       - **Sample csv request**: http://einstein.sv.cmu.edu/getDeviceType/device type 1/csv<br/>
       - **Sample csv result**: (deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>device 1, TI, 1.0, For Test, [temp, light]
       - **Sample json request**: http://einstein.sv.cmu.edu/getDeviceType/<"deviceTypeName">/json
@@ -523,7 +527,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **URL**: http://einstein.sv.cmu.edu/getDevice/<"deviceUri">/<"resultFormat">
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
-    - **Sample Usages**: 
+    - **Sample Usages**:  
+      - **Result**: HTTP 200 if the device exists, HTTP 404 if not found
       - **Sample csv request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/csv<br/>
       - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter device type 1, TI, 1.0, For Test, [temp, light], [sensor1, sensor2]
       - **Sample json request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/json
