@@ -132,18 +132,18 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 6. <a name="6"></a>**GET CURRENT SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**
     - **Purpose**: Query all sensor readings at a time point (within 60 seconds), of a specific sensor type contained in all registered devices.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getLastReadingsFromAllDevices/<"timestamp">/<"sensorTypeName">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getLastReadingsFromAllDevices/<"timestamp">/<"sensorTypeName">/<"resultFormat">
     - **Semantics**:
         - **timestamp**: Time to query the last readings of all sensors for all devices registered at the sensor data service platform.
         - **sensorType**: Type of the sensor (e.g., temperature, CO2, etc.).
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu/lastReadingsFromAllDevices/1368568896000/temp/csv
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/lastReadingsFromAllDevices/1368568896000/temp/csv
       - **Sample csv result**: (deviceUri,timestamp,sensorType,value) </br>
           device1,1368568896000,temp,513.0 <br/>
           ... <br/>
           device2,1368568889000,temp,516.0
-      - **Sample json request**: http://einstein.sv.cmu.edu/lastReadingsFromAllDevices/1368568896000/temp/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/lastReadingsFromAllDevices/1368568896000/temp/json
       - **Sample json result**: <br/>
           [{"timestamp":1368568896000,"sensorType":"temp","value":513,"deviceName":"device1"},
           ... <br/>
@@ -154,18 +154,18 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 7. <a name="7"></a>**GET LATEST SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**
     - **Purpose**: Query all latest sensor readings, of a specific sensor type contained in all devices.  If no reading for a sensor in the last 60 seconds, the latest stored reading of the corresponding sensor will be returned. 
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getLastestReadingsFromAllDevices/<"sensorType">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getLastestReadingsFromAllDevices/<"sensorType">/<"resultFormat">
     - **Semantics**:
         - **sensorType**: Type of the sensor (e.g., temperature, CO2, etc.).
         - **resultFormat**: Either json or csv.
         - Note: The difference between API#7 and API#6 (lastReadingsFromAllDevices) given the current timestamp is that, API#7 returns the last readings stored for each device even if it is more than 60 seconds old.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getLastestReadingsFromAllDevices/temp/csv     
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getLastestReadingsFromAllDevices/temp/csv     
       - **Sample csv result**: (device_id,timestamp,sensorType,value) </br>
           10170203,1368568896000,temp,513.0 <br/>
           ... <br/>
           10170204,1368568889000,temp,515.0
-      - **Sample json request**: http://einstein.sv.cmu.edu/lastestReadingsFromAllDevices/temp/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/lastestReadingsFromAllDevices/temp/json
       - **Sample json result**: <br/>
         [{"timestamp":1368568896000,"sensorType":"temp","value":513,"deviceId":"10170203"},
         ... <br/>
@@ -175,7 +175,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 15. <a name="22"></a>**ADD SENSOR CATEGORY**
     - **Purpose**: Add a new sensor category to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/addSensorCategory
+    - **URL**: http://einstein.sv.cmu.edu:9000/addSensorCategory
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorCategoryName** (string, not null): Non existing unique name of the sensor category
         - **purpose** (string, optional): Purpose of the sensor category
@@ -184,14 +184,14 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
               - "sensorCategory.json" file contains: {"sensorCategoryName": "Category 1", "purpose": "Test only"}
-          2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/addSensorCategory"
+          2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu:9000/addSensorCategory"
       - **Result**: HTTP 201 if the sensor category metadata has been successfully added to the database, HTTP 400 if the sensorCategoryName is already been used
 
 
 8. <a name="8"></a>**ADD SENSOR TYPE**
     - **Purpose**: Add a new sensor type to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/addSensorType
+    - **URL**: http://einstein.sv.cmu.edu:9000/addSensorType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorTypeName** (string, not null): Non existing unique name of the sensor type
         - **manufacturer** (string, optional): Name of the manufacturerof this sensor type
@@ -206,13 +206,13 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
               - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
-          2. curl -H "Content-Type: application/json" -d @sensorType.json "http://einstein.sv.cmu.edu/addSensorType"
+          2. curl -H "Content-Type: application/json" -d @sensorType.json "http://einstein.sv.cmu.edu:9000/addSensorType"
       - **Result**: HTTP 201 if the sensor type metadata has been successfully added to the database, HTTP 400 if failed.
 
 9. <a name="9"></a>**ADD SENSOR**
     - **Purpose**: Add a new sensor to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/addSensor
+    - **URL**: http://einstein.sv.cmu.edu:9000/addSensor
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorName** (string, not null): Non existing unique name of the sensor
         - **sensorTypeName** (string, not null): Existing name of its sensor type
@@ -222,13 +222,13 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input sensor metadata in a json file:
               - "sensor.json" file contains: {"sensorName": "TestSensor", "sensorTypeName": "Humidity", "deviceUri": "www.testsensor.com", "sensorUserDefinedFields": "Test only"}
-          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu/addSensor"
+          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu:9000/addSensor"
       - **Result**: HTTP 201 if the sensor metadata have been successfully added to the database, HTTP 400 if failed.
 
 10. <a name="10"></a>**ADD DEVICE TYPE**
     - **Purpose**: Add a new device type to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/addDeviceType
+    - **URL**: http://einstein.sv.cmu.edu:9000/addDeviceType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **deviceTypeName** (string, not null): Non existing unique name of the device type.
         - **manufacturer** (string, optional): Name of the manufacturer.
@@ -239,14 +239,14 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input device type metadata in a json file:
               - "deviceType.json" file contains: {"deviceTypeName": "device 1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}
-          2. curl -H "Content-Type: application/json" -d @deviceType.json "http://einstein.sv.cmu.edu/addDeviceType"
+          2. curl -H "Content-Type: application/json" -d @deviceType.json "http://einstein.sv.cmu.edu:9000/addDeviceType"
       - **Result**: HTTP 201 if the device type metadata has been successfully added to the database, HTTP 400 if failed.
 
 
 11. <a name="11"></a>**ADD DEVICE**
     - **Purpose**: Add a new device to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/addDevice
+    - **URL**: http://einstein.sv.cmu.edu:9000/addDevice
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **deviceTypeName** (string, not null): Existing name of its device type.
         - **deviceUri** (string): Unique uri of a device.
@@ -260,13 +260,13 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input device metadata in a json file:
               - "device.json" file contains: {"deviceTypeName": "fireimp", "deviceUri": "www.device.com", "location" : {"representation": "test location description", "latitude": 10, "longitude": 10, "altitude": 10}, "deviceUserDefinedFields": "For test"}
-          2. curl -H "Content-Type: application/json" -d @device.json "http://einstein.sv.cmu.edu/addDevice"
+          2. curl -H "Content-Type: application/json" -d @device.json "http://einstein.sv.cmu.edu:9000/addDevice"
       - **Result**: HTTP 201 if the device metadata have been successfully added to the database, HTTP 400 if failed.
 
 14. <a name="12"></a>**EDIT SENSOR TYPE**
     - **Purpose**: Edit a sensor type to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/updateSensorType
+    - **URL**: http://einstein.sv.cmu.edu:9000/updateSensorType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorTypeName** (string, not null): Name of the sensor type, which cannot be changed
         - **sensorTypeUserDefinedFields** (string, not null): User defined fields
@@ -274,14 +274,14 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
               - "sensorType.json" file contains: {"sensorTypeName": "Humidity", "sensorTypeUserDefinedFields": "Testing only"}
-          2. curl -H "Content-Type: application/json" -d @sensorType.json "http://einstein.sv.cmu.edu/updateSensorType"
+          2. curl -H "Content-Type: application/json" -d @sensorType.json "http://einstein.sv.cmu.edu:9000/updateSensorType"
       - **Result**: HTTP 200 if the sensor type metadata has been successfully updated to the database
 
 
 16. <a name="23"></a>**EDIT SENSOR CATEGORY**
     - **Purpose**: Edit a sensor category to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/updateSensorCategory
+    - **URL**: http://einstein.sv.cmu.edu:9000/updateSensorCategory
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorCategoryName** (string, not null): Name of the sensor category, which cannot be changed
         - **purpose** (string, not null): Purpose of the sensor category
@@ -289,13 +289,13 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
               - "sensorCategory.json" file contains: {"sensorCategoryName": "Category 1", "purpose": "Production only"}
-          2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/updateSensorCategory"
+          2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu:9000/updateSensorCategory"
       - **Result**: HTTP 200 if the sensor category metadata has been successfully updated to the database
 
 17. <a name="13"></a>**EDIT SENSOR**
     - **Purpose**: Edit a sensor to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/updateSensor
+    - **URL**: http://einstein.sv.cmu.edu:9000/updateSensor
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorName** (string, not null): Name of the sensor, which cannot be changed
         - **sensorUserDefinedFields** (string, not null): User defined fields.
@@ -303,13 +303,13 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input sensor metadata in a json file:
               - "sensor.json" file contains: {"sensorName": "TestSensor", "sensorUserDefinedFields": "Production only"}
-          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu/updateSensor"
+          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu:9000/updateSensor"
       - **Result**: HTTP 200 if the sensor metadata have been successfully updated to the database
 
 18. <a name="14"></a>**EDIT DEVICE TYPE**
     - **Purpose**: Edit an existing device type in sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/updateDeviceType
+    - **URL**: http://einstein.sv.cmu.edu:9000/updateDeviceType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **deviceTypeName** (string, not null): Name of the device type.
         - **deviceTypeUserDefinedFields** (string): User defined fields. 
@@ -317,14 +317,14 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input device type metadata in a json file:
               - "deviceType.json" file contains: {"deviceTypeName": "device 1", "deviceTypeUserDefinedFields": "For production"}
-          2. curl -H "Content-Type: application/json" -d @deviceType.json "http://einstein.sv.cmu.edu/updateDeviceType"
+          2. curl -H "Content-Type: application/json" -d @deviceType.json "http://einstein.sv.cmu.edu:9000/updateDeviceType"
       - **Result**: HTTP 200 if the device type metadata has been successfully added to the database.
 
 
 19. <a name="15"></a>**EDIT DEVICE**
     - **Purpose**: Edit an existing device location in sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/updateDevice
+    - **URL**: http://einstein.sv.cmu.edu:9000/updateDevice
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **deviceUri** (string, not null): Existing device URI.
         - **location**
@@ -336,62 +336,62 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input device metadata in a json file:
               - "device.json" file contains: {"deviceTypeName": "fireimp", "location" : {"representation": "test location description", "latitude": 10, "longitude": 10, "altitude": 10}}
-          2. curl -X PUT -H "Content-Type: application/json" -d @device.json "http://einstein.sv.cmu.edu/updateDevice"
+          2. curl -X PUT -H "Content-Type: application/json" -d @device.json "http://einstein.sv.cmu.edu:9000/updateDevice"
       - **Result**: HTTP 200 if the device metadata have been successfully added to the database
       
 
 31. <a name="31"></a>**GET ALL SENSOR CATEGORIES**
     - **Purpose**: Query all sensor categories.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getAllSensorCategories/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getAllSensorCategories/<"resultFormat">
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**:  
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensorCategories/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getAllSensorCategories/csv<br/>
       - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
-      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorCategories/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getAllSensorCategories/json
       - **Sample json result**: [{"sensorCategoryName":sensorCategory1,"purpose":"temp"}]
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
       
 32. <a name="32"></a>**GET A SPECIFIC SENSOR CATEGORY**
     - **Purpose**: Query a specific sensor category.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getSensorCategory/<"sensorCategoryName">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getSensorCategory/<"sensorCategoryName">/<"resultFormat">
     - **Semantics**: 
         - **sensorCategoryName**: Sensor category name.
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Result**: HTTP 200 if the sensorCategoryName exists, HTTP 404 if not found
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorCategoryName/sensorCategory1/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorCategoryName/sensorCategory1/csv<br/>
       - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
-      - **Sample json request**: http://einstein.sv.cmu.edu/getSensorCategoryName/sensorCategory1/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorCategoryName/sensorCategory1/json
       - **Sample json result**: {"sensorCategoryName":sensorCategory1,"purpose":"temp"}
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
       
 33. <a name="33"></a>**GET ALL SENSOR TYPES**
     - **Purpose**: Query all sensor types.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getAllSensorTypes/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getAllSensorTypes/<"resultFormat">
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensorTypes/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getAllSensorTypes/csv<br/>
       - **Sample csv result**: (sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
-      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getAllSensorTypes/json
       - **Sample json result**: [{"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}]
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
 34. <a name="34"></a>**GET A SPECIFIC SENSOR TYPE**
     - **Purpose**: Query a specific sensor type.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getSensorType/<"sensorTypeName">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getSensorType/<"sensorTypeName">/<"resultFormat">
     - **Semantics**: 
         - **sensorTypeName**" Sensor type name
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**:  
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorType/Humidity/csv<br/>
       - **Sample csv result**: (sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
-      - **Sample json request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorType/Humidity/json
       - **Sample json result**: {"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
     
@@ -399,13 +399,13 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 35. <a name="35"></a>**GET ALL SENSORS**
     - **Purpose**: Query all sensors.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getAllSensors/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getAllSensors/<"resultFormat">
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensors/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getAllSensors/csv<br/>
       - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor01, for test, www.device.com/001, Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment, test only
-      - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getAllSensorTypes/json
       - **Sample json result**: [{"sensorName": "sensor01", "sensorUserDefinedFields": "for test", "deviceUri": "www.device.com/001","sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment", "purpose": "test only"}]
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
@@ -413,15 +413,15 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 36. <a name="36"></a>**GET A SPECIFIC SENSOR**
     - **Purpose**: Query a specific sensor.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getSensor/<"sensorName">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getSensor/<"sensorName">/<"resultFormat">
     - **Semantics**: 
         - **sensorName**: Sensor name
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**:  
       - **Result**: HTTP 200 if the sensorName exists, HTTP 404 if not found
-      - **Sample csv request**: http://einstein.sv.cmu.edu/sensor1/getSensor/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/sensor1/getSensor/csv<br/>
       - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor1, for test, www.device.com, Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
-      - **Sample json request**: http://einstein.sv.cmu.edu/getSensor/<"sensorName">/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensor/<"sensorName">/json
       - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "deviceUri":"www.device.com", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
@@ -430,13 +430,13 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 37. <a name="37"></a>**GET ALL DEVICE TYPES**
     - **Purpose**: Query all device types.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getAllDeviceTypes/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getAllDeviceTypes/<"resultFormat">
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getAllDeviceTypes/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getAllDeviceTypes/csv<br/>
       - **Sample csv result**: (deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>device type 1, TI, 1.0, For Test, "[temp, light]"
-      - **Sample json request**: http://einstein.sv.cmu.edu/getAllDeviceTypes/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getAllDeviceTypes/json
       - **Sample json result**: [{"deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}]
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
@@ -445,15 +445,15 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 38. <a name="38"></a>**GET A SPECIFIC DEVICE TYPE**
     - **Purpose**: Query a specific device type.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getDeviceType/<"deviceTypeName">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getDeviceType/<"deviceTypeName">/<"resultFormat">
     - **Semantics**: 
         - **deviceTypeName**: Device type name.
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**:  
       - **Result**: HTTP 200 if the deviceTypeName exists, HTTP 404 if not found
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getDeviceType/device type 1/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getDeviceType/device type 1/csv<br/>
       - **Sample csv result**: (deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>device 1, TI, 1.0, For Test, "[temp, light]"
-      - **Sample json request**: http://einstein.sv.cmu.edu/getDeviceType/<"deviceTypeName">/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getDeviceType/<"deviceTypeName">/json
       - **Sample json result**: {"deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}
       
 
@@ -461,13 +461,13 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 39. <a name="39"></a>**GET ALL DEVICES**
     - **Purpose**: Query all device types.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getAllDevices/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getAllDevices/<"resultFormat">
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getAllDevices/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getAllDevices/csv<br/>
       - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, representation, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter, device type 1, TI, 1.0, For Test, "[temp, light]", "[sensor1, sensor2]"
-      - **Sample json request**: http://einstein.sv.cmu.edu/getAllDevices/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getAllDevices/json
       - **Sample json result**: [{"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "representation": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}]
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
@@ -476,20 +476,20 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 40. <a name="40"></a>**GET A SPECIFIC DEVICE**
     - **Purpose**: Query a specific device.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getDevice/<"deviceUri">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getDevice/<"deviceUri">/<"resultFormat">
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**:  
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getDevice/www.device.com/csv<br/>
       - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter, device type 1, TI, 1.0, For Test, "[temp, light]", "[sensor1, sensor2]"
-      - **Sample json request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getDevice/www.device.com/json
       - **Sample json result**: {"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "locationInterpreter": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
 41. <a name="24"></a>**DELETE SENSOR CATEGORY**
     - **Purpose**: Delete a sensor category from sensor data service platform.
     - **Method**: DELETE
-    - **URL**: http://einstein.sv.cmu.edu/deleteSensorCategory/<"sensorCategoryName">
+    - **URL**: http://einstein.sv.cmu.edu:9000/deleteSensorCategory/<"sensorCategoryName">
     - **Semantics**
         - **sensorCategoryName** (string, not null): Name of the sensor category
     - **Sample Usages**:
@@ -500,7 +500,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 42. <a name="16"></a>**DELETE SENSOR TYPE**
     - **Purpose**: Delete a sensor type from sensor data service platform.
     - **Method**: DELETE
-    - **URL**: http://einstein.sv.cmu.edu/deleteSensorType/<"sensorTypeName">
+    - **URL**: http://einstein.sv.cmu.edu:9000/deleteSensorType/<"sensorTypeName">
     - **Semantics**
         - **sensorTypeName** (string, not null): Name of the sensor type
     - **Sample Usages**:
@@ -511,7 +511,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 43. <a name="17"></a>**DELETE SENSOR**
     - **Purpose**: Delete a sensor from sensor data service platform.
     - **Method**: DELETE
-    - **URL**: http://einstein.sv.cmu.edu/deleteSensor/<"sensorName">
+    - **URL**: http://einstein.sv.cmu.edu:9000/deleteSensor/<"sensorName">
     - **Semantics**
         - **sensorName** (string, not null): Name of the sensor
     - **Sample Usages**:
@@ -523,7 +523,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 41. <a name="41"></a>**ADD USER**
     - **Purpose**: Add a new user to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/addUser
+    - **URL**: http://einstein.sv.cmu.edu:9000/addUser
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **userName** (string, not null): Non existing unique user name
         - **userProfile** (string, optional): User profile
@@ -531,27 +531,27 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input sensor type metadata in a json file:
               - "user.json" file contains: {"userName": "John", "userProfile": "CMU student"}
-          2. curl -H "Content-Type: application/json" -d @user.json "http://einstein.sv.cmu.edu/addUser"
+          2. curl -H "Content-Type: application/json" -d @user.json "http://einstein.sv.cmu.edu:9000/addUser"
       - **Result**: HTTP 201 if the user has been successfully added to the database, HTTP 400 if the userName is already been used
 
 42. <a name="42"></a>**GET A USER INFORMATION**
     - **Purpose**: Query a specific user.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/getUser/<"userName">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getUser/<"userName">/<"resultFormat">
     - **Semantics**: 
         - **userName**: Existing user name.
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu/getUser/John/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getUser/John/csv<br/>
       - **Sample csv result**: (userName,userProfile) </br>John, CMU student
-      - **Sample json request**: http://einstein.sv.cmu.edu/getUser/John/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getUser/John/json
       - **Sample json result**: {"userName":John,"userProfile":"CMU student"}
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
 43. <a name="43"></a>**ADD SENSOR AS A REGISTERD USER**
     - **Purpose**: Add a new sensor as a registered user to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/addSensor
+    - **URL**: http://einstein.sv.cmu.edu:9000/addSensor
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorName** (string, not null): Non existing unique name of the sensor
         - **sensorTypeName** (string, not null): Existing name of its sensor type
@@ -562,19 +562,19 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input sensor metadata in a json file:
               - "sensor.json" file contains: {"sensorName": "TestSensor", "sensorTypeName": "Humidity", "deviceUri": "www.testsensor.com", "sensorUserDefinedFields": "Test only", "userName":"John"}
-          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu/addSensor"
+          2. curl -H "Content-Type: application/json" -d @sensor.json "http://einstein.sv.cmu.edu:9000/addSensor"
       - **Result**: HTTP 201 if the sensor metadata have been successfully added to the database, HTTP 400 if failed.
 
 44. <a name="44"></a>**GET ALL SENSORS AS A REGISTERED USER**
     - **Purpose**: Query all sensors which has been added by a registered user.
     - **Method**: GET(Specify user name in request header)
-    - **URL**: http://einstein.sv.cmu.edu/getAllSensors/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getAllSensors/<"resultFormat">
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu/getAllSensors/csv<br/>
+      - **Sample csv request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu:9000/getAllSensors/csv<br/>
       - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor01, for test, www.device.com/001, Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment, test only
-      - **Sample json request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu/getAllSensorTypes/json
+      - **Sample json request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu:9000/getAllSensorTypes/json
       - **Sample json result**: [{"sensorName": "sensor01", "sensorUserDefinedFields": "for test", "deviceUri": "www.device.com/001","sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment", "purpose": "test only"}]
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
@@ -582,18 +582,18 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 45. <a name="45"></a>**GET A SPECIFIC SENSOR AS A REGISTERED USER**
     - **Purpose**: Query a specific sensor which has been added by a registered user.
     - **Method**: GET (Specify user name in request header)
-    - **URL**: http://einstein.sv.cmu.edu/getSensor/<"sensorName">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getSensor/<"sensorName">/<"resultFormat">
     - **Semantics**: 
         - **sensorName**: Sensor name
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**:  
-      - **Sample csv request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu/sensor1/getSensor/csv<br/>
+      - **Sample csv request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu:9000/sensor1/getSensor/csv<br/>
       - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor1, for test, www.device.com, Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
-      - **Sample json request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu/getSensor/<"sensorName">/json
+      - **Sample json request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu:9000/getSensor/<"sensorName">/json
       - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "deviceUri":"www.device.com", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
       
-[1]: http://einstein.sv.cmu.edu/ "The Application Server running in the Smart Spaces Lab, CMUSV"
+[1]: http://einstein.sv.cmu.edu:9000/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 
 Examples:
 ----------------
@@ -602,7 +602,7 @@ Examples:
     <pre>
       <code>
          import json, requests
-         response = requests.get("http://einstein.sv.cmu.edu/get_devices/json")
+         response = requests.get("http://einstein.sv.cmu.edu:9000/get_devices/json")
          print(response.json())
       </code>
     </pre>
@@ -610,7 +610,7 @@ Examples:
     <pre>
       <code>
          import requests
-         requests.post("http://einstein.sv.cmu.edu/sensors", data={}, headers={}, files={}, cookies=None, auth=None)
+         requests.post("http://einstein.sv.cmu.edu:9000/sensors", data={}, headers={}, files={}, cookies=None, auth=None)
       </code>
     </pre>
     
@@ -657,7 +657,7 @@ Examples:
       
       public class SensorReadingPostExample {
          	public static void main(String args[]) throws Exception {
-         		String URLStr = "http://einstein.sv.cmu.edu/sensors";
+         		String URLStr = "http://einstein.sv.cmu.edu:9000/sensors";
          		java.util.Date date = new java.util.Date();
          		
          		JsonObject jo = new JsonObject();
