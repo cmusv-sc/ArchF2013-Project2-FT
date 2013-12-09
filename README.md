@@ -1,5 +1,5 @@
 <b>Released under a Dual Licensing / GPL 3.</b>
-Sensor Service Platform APIs Version 1.2
+Sensor Service Platform APIs Version 1.3
 ========================================
 Advisors: Jia Zhang, Bob Iannucci, Martin Griss, Steven Rosenberg, Anthony Rowe<br/>
 Current contributors: Bo Liu, Ching Lun Lin, Chris Lee, David Lee, Lyman Cao, <br/>
@@ -397,10 +397,11 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getAllSensors/csv<br/>
-      - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor01, for test, www.device.com/001, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment, test only
+      - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor01, for test, www.device.com/001, Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment, test only
       - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
       - **Sample json result**: [{"sensorName": "sensor01", "sensorUserDefinedFields": "for test", "deviceUri": "www.device.com/001","sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment", "purpose": "test only"}]
-      
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
+
 
 36. <a name="36"></a>**GET A SPECIFIC SENSOR**
     - **Purpose**: Query a specific sensor.
@@ -415,7 +416,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor1, for test, www.device.com, Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
       - **Sample json request**: http://einstein.sv.cmu.edu/getSensor/<"sensorName">/json
       - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "deviceUri":"www.device.com", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
-      
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
+
 
       
 37. <a name="37"></a>**GET ALL DEVICE TYPES**
@@ -426,10 +428,11 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getAllDeviceTypes/csv<br/>
-      - **Sample csv result**: (deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>device type 1, TI, 1.0, For Test, [temp, light]
+      - **Sample csv result**: (deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>device type 1, TI, 1.0, For Test, "[temp, light]"
       - **Sample json request**: http://einstein.sv.cmu.edu/getAllDeviceTypes/json
       - **Sample json result**: [{"deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}]
-     
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
+
 
       
 38. <a name="38"></a>**GET A SPECIFIC DEVICE TYPE**
@@ -442,7 +445,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Sample Usages**:  
       - **Result**: HTTP 200 if the deviceTypeName exists, HTTP 404 if not found
       - **Sample csv request**: http://einstein.sv.cmu.edu/getDeviceType/device type 1/csv<br/>
-      - **Sample csv result**: (deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>device 1, TI, 1.0, For Test, [temp, light]
+      - **Sample csv result**: (deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames) </br>device 1, TI, 1.0, For Test, "[temp, light]"
       - **Sample json request**: http://einstein.sv.cmu.edu/getDeviceType/<"deviceTypeName">/json
       - **Sample json result**: {"deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"]}
       
@@ -456,10 +459,11 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu/getAllDevices/csv<br/>
-      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter device type 1, TI, 1.0, For Test, [temp, light], [sensor1, sensor2]
+      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, representation, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter, device type 1, TI, 1.0, For Test, "[temp, light]", "[sensor1, sensor2]"
       - **Sample json request**: http://einstein.sv.cmu.edu/getAllDevices/json
-      - **Sample json result**: [{"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "locationInterpreter": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}]
-      
+      - **Sample json result**: [{"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "representation": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}]
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
+
 
 
 40. <a name="40"></a>**GET A SPECIFIC DEVICE**
@@ -469,11 +473,11 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Semantics**: 
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**:  
-      - **Result**: HTTP 200 if the device exists, HTTP 404 if not found
       - **Sample csv request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/csv<br/>
-      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter device type 1, TI, 1.0, For Test, [temp, light], [sensor1, sensor2]
+      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, locationInterpreter, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter, device type 1, TI, 1.0, For Test, "[temp, light]", "[sensor1, sensor2]"
       - **Sample json request**: http://einstein.sv.cmu.edu/getDevice/www.device.com/json
       - **Sample json result**: {"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "locationInterpreter": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
 41. <a name="24"></a>**DELETE SENSOR CATEGORY**
     - **Purpose**: Delete a sensor category from sensor data service platform.
@@ -536,7 +540,7 @@ Examples:
       import java.net.HttpURLConnection;
       import java.net.URL;
       public static String httpGet(String urlStr) throws IOException {
-          	URL url = new URL(urlStr);
+              URL url = new URL(urlStr);
       		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       
       		if (conn.getResponseCode() != 200) {
