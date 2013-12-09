@@ -166,6 +166,21 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         {"timestamp":1368568889000,"sensorType":"temp","value":515,"deviceId":"10170204"}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
+15. <a name="22"></a>**ADD SENSOR CATEGORY**
+    - **Purpose**: Add a new sensor category to sensor data service platform.
+    - **Method**: POST
+    - **URL**: http://einstein.sv.cmu.edu/addSensorCategory
+    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
+        - **sensorCategoryName** (string, not null): Non existing unique name of the sensor category
+        - **purpose** (string, optional): Purpose of the sensor category
+    - **Sensor type metadata format**: {"sensorCategoryName": <"sensorCategoryName">, "purpose": <"purpose">}    
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. Prepare input sensor type metadata in a json file:
+              - "sensorCategory.json" file contains: {"sensorCategoryName": "Category 1", "purpose": "Test only"}
+          2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/addSensorCategory"
+      - **Result**: HTTP 201 if the sensor category metadata has been successfully added to the database, HTTP 400 if the sensorCategoryName is already been used
+
 
 8. <a name="8"></a>**ADD SENSOR TYPE**
     - **Purpose**: Add a new sensor type to sensor data service platform.
@@ -256,20 +271,6 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           2. curl -H "Content-Type: application/json" -d @sensorType.json "http://einstein.sv.cmu.edu/updateSensorType"
       - **Result**: HTTP 200 if the sensor type metadata has been successfully updated to the database
 
-15. <a name="22"></a>**ADD SENSOR CATEGORY**
-    - **Purpose**: Add a new sensor category to sensor data service platform.
-    - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/addSensorCategory
-    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **sensorCategoryName** (string, not null): Non existing unique name of the sensor category
-        - **purpose** (string, optional): Purpose of the sensor category
-    - **Sensor type metadata format**: {"sensorCategoryName": <"sensorCategoryName">, "purpose": <"purpose">}    
-    - **Sample Usages**:
-      - **Command Line Example**: 
-          1. Prepare input sensor type metadata in a json file:
-              - "sensorCategory.json" file contains: {"sensorCategoryName": "Category 1", "purpose": "Test only"}
-          2. curl -H "Content-Type: application/json" -d @sensorCategory.json "http://einstein.sv.cmu.edu/addSensorCategory"
-      - **Result**: HTTP 201 if the sensor category metadata has been successfully added to the database, HTTP 400 if the sensorCategoryName is already been used
 
 16. <a name="23"></a>**EDIT SENSOR CATEGORY**
     - **Purpose**: Edit a sensor category to sensor data service platform.
