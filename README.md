@@ -16,7 +16,7 @@ cloud computing, big data analytics, software as a service, and social services.
 
 Service URL:
 ------------
-[http://einstein.sv.cmu.edu][1]
+[http://einstein.sv.cmu.edu:9000][1]
 
 
 Overview:
@@ -67,7 +67,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 1. <a name="1"></a>**PUBLISH SENSOR READINGS**
     - **Purpose**: Publish sensor readings to sensor data service platform.
     - **Method**: POST
-    - **URL**: http://einstein.sv.cmu.edu/sensorReading
+    - **URL**: http://einstein.sv.cmu.edu:9000/sensorReading
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **sensorName** (string, not null): Unique sensor name.
         - **timestamp** (int, not null): Recording timestamp of the sensor reading in Unix epoch timestamp format. 
@@ -81,13 +81,13 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. Prepare input sensor reading data in a json file (**please modify the timestamp to a different value**):
               - "sampleReading.json" file contains: [{"sensorName1": "sensorName", "timestamp": 1368568896000, "value": "16", "isIndoor":true, "longitude":10, "latitude":10, "altitude", 10, "locationInterpreter":"GPS"}, {"sensorName": "sensorName2", "timestamp": 1368568896000, "value": "17", "isIndoor":true, "longitude":10, "latitude":10, "altitude", 10, "locationInterpreter":"GPS"}]
-          2. curl -H "Content-Type: application/json" -d @sampleReading.json "http://einstein.sv.cmu.edu/sensorReading"
+          2. curl -H "Content-Type: application/json" -d @sampleReading.json "http://einstein.sv.cmu.edu:9000/sensorReading"
       - **Result**: HTTP 201 if the sensor readings have been successfully posted.
       
 2. <a name="2"></a>**GET ALL DEVICES**
     - **Purpose**: Query all registered devices' metadata.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/get_devices/<"result_format">
+    - **URL**: http://einstein.sv.cmu.edu:9000/get_devices/<"result_format">
     - **Semantics**:
         - **uri**: User-defined identifier for a device. Each uri is an identifier unique to the corresponding device
         - **device_type**: Model of the device. A device is a container (i.e., physical device) object that comprises one or more sensors and is capable of transmitting their readings over a network to a Device Agent.
@@ -95,62 +95,62 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **device_location**: The location of the device that is transmitting sensor data. 
         - **result_format**: Either json or csv (2 formats are supported).
     - **Sample Usages**:
-      - **Sample request in csv format**: http://einstein.sv.cmu.edu/get_devices/csv
+      - **Sample request in csv format**: http://einstein.sv.cmu.edu:9000/get_devices/csv
       - **Sample result in csv format**: <br/>
           uri,device_type,device_agent,device_location <br/>
           10170202,Firefly_v3,SensorAndrew2,B23.216
-      - **Sample request in json format**: http://einstein.sv.cmu.edu/get_devices/json
+      - **Sample request in json format**: http://einstein.sv.cmu.edu:9000/get_devices/json
       - **Sample result in json format**: {"device_type":"Firefly_v3","device_location":"B23.216","device_agent":"SensorAndrew2","uri":"10170202"}
 
 
 3. <a name="3"></a>**GET SENSOR TYPES OF A DEVICE**
     - **Purpose**: Query all sensor types contained in a specific device model (type).
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/get_sensor_type/<"device_type">/<"result_format">
+    - **URL**: http://einstein.sv.cmu.edu:9000/get_sensor_type/<"device_type">/<"result_format">
     - **Semantics**:        
         - **device_type**: Model of the device.
         - **sensor_type**: Type of a contained sensor, e.g., temperature, CO2 level etc. A device type could correspond to multiple sensor types if the device has multiple sensors.
         - **result_format**: Either json or csv.
     - **Sample Usages**:
-      - **Sample csv request**: http://einstein.sv.cmu.edu/get_sensor_types/firefly_v3/csv
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/get_sensor_types/firefly_v3/csv
       - **Sample csv result**: <br/>
           sensor_types<br/>
           temp<br/>
           digital_temp
-      - **Sample json request**: http://einstein.sv.cmu.edu/get_sensor_types/firefly_v3/json        
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/get_sensor_types/firefly_v3/json        
       - **Sample json result**: {"device_type":"Firefly_v3", "sensor_type":"temp,digital_temp,light,pressure,humidity,motion,audio_p2p,acc_x,acc_y,acc_z"}
 
 
 4. <a name="4"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY SENSORNAME) AT A TIMESTAMP**
     - **Purpose**: Query sensor reading for a specific sensor at a specific time point.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/sensorReading/<"sensorName">/<"timestamp">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/sensorReading/<"sensorName">/<"timestamp">/<"resultFormat">
     - **Semantics**: 
         - **sensorName**: Unique sensor name.
         - **timestamp**: Time of the readings to query.
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu/sensorReading/sensor1/1368568896000/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/sensorReading/sensor1/1368568896000/csv<br/>
       - **Sample csv result**: (sensorName,timestamp,value) </br>sensor1,1368568896000,518.0
-      - **Sample json request**: http://einstein.sv.cmu.edu/sensorReading/sensor1/1368568896000/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/sensorReading/sensor1/1368568896000/json
       - **Sample json result**: {"timestamp":1368568896000,"sensorName":"sensor1","value":518}
 
 5. <a name="5"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY SENSORNAME) AMONG A TIMESTAMP RANGE**
     - **Purpose**: Query sensor readings for a specific sensor among a specific time range. 
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu/sensorReading/<"sensorName">/<"startTime">/<"endTime">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/sensorReading/<"sensorName">/<"startTime">/<"endTime">/<"resultFormat">
     - **Semantics**:
         - **sensorName**: Unique sensor name.
         - **startTime**: Start time of the readings to query.
         - **endTime**: End time of the readings to query.
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu/sensorReading/sensor1/1368568896000/1368568996000/csv
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/sensorReading/sensor1/1368568896000/1368568996000/csv
       - **Sample csv result**: (sensorName,timestamp,value)<br/>
           sensor1,1368568993000,517.0 <br/>
           ... <br/>
           sensor1,1368568896000,518.0
-      - **Sample json request**: http://einstein.sv.cmu.edu/sensorReading/sensor1/1368568896000/1368568996000/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/sensorReading/sensor1/1368568896000/1368568996000/json
       - **Sample json result**: <br/>
           [{"timestamp":1368568993000,"value":517,"sensorName":"sensor1"},
           ... <br/>
