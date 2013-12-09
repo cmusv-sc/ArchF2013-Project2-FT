@@ -344,6 +344,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
       - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorCategories/json
       - **Sample json result**: [{"sensorCategoryName":sensorCategory1,"purpose":"temp"}]
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
       
 32. <a name="32"></a>**GET A SPECIFIC SENSOR CATEGORY**
     - **Purpose**: Query a specific sensor category.
@@ -358,6 +359,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
       - **Sample json request**: http://einstein.sv.cmu.edu/getSensorCategoryName/sensorCategory1/json
       - **Sample json result**: {"sensorCategoryName":sensorCategory1,"purpose":"temp"}
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
       
 33. <a name="33"></a>**GET ALL SENSOR TYPES**
     - **Purpose**: Query all sensor types.
@@ -370,7 +372,8 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample csv result**: (sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
       - **Sample json request**: http://einstein.sv.cmu.edu/getAllSensorTypes/json
       - **Sample json result**: [{"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}]
-      
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
+
 34. <a name="34"></a>**GET A SPECIFIC SENSOR TYPE**
     - **Purpose**: Query a specific sensor type.
     - **Method**: GET
@@ -379,12 +382,12 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **sensorTypeName**" Sensor type name
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**:  
-      - **Result**: HTTP 200 if the sensorTypeName exists, HTTP 404 if not found
       - **Sample csv request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/csv<br/>
       - **Sample csv result**: (sensorTypeName, manufacturer,version,maximumValue,minimumValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
       - **Sample json request**: http://einstein.sv.cmu.edu/getSensorType/Humidity/json
       - **Sample json result**: {"sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
-      
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
+    
 
 35. <a name="35"></a>**GET ALL SENSORS**
     - **Purpose**: Query all sensors.
