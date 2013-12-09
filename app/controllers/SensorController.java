@@ -145,7 +145,7 @@ public class SensorController extends Controller {
 		}
 		
 		Sensor sensor = null;
-		if (userNames == null || userNames.length = 0) {
+		if (userNames == null || userNames.length == 0) {
 			sensor = sensorDao.getSensor(sensorName);
 		} else if (userNames.length > 0) {
 			sensor = sensorDao.getSensor(sensorName, userNames[0]);
@@ -175,7 +175,7 @@ public class SensorController extends Controller {
 		
 		List<Sensor> sensors = null;
 		
-		if (userNames.length > 0) {
+		if (userNames != null && userNames.length > 0) {
 			sensors = sensorDao.getAllSensors(userNames[0]);
 		} else {
 			sensors = sensorDao.getAllSensors();

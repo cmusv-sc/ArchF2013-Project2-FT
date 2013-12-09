@@ -1,14 +1,24 @@
 package controllers;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.List;
+
 
 //import models.DBHandler;
 import models.Device;
+import models.DeviceType;
 import models.dao.DeviceDao;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.supercsv.cellprocessor.Optional;
+import org.supercsv.cellprocessor.ift.CellProcessor;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -39,28 +49,20 @@ public class DeviceController extends Controller {
 		 if (!checkDao()){
 			 return internalServerError("database conf file not found"); 
 		 }
-
 		 
-		 String deviceTypeName = json.findPath("device_type_name").getTextValue();
-		 String uri= json.findPath("uri").getTextValue();
-//		 String deviceTypeId = json.findPath("device_type_id").getTextValue();
-		 String userDefinedFields = json.findPath("user_defined_field").getTextValue();
-		 double longitude = json.findPath("longitude").getDoubleValue();
-		 double latitude = json.findPath("latitude").getDoubleValue();
-		 double altitude = json.findPath("altitude").getDoubleValue();
-		 String representation = json.findPath("representation").getTextValue();
-//		 models.Device device = new models.Device(deviceTypeId, uri, userDefinedFields);
-		 
-		 boolean result = deviceDao.addDevice(deviceTypeName, uri, userDefinedFields, longitude, latitude, altitude, representation);
+		 Gson gson = new Gson();
+			
+		 Device device = gson.fromJson(request().body().asJson().toString(), Device.class);
+		 boolean result = deviceDao.addDevice(device.getDeviceTypeName(), device.getUri(), device.getDeviceUserDefinedFields(), device.getLocation().getLongitude(), device.getLocation().getLatitude(), device.getLocation().getAltitude(), device.getLocation().getRepresentation());
 		 
 		 if(!result){
-			System.err.println(deviceTypeName + " is not saved: " + error.toString());
-			return ok("device not saved");
+			System.err.println(device.getUri() + " is not saved: " + error.toString());
+			return badRequest("device not saved");
 		 } 
-         return ok("device saved");		 
+         return created("device saved");		 
 	}
 	
-	public static Result updateDevice(String deviceUri, String format) {
+	public static Result updateDevice(String deviceUri) {
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();
 		
@@ -72,14 +74,7 @@ public class DeviceController extends Controller {
 		if(device == null){
 			return notFound("no devices found");
 		}
-		String ret = new String();
-		if (format.equals("json"))
-		{			
-			ret = new Gson().toJson(device);		
-		} else {
-			//TODO
-//				ret = toCsv(Arrays.asList(device));
-		}
+		String ret = new Gson().toJson(device);		
 		return ok(ret);
 	}
 
@@ -88,7 +83,6 @@ public class DeviceController extends Controller {
 			return internalServerError("database conf file not found");
 		}
 		response().setHeader("Access-Control-Allow-Origin", "*");
-	    // case insensitive search. device types in the database are in lower case
 		
 		List<models.Device> devices = deviceDao.getAllDevices();
 		if(devices == null || devices.isEmpty()){
@@ -99,13 +93,7 @@ public class DeviceController extends Controller {
 		{			
 			ret = new Gson().toJson(devices);		
 		} else {			
-			for (models.Device device : devices) {
-				if (!ret.isEmpty())
-					ret += '\n';
-				else
-					ret += device.getCSVHeader();
-				ret += device.toCSVString();
-			}
+			ret = toCsv(devices);
 		}
 		return ok(ret);
 	}
@@ -118,7 +106,7 @@ public class DeviceController extends Controller {
 		
 		Device device = deviceDao.getDevice(uri);
 		if(device == null){
-			return notFound("no device found");
+			return notFound("no devices found");
 		}
 		String ret = new String();
 		if (format.equals("json"))
@@ -126,10 +114,42 @@ public class DeviceController extends Controller {
 			ret = new Gson().toJson(device);
 							
 		} else {						
-				ret = device.toCSVString();			
+			
+				ret = toCsv(Arrays.asList(device));			
 		}
 		return ok(ret);
 	}
 
+	private static String toCsv(List<Device> devices) {
+		StringWriter sw = new StringWriter();
+		CellProcessor[] processors = new CellProcessor[] {
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional()
+				};
+		ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
+		try {
+			final String[] header = new String[] { "uri", "location", "sensorNames", "deviceUserDefinedFields", "deviceTypeName", "manufacturer", "version", "deviceTypeUserDefinedFields", "sensorTypeNames"};
+			writer.writeHeader(header);
+			for (Device device : devices) {
+				writer.write(device, header, processors);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return sw.getBuffer().toString();
+	}
 	
 }

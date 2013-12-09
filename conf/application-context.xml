@@ -46,6 +46,8 @@
    <bean id="deviceDaoImplementation" 
       class="models.dao.DeviceDaoImplementation">
       <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
+      	  <property name="txManager"  ref="transactionManager" /> 
+      
    </bean>
    
    <!-- Definition for sensorTypeDaoImplementation bean -->

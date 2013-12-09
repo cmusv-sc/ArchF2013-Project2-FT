@@ -31,4 +31,8 @@ public class Location {
 		this.representation = representation;
 	}
 	
+	public String toString() {
+		return "[" + longitude + ", " + latitude + ", " + altitude + "]";
+	}
+	
 }

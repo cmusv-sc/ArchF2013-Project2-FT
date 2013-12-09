@@ -70,10 +70,10 @@ public class SensorCategoryController extends Controller {
 //		Is HTTP 200 (implemented by Result.Ok) fine?
 		if(result){
 			System.out.println("Sensor category saved: " + sensorCategoryName);
-			return ok("Sensor category saved: " + sensorCategoryName);
+			return created("Sensor category saved: " + sensorCategoryName);
 		}else{
 			System.out.println("Sensor category not saved: " + sensorCategoryName);
-			return ok("Sensor category not saved: " + sensorCategoryName);
+			return badRequest("Sensor category not saved: " + sensorCategoryName);
 		}
 	}
 	

@@ -1,11 +1,14 @@
 package models.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import models.Sensor;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -26,31 +29,38 @@ public class SensorDaoImplementation implements SensorDao{
 	@Override
 	public boolean addSensor(String sensorTypeName, String deviceUri, String sensorName, String sensorUserDefinedFields) {
 //		Find SensorTypeId by SensorTypeName, return false if SensorTypeId is not found
-		int sensorTypeId = -1;
 		try{
 			final String SQL_GET_SENSOR_TYPE_ID = "select sensor_type_id from cmu.course_sensor_type where sensor_type_name = ?";
-			sensorTypeId = simpleJdbcTemplate.queryForInt(SQL_GET_SENSOR_TYPE_ID, sensorTypeName);
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
+			int sensorTypeId = simpleJdbcTemplate.queryForInt(SQL_GET_SENSOR_TYPE_ID, sensorTypeName);
 		
-//		Find DeviceId by URI, return false if uri is not found
-		int deviceId = -1;
-		try{
+		
+	//		Find DeviceId by URI, return false if uri is not found
+			int deviceId = -1;
 			final String SQL_GET_DEVICE_ID = "select device_id from cmu.course_device where uri = ?";
 			deviceId = simpleJdbcTemplate.queryForInt(SQL_GET_DEVICE_ID, deviceUri);
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		
-		final String SQL = "INSERT INTO CMU.COURSE_SENSOR (SENSOR_ID, SENSOR_TYPE_ID, DEVICE_ID, SENSOR_NAME, SENSOR_USER_DEFINED_FIELDS) VALUES (CMU.COURSE_SENSOR_ID_SEQ.NEXTVAL, ?, ?, ?, ?)";
-		try{
-//			TODO: Need to use this in production for SAP HANA
-			simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorName, sensorUserDefinedFields);
-//			Test Only
-//			simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorName, sensorUserDefinedFields);
+			
+			final String SQL_GET_DEVICE_TYPE_ID = "select dt.device_type_id from cmu.course_device_type dt, cmu.course_device d where d.device_type_id = dt.device_type_id and d.device_id = ?";
+			int deviceTypeId = simpleJdbcTemplate.queryForInt(SQL_GET_DEVICE_TYPE_ID, deviceId);
+			final String SQL_GET_SENSOR_TYPE_NAMES = "select sensor_type_name from cmu.course_device_type_sensor_type dtst, cmu.course_sensor_type st where device_type_id = ? and st.sensor_type_id = dtst.sensor_type_id";
+			List<String> sensorTypeNames = simpleJdbcTemplate.query(SQL_GET_SENSOR_TYPE_NAMES, new ParameterizedRowMapper<String>() {
+
+				@Override
+				public String mapRow(ResultSet rs, int arg1) throws SQLException {
+					// TODO Auto-generated method stub
+					return rs.getString("SENSOR_TYPE_NAME");
+				}
+				
+			}, deviceTypeId);
+			
+			if (!sensorTypeNames.contains(sensorTypeName)) {
+				return false;
+			}
+			
+			final String SQL = "INSERT INTO CMU.COURSE_SENSOR (SENSOR_ID, SENSOR_TYPE_ID, DEVICE_ID, SENSOR_NAME, SENSOR_USER_DEFINED_FIELDS) VALUES (CMU.COURSE_SENSOR_ID_SEQ.NEXTVAL, ?, ?, ?, ?)";
+	//			TODO: Need to use this in production for SAP HANA
+				simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorName, sensorUserDefinedFields);
+	//			Test Only
+	//			simpleJdbcTemplate.update(SQL, sensorTypeId, deviceId, sensorName, sensorUserDefinedFields);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -71,6 +81,22 @@ public class SensorDaoImplementation implements SensorDao{
 			//2. get deviceId
 			final String SELECT_DEVICE_ID = "select device_id from cmu.course_device where uri = ?";
 			int deviceId = simpleJdbcTemplate.queryForInt(SELECT_DEVICE_ID, deviceUri);
+			final String SQL_GET_DEVICE_TYPE_ID = "select dt.device_type_id from cmu.course_device_type dt, cmu.course_device d where d.device_type_id = dt.device_type_id and d.device_id = ?";
+			int deviceTypeId = simpleJdbcTemplate.queryForInt(SQL_GET_DEVICE_TYPE_ID, deviceId);
+			final String SQL_GET_SENSOR_TYPE_NAMES = "select sensor_type_name from cmu.course_device_type_sensor_type dtst, cmu.course_sensor_type st where device_type_id = ? and st.sensor_type_id = dtst.sensor_type_id";
+			List<String> sensorTypeNames = simpleJdbcTemplate.query(SQL_GET_SENSOR_TYPE_NAMES, new ParameterizedRowMapper<String>() {
+
+				@Override
+				public String mapRow(ResultSet rs, int arg1) throws SQLException {
+					// TODO Auto-generated method stub
+					return rs.getString("SENSOR_TYPE_NAME");
+				}
+				
+			}, deviceTypeId);
+			
+			if (!sensorTypeNames.contains(sensorTypeName)) {
+				return false;
+			}
 			
 			//3. insert sensor
 			final String GETSENSORTYPEID = "select sensor_type_id from cmu.course_sensor_type where sensor_type_name = ?";

@@ -34,45 +34,57 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 	@Override
 	public List<DeviceType> getAllDeviceTypes() {
 		String sqlStatement = "select * from cmu.course_device_type";
-		List<DeviceType> deviceTypes = simpleJdbcTemplate.query(sqlStatement, ParameterizedBeanPropertyRowMapper.newInstance(DeviceType.class));
-		
-		Map<String, DeviceType> deviceTypesMap = new HashMap<String, DeviceType>();
-		for (DeviceType deviceType : deviceTypes) {
-			if (deviceType.getSensorTypeNames() == null) {
-				deviceType.addSensorTypes(new LinkedList<String>());
+		try {
+			List<DeviceType> deviceTypes = simpleJdbcTemplate.query(sqlStatement, ParameterizedBeanPropertyRowMapper.newInstance(DeviceType.class));
+			
+			Map<String, DeviceType> deviceTypesMap = new HashMap<String, DeviceType>();
+			for (DeviceType deviceType : deviceTypes) {
+				if (deviceType.getSensorTypeNames() == null) {
+					deviceType.addSensorTypes(new LinkedList<String>());
+				}
+				deviceTypesMap.put(deviceType.getDeviceTypeName(), deviceType);
 			}
-			deviceTypesMap.put(deviceType.getDeviceTypeName(), deviceType);
+			
+			List<Map<String,Object>> deviceTypeSensorTypeMap = getAllDevicesSensorTypes();
+			
+			for (Map<String, Object> map : deviceTypeSensorTypeMap) {
+				deviceTypesMap.get(map.get("DEVICE_TYPE_NAME")).getSensorTypeNames().add((String)map.get("SENSOR_TYPE_NAME"));
+			}
+			
+			List<DeviceType> result = new ArrayList<DeviceType>();
+			for (Map.Entry<String, DeviceType> entry : deviceTypesMap.entrySet()) {
+				result.add(entry.getValue());
+			}
+			
+			return result;
+		} catch(Exception e) {
+			return null;
 		}
-		
-		List<Map<String,Object>> deviceTypeSensorTypeMap = getAllDevicesSensorTypes();
-		
-		for (Map<String, Object> map : deviceTypeSensorTypeMap) {
-			deviceTypesMap.get(map.get("DEVICE_TYPE_NAME")).getSensorTypeNames().add((String)map.get("SENSOR_TYPE_NAME"));
-		}
-		
-		List<DeviceType> result = new ArrayList<DeviceType>();
-		for (Map.Entry<String, DeviceType> entry : deviceTypesMap.entrySet()) {
-			result.add(entry.getValue());
-		}
-		
-		return result;
 	}
 
 	@Override
 	public DeviceType getDeviceType(String deviceTypeName) {
 		String sqlStatement = "select * from cmu.course_device_type where device_type_name = ?";
-		DeviceType deviceType = simpleJdbcTemplate.queryForObject(sqlStatement, ParameterizedBeanPropertyRowMapper.newInstance(DeviceType.class), deviceTypeName);
 		
-		if (deviceType.getSensorTypeNames() == null) {
-			deviceType.addSensorTypes(new ArrayList<String>());
+		try {
+			DeviceType deviceType = simpleJdbcTemplate.queryForObject(sqlStatement, ParameterizedBeanPropertyRowMapper.newInstance(DeviceType.class), deviceTypeName);
+			
+			if (deviceType.getSensorTypeNames() == null) {
+				deviceType.addSensorTypes(new ArrayList<String>());
+			}
+			List<Map<String, Object>> deviceTypeSensorTypeMap = getDeviceSensorTypes(deviceTypeName);
+			
+			for (Map<String, Object> map : deviceTypeSensorTypeMap) {
+				deviceType.getSensorTypeNames().add((String)map.get("SENSOR_TYPE_NAME"));
+			}
+			
+			return deviceType;
+			
+		} catch(Exception e) {
+			return null;
 		}
-		List<Map<String, Object>> deviceTypeSensorTypeMap = getDeviceSensorTypes(deviceTypeName);
 		
-		for (Map<String, Object> map : deviceTypeSensorTypeMap) {
-			deviceType.getSensorTypeNames().add((String)map.get("SENSOR_TYPE_NAME"));
-		}
 		
-		return deviceType;
 	}
 
 	@Override
@@ -83,7 +95,7 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 	    TransactionStatus status = txManager.getTransaction(def);
 	    
 	    
-		String sqlStatement = "insert into cmu.course_device_type (device_type_id, device_type_name, manufacturer, version, user_defined_fields) values (cmu.COURSE_DEVICE_TYPE_ID_SEQ.nextval, ?, ?, ?, ?)"; 
+		String sqlStatement = "insert into cmu.course_device_type values (cmu.COURSE_DEVICE_TYPE_ID_SEQ.nextval, ?, ?, ?, ?)"; 
 		
 		try {
 			simpleJdbcTemplate.update(sqlStatement,deviceTypeName, manufacturer, version, userDefinedFields);
@@ -105,13 +117,17 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 			});
 		}
 
-		int[] returnVals = simpleJdbcTemplate.batchUpdate(sqlStatement, params);
-		
-		for (int i = 0; i < params.size(); i++) {
-			if (returnVals[i] != 1) {
-				txManager.rollback(status);
-				return false;
+		try {
+			int[] returnVals = simpleJdbcTemplate.batchUpdate(sqlStatement, params);
+			
+			for (int i = 0; i < params.size(); i++) {
+				if (returnVals[i] != 1) {
+					txManager.rollback(status);
+					return false;
+				}
 			}
+		}catch(Exception e) {
+			return false;
 		}
 		
 		txManager.commit(status);
@@ -119,20 +135,28 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao{
 		
 	}
 	
-	private List<Map<String,Object>> getAllDevicesSensorTypes() {
+	private List<Map<String,Object>> getAllDevicesSensorTypes() throws Exception {
 		final String SQL = "select d.device_type_name, s.sensor_type_name from cmu.course_device_type d "
 				+ "inner join cmu.course_device_type_sensor_type ds on d.device_type_id = ds.device_type_id "
 				+ "inner join cmu.course_sensor_type s on ds.sensor_type_id = s.sensor_type_id";
-		return simpleJdbcTemplate.queryForList(SQL);
+		try {
+			return simpleJdbcTemplate.queryForList(SQL);
+		}catch(Exception e) {
+			throw e;
+		}
 	}
 	
-	private List<Map<String,Object>> getDeviceSensorTypes(String deviceTypeName) {
+	private List<Map<String,Object>> getDeviceSensorTypes(String deviceTypeName) throws Exception {
 		final String SQL = "select d.device_type_name, s.sensor_type_name "
 				+ "from cmu.course_device_type d, cmu.course_device_type_sensor_type ds, cmu.course_sensor_type s "
 				+ "where d.device_type_name = ? and "
 				+ "d.device_type_id = ds.device_type_id and "
 				+ "ds.sensor_type_id = s.sensor_type_id";
-		return simpleJdbcTemplate.queryForList(SQL, deviceTypeName);
+		try {
+			return simpleJdbcTemplate.queryForList(SQL, deviceTypeName);
+		}catch(Exception e) {
+			throw e;
+		}
 	}
 
 	public SimpleJdbcTemplate getSimpleJdbcTemplate() {

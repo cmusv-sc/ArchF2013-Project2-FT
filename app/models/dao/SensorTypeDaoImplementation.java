@@ -17,10 +17,13 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 			String userDefinedFields, String sensorCategoryName) {
 //		Check if SensorTypeName is duplicate
 		final String SQL_CHECK = "SELECT * FROM CMU.COURSE_SENSOR_TYPE WHERE SENSOR_TYPE_NAME=?";
+		try {
 		List<SensorType> types = simpleJdbcTemplate.query(SQL_CHECK, 
 				ParameterizedBeanPropertyRowMapper.newInstance(SensorType.class), 
 				sensorTypeName);
 		if(types.size() > 0){
+			return false;
+		}} catch(Exception e) {
 			return false;
 		}
 		
@@ -38,13 +41,14 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 		
 //		TODO: Need to use this in production for SAP HANA
 		final String SQL_SEQUENCE = "SELECT CMU.COURSE_SENSOR_TYPE_ID_SEQ.NEXTVAL FROM DUMMY";
-		int sensorTypeId = simpleJdbcTemplate.queryForInt(SQL_SEQUENCE);
+		try{
+			int sensorTypeId = simpleJdbcTemplate.queryForInt(SQL_SEQUENCE);
+		
 		
 //		TODO: Need to use this in production for SAP HANA
 		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_TYPE (SENSOR_TYPE_ID, SENSOR_TYPE_NAME, MANUFACTURER, VERSION, MAX_VALUE, MIN_VALUE, UNIT, INTERPRETER, SENSOR_TYPE_USER_DEFINED_FIELDS, SENSOR_CATEGORY_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";		
 //		Test Only
 //		final String SQL = "INSERT INTO CMU.COURSE_SENSOR_TYPE (SENSOR_TYPE_ID, SENSOR_TYPE_NAME, MANUFACTURER, VERSION, MAX_VALUE, MIN_VALUE, UNIT, INTERPRETER, SENSOR_TYPE_USER_DEFINED_FIELDS, SENSOR_CATEGORY_ID) VALUES (NEXT VALUE FOR CMU.COURSE_SENSOR_TYPE_ID_SEQ, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		try{
 //			TODO: Need to use this in production for SAP HANA
 			simpleJdbcTemplate.update(SQL, sensorTypeId, sensorTypeName, 
 					manufacturer, version, maxValue, minValue, unit, 
@@ -87,12 +91,12 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 	
 	@Override
 	public SensorType getSensorType(String sensorTypeName) {
-		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR_TYPE " 
-				+ "WHERE SENSOR_TYPE_NAME = ?";
+		final String SQL = "SELECT ST.*, SC.SENSOR_CATEGORY_NAME FROM CMU.COURSE_SENSOR_TYPE ST, CMU.COURSE_SENSOR_CATEGORY SC " 
+				+ "WHERE ST.SENSOR_TYPE_NAME = ? AND ST.SENSOR_CATEGORY_ID = SC.SENSOR_CATEGORY_ID";
 		try{
-			List<SensorType> types = simpleJdbcTemplate.query(SQL, 
+			SensorType type = simpleJdbcTemplate.queryForObject(SQL, 
 					ParameterizedBeanPropertyRowMapper.newInstance(SensorType.class), sensorTypeName);
-			return (types.size() == 0)? null : types.get(0);
+			return type;
 		}catch(Exception e){
 			return null;
 		}
@@ -101,8 +105,12 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 	@Override
 	public List<SensorType> getAllSensorTypes() {
 		final String SQL = "SELECT * FROM CMU.COURSE_SENSOR_TYPE";
-		List<SensorType> sensorType = simpleJdbcTemplate.query(SQL, 
-				ParameterizedBeanPropertyRowMapper.newInstance(SensorType.class));
+		List<SensorType> sensorType = null;
+		try {
+			sensorType = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorType.class));
+		}catch(Exception e) {
+			return null;
+		}
 
 		for(SensorType type : sensorType){
 			String sensorCategoryName = new String();

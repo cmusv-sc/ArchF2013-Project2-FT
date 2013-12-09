@@ -45,33 +45,26 @@ public class DeviceTypeController extends Controller {
 			return badRequest("Expecting Json data");
 		} 
 		checkDao();
-
-		// Parse JSON FIle 
-		String deviceTypeName = json.findPath("device_type_name").getTextValue();
-		String manufacturer = json.findPath("manufacturer").getTextValue();
-		String version = json.findPath("version").getTextValue();
-		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
-		Iterator<JsonNode> sensorTypeIte = json.findPath("sensor_type_names").getElements();
-		List<String> sensorTypes = new LinkedList<String>();
-		while(sensorTypeIte.hasNext()) {
-			sensorTypes.add(sensorTypeIte.next().getTextValue());
-		}
+		
+		Gson gson = new Gson();
+		
+		DeviceType deviceType = gson.fromJson(request().body().asJson().toString(), DeviceType.class);
 		
 		ArrayList<String> error = new ArrayList<String>();
 		
-		boolean result = deviceTypeDao.addDeviceType(deviceTypeName, manufacturer, version, userDefinedFields, sensorTypes);
+		boolean result = deviceTypeDao.addDeviceType(deviceType.getDeviceTypeName(), deviceType.getManufacturer(), deviceType.getVersion(), deviceType.getDeviceTypeUserDefinedFields(), deviceType.getSensorTypeNames());
 
 		if(!result){
-			error.add(deviceTypeName);
+			error.add(deviceType.getDeviceTypeName());
 		}
 		// Can this error have more than one name in it? I don't understand why error needs to be a list.
 		if(error.size() == 0){
 			System.out.println("device type saved");
-			return ok("device type saved");
+			return created("device type saved");
 		}
 		else{
 			System.out.println("some device types not saved: " + error.toString());
-			return ok("some device types not saved: " + error.toString());
+			return badRequest("some device types not saved: " + error.toString());
 		}
 	}
 	
@@ -80,7 +73,7 @@ public class DeviceTypeController extends Controller {
 		checkDao();
 		DeviceType deviceType = deviceTypeDao.getDeviceType(deviceTypeName);
 		if(deviceType == null){
-			return notFound("no devices found");
+			return notFound("no device type found");
 		}
 		String ret = new String();
 		if (format.equals("json"))
@@ -100,8 +93,6 @@ public class DeviceTypeController extends Controller {
 		
 		DeviceType wrapper = gson.fromJson(request().body().asJson().toString(), DeviceType.class);
 		
-		ArrayList<String> error = new ArrayList<String>();
-
 		
 		DeviceType deviceType = deviceTypeDao.updateDeviceType(deviceTypeName, wrapper);
 		if(deviceType == null){
@@ -123,7 +114,7 @@ public class DeviceTypeController extends Controller {
 		List<DeviceType> deviceTypes = deviceTypeDao.getAllDeviceTypes();
 		
 		if(deviceTypes == null || deviceTypes.isEmpty()){
-			return notFound("no device type found");
+			return notFound("no device types found");
 		} 
 		
 		String ret = null;
@@ -144,14 +135,14 @@ public class DeviceTypeController extends Controller {
 				new Optional(),
 				new Optional(),
 				new Optional(),
-				new Optional(),
+				new Optional()
 				};
 		ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
 		try {
-			final String[] header = new String[] { "deviceTypeName",  "userDefinedFields",  "manufacturer", "version", "sensorTypes"};
+			final String[] header = new String[] { "deviceTypeName",  "deviceTypeUserDefinedFields",  "manufacturer", "version", "sensorTypeNames"};
 			writer.writeHeader(header);
-			for (DeviceType sensor : deviceTypes) {
-				writer.write(sensor, header, processors);
+			for (DeviceType deviceType : deviceTypes) {
+				writer.write(deviceType, header, processors);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
