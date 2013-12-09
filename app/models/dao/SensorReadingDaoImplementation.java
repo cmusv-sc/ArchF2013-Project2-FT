@@ -5,7 +5,6 @@ import java.util.List;
 
 import models.SensorReading;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
@@ -22,7 +21,7 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 		try {
 		SensorReading sensorReading = simpleJdbcTemplate.queryForObject(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), sensorName, new Timestamp(timeStamp));
 		return sensorReading;
-		} catch(EmptyResultDataAccessException e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -30,12 +29,13 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 
 	@Override
 	public boolean addReading(String sensorName, Boolean isIndoor, long timestamp, String value, Double longitude, Double latitude, Double altitude, String locationInterpreter) {
-		final String FETCH_SENSOR_ID = "SELECT SENSOR_ID FROM CMU.COURSE_SENSOR S WHERE S.SENSOR_NAME = ?";
-		int sensorId = simpleJdbcTemplate.queryForInt(FETCH_SENSOR_ID, sensorName);
-		
-		final String SQL = "INSERT INTO CMU.COURSE_DISCRETE_SENSOR_READING (SENSOR_ID, IS_INDOOR, LOCATION_INTERPRETER, TIMESTAMP, VALUE, LONGITUDE, LATITUDE, ALTITUDE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; 
-				
 		try{
+			final String FETCH_SENSOR_ID = "SELECT SENSOR_ID FROM CMU.COURSE_SENSOR S WHERE S.SENSOR_NAME = ?";
+			int sensorId = simpleJdbcTemplate.queryForInt(FETCH_SENSOR_ID, sensorName);
+			
+			final String SQL = "INSERT INTO CMU.COURSE_DISCRETE_SENSOR_READING (SENSOR_ID, IS_INDOOR, LOCATION_INTERPRETER, TIMESTAMP, VALUE, LONGITUDE, LATITUDE, ALTITUDE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; 
+				
+		
 			int num = simpleJdbcTemplate.update(SQL, sensorId, String.valueOf(isIndoor), locationInterpreter, new Timestamp(timestamp), value, longitude, latitude, altitude);
 			if (num == 0) {
 				return false;
@@ -51,8 +51,12 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 	public List<SensorReading> searchReading(String sensorName, Long startTime, Long endTime) {
 		final String SQL = "SELECT SENSOR_NAME, IS_INDOOR, LOCATION_INTERPRETER, TIMESTAMP, VALUE, LONGITUDE, LATITUDE, ALTITUDE FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_SENSOR S" 
 				+ " WHERE S.SENSOR_NAME = ? AND DSR.SENSOR_ID = S.SENSOR_ID AND TIMESTAMP >= ? AND TIMESTAMP <= ? ORDER BY TIMESTAMP DESC";
+		try {
 		List<SensorReading> sensorReadings = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), sensorName, new Timestamp(startTime), new Timestamp(endTime));
 		return sensorReadings;
+		}catch(Exception e) {
+			return null;
+		}
 	}
 
 	@Override

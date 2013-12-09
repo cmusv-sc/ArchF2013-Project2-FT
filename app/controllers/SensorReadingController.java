@@ -64,11 +64,11 @@ public class SensorReadingController extends Controller {
 		
 		if(error.size() == 0){          
 			System.out.println("saved");    
-			return ok("saved");             
+			return created("saved");             
 		}
 		else{
 			System.out.println("some not saved: " + error.toString());
-			return ok("some not saved: " + error.toString());
+			return badRequest("some not saved: " + error.toString());
 		}
 	}
 	

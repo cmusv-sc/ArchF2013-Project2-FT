@@ -42,16 +42,17 @@ GET     /getAllSensorTypes/json 				controllers.SensorTypeController.getAllSenso
 DELETE	/deleteSensorType/:sensorTypeName 		controllers.SensorTypeController.deleteSensorType(sensorTypeName: String)
 
 # SensorReading
-POST	/sensor_reading				  			controllers.SensorReadingController.add()
+POST	/addSensorReading			  			controllers.SensorReadingController.add()
 
-GET 	/sensor_reading_range/:sensorName/:startTime/:endTime	controllers.SensorReadingController.searchInTimeRange(sensorName: String, startTime: String, endTime: String, format: String = "csv")
-GET 	/sensor_reading_range/:sensorName/:startTime/:endTime/json	controllers.SensorReadingController.searchInTimeRange(sensorName: String, startTime: String, endTime: String, format: String = "json")
-GET     /lastest_readings_from_all_devices/:sensorType  controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "csv")
-GET     /lastest_readings_from_all_devices/:sensorType/csv  controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "csv")
-GET     /lastest_readings_from_all_devices/:sensorType/json controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "json")
-GET		/sensor_reading/:sensorName/:timeStamp			controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "csv")
-GET     /sensor_reading/:sensorName/:timeStamp/csv      controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "csv")
-GET		/sensor_reading/:sensorName/:timeStamp/json		controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "json")
+GET 	/getSensorReadingInRange/:sensorName/:startTime/:endTime	controllers.SensorReadingController.searchInTimeRange(sensorName: String, startTime: String, endTime: String, format: String = "csv")
+GET 	/getSensorReadingInRange/:sensorName/:startTime/:endTime/csv	controllers.SensorReadingController.searchInTimeRange(sensorName: String, startTime: String, endTime: String, format: String = "csv")
+GET 	/getSensorReadingInRange/:sensorName/:startTime/:endTime/json	controllers.SensorReadingController.searchInTimeRange(sensorName: String, startTime: String, endTime: String, format: String = "json")
+GET     /getLastestReadingsFromAllDevices/:sensorType  controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "csv")
+GET     /getLastestReadingsFromAllDevices/:sensorType/csv  controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "csv")
+GET     /getLastestReadingsFromAllDevices/:sensorType/json controllers.SensorReadingController.lastestReadingFromAllDevices(sensorType:String, format: String = "json")
+GET		/getSensorReading/:sensorName/:timeStamp			controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "csv")
+GET     /getSensorReading/:sensorName/:timeStamp/csv      controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "csv")
+GET		/getSensorReading/:sensorName/:timeStamp/json		controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "json")
 
 # Old SensorReading
 #GET		/sensors/:deviceId/:timeStamp/:sensorType			controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
