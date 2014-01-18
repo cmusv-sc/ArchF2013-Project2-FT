@@ -20,8 +20,8 @@ public class AvrageValJob {
 
 	public static class AverageMapper extends TableMapper<Text, DoubleWritable> {
 		private static final String regex = "sid|ts";
-		private static final long start = 666;
-		private static final long end = 999;
+		private static final long start = 1385938651;
+		private static final long end = 1388617051;
 		private static final byte[] CF = "value".getBytes();
 		private static final byte[] QF = "numerical".getBytes();
 		
@@ -41,7 +41,7 @@ public class AvrageValJob {
 	}
 	
 	public static class AverageReducer extends TableReducer<Text, DoubleWritable, ImmutableBytesWritable> {
-		public static final byte[] CF = "week".getBytes();
+		public static final byte[] CF = "month".getBytes();
 		public static final byte[] QF = "averageValue".getBytes();
 		
 		public void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
