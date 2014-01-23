@@ -1,8 +1,9 @@
 package hadoop.jobs;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -18,10 +19,16 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.util.bloom.BloomFilter;
+import org.apache.hadoop.util.bloom.Key;
+import org.apache.hadoop.util.hash.Hash;
+
 
 
 public class AverageValJob {
 	
+	private static Set<String> whiteList = new HashSet<String>();
+
 	public class SumCountWritable implements Writable {
 
 		private double sum;
@@ -65,11 +72,31 @@ public class AverageValJob {
 		private static final byte[] CF = "value".getBytes();
 		private static final byte[] QF = "numerical".getBytes();
 		private SumCountWritable sumCount = new AverageValJob().new SumCountWritable();
+		private static final double FALSE_POSITIVE_PROBABILITY= 0.01;
+		private static final int EXPECTED_INPUT_SIZE = 1000000;
 		
+		BloomFilter filter;
+		
+		@Override
+		public void setup(Context context) throws IOException, InterruptedException {
+			super.setup(context);
+			int vectorSize = (int)(-(EXPECTED_INPUT_SIZE * Math.log1p(FALSE_POSITIVE_PROBABILITY) / (Math.pow(Math.log1p(2), 2))));
+			int k = (int)(vectorSize * Math.log1p(2) / EXPECTED_INPUT_SIZE);
+			filter = new BloomFilter(vectorSize, k, Hash.MURMUR_HASH);
+			
+			
+			for (String id : whiteList ) {
+				filter.add(new Key(id.getBytes()));
+			}
+
+		}
 		public void map(ImmutableBytesWritable row, Result value, Context context) throws IOException, InterruptedException {
 			String[] sidAndTs = new String(row.get()).split(regex);
 			String sid = sidAndTs[1];
 			String ts = sidAndTs[2];
+			if (!filter.membershipTest(new Key(sid.getBytes()))) {
+				return;
+			}
 			long tsLong = Long.valueOf(ts);
 			if (tsLong >= start && tsLong <= end) {
 				byte[] valueBytes = value.getValue(CF, QF);
@@ -113,6 +140,10 @@ public class AverageValJob {
 				count += val.getCount();
 			}
 			
+			if (whiteList.contains(key.toString())) {
+				return;
+			}
+			
 			Put put = new Put(Bytes.toBytes(key.toString()));
 			
 			put.add(CF, QF, Bytes.toBytes(String.valueOf(sum / count)));
@@ -123,6 +154,12 @@ public class AverageValJob {
 	
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
 		Configuration config = HBaseConfiguration.create();
+		
+		whiteList.add("1");
+		whiteList.add("5");
+		whiteList.add("18");
+		whiteList.add("37");
+		
 		Job job = new Job(config,"ExampleSummary");
 		job.setJarByClass(AverageValJob.class);    
 
@@ -137,6 +174,9 @@ public class AverageValJob {
 			Text.class,         
 			DoubleWritable.class,  
 			job);
+		
+		job.setCombinerClass(AverageCombiner.class);
+		
 		TableMapReduceUtil.initTableReducerJob(
 			"AverageSensorReading",        
 			AverageReducer.class,    
