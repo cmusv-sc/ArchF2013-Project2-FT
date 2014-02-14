@@ -75,7 +75,7 @@ public class SensorTypeController extends Controller {
 		Double minValue = json.findPath("minimumValue").getDoubleValue();
 		String unit = json.findPath("unit").getTextValue();
 		String interpreter = json.findPath("interpreter").getTextValue();
-		String userDefinedFields = json.findPath("userDefinedFields").getTextValue();
+		String sensorTypeUserDefinedFields = json.findPath("sensorTypeUserDefinedFields").getTextValue();
 		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
 		
 		if(sensorTypeName == null || sensorTypeName.length() == 0){
@@ -88,7 +88,7 @@ public class SensorTypeController extends Controller {
 			return ok("Sensor type not saved: null sensorCategoryName");
 		}
 
-		boolean result = sensorTypeDao.addSensorType(sensorTypeName, manufacturer, version, maxValue, minValue, unit, interpreter, userDefinedFields, sensorCategoryName);
+		boolean result = sensorTypeDao.addSensorType(sensorTypeName, manufacturer, version, maxValue, minValue, unit, interpreter, sensorTypeUserDefinedFields, sensorCategoryName);
 
 		if(result){
 			System.out.println("Sensor type saved: " + sensorTypeName);
