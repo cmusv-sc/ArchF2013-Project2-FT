@@ -249,7 +249,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **URL**: http://einstein.sv.cmu.edu:9000/addDevice
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **deviceTypeName** (string, not null): Existing name of its device type.
-        - **deviceUri** (string): Unique uri of a device.
+        - **uri** (string): Unique uri of a device.
         - **location**
             - **representation** (string): Location interpreter.
             - **latitude** (double): Latitude.
@@ -259,7 +259,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input device metadata in a json file:
-              - "device.json" file contains: {"deviceTypeName": "fireimp", "deviceUri": "www.device.com", "location" : {"representation": "test location description", "latitude": 10, "longitude": 10, "altitude": 10}, "deviceUserDefinedFields": "For test"}
+              - "device.json" file contains: {"deviceTypeName": "fireimp", "uri": "www.device.com", "location" : {"representation": "test location description", "latitude": 10, "longitude": 10, "altitude": 10}, "deviceUserDefinedFields": "For test"}
           2. curl -H "Content-Type: application/json" -d @device.json "http://einstein.sv.cmu.edu:9000/addDevice"
       - **Result**: HTTP 201 if the device metadata have been successfully added to the database, HTTP 400 if failed.
 
