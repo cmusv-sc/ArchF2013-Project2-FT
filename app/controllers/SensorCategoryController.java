@@ -59,6 +59,7 @@ public class SensorCategoryController extends Controller {
 	}
 	
 	public static Result addSensorCategory() {
+		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
 		JsonNode json = request().body().asJson();
 		if(json == null) {
 			System.out.println("Sensor category not saved, expecting Json data");
@@ -160,6 +161,8 @@ public class SensorCategoryController extends Controller {
 	}
 	
 	public static Result getAllSensorCategories(String format) {
+		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+
 		if(!checkDao()){
 			System.out.println("Sensor category not found, database conf file not found");
 			return internalServerError("Sensor category not found, database conf file not found");
