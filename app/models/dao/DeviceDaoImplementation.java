@@ -299,7 +299,7 @@ public class DeviceDaoImplementation implements DeviceDao {
 	@Override
 	public boolean deleteDevice(String deviceName) {
 		final String SQL_DELETE_DEVICE = "DELETE FROM CMU.COURSE_DEVICE "
-				+ "WHERE DEVICE_NAME = ?";
+				+ "WHERE URI = ?";
 		try {
 			simpleJdbcTemplate.update(SQL_DELETE_DEVICE, deviceName);
 		} catch (Exception e) {
