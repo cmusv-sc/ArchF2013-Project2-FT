@@ -24,4 +24,5 @@ public interface DeviceDao {
 	public List<Device> getAllDevices();
 	public Device getDevice(String uri);
 	public Device updateDevice(String deviceUri, Device newDevice);
+	public boolean deleteDevice(String deviceName);
 }

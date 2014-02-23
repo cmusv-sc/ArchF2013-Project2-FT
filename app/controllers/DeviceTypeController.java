@@ -57,23 +57,23 @@ public class DeviceTypeController extends Controller {
 
 	public static Result deleteDeviceType(String deviceTypeName){
 		if(deviceTypeName == null || deviceTypeName.length() == 0){
-			System.out.println("Sensor type not deleted, null sensorTypeName");
-			return ok("Sensor type not deleted, null sensorTypeName");
+			System.out.println("Device type not deleted, null deviceTypeName");
+			return ok("Device type not deleted, null deviceTypeName");
 		}
 		checkDao();
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		
 		if(deviceTypeDao.getDeviceType(deviceTypeName) == null){
-			System.out.println("Sensor type not deleted, sensor type does not exist: " + deviceTypeName);
-			return ok("Sensor type not deleted, sensor type does not exist: " + deviceTypeName);
+			System.out.println("Device type not deleted, device type does not exist: " + deviceTypeName);
+			return ok("Device type not deleted, device type does not exist: " + deviceTypeName);
 		}
 		
 		if(deviceTypeDao.deleteDeviceType(deviceTypeName)){
-			System.out.println("Sensor type deleted: " + deviceTypeName);
-			return ok("Sensor type deleted: " + deviceTypeName);
+			System.out.println("Device type deleted: " + deviceTypeName);
+			return ok("Device type deleted: " + deviceTypeName);
 		}else{
-			System.out.println("Sensor type not deleted: " + deviceTypeName);
-			return ok("Sensor type not deleted: " + deviceTypeName);
+			System.out.println("Device type not deleted: " + deviceTypeName);
+			return ok("Device type not deleted: " + deviceTypeName);
 		}
 	}
 	

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
+
 //import models.DBHandler;
 import models.Device;
 import models.DeviceType;
@@ -135,6 +136,30 @@ public class DeviceController extends Controller {
 		return ok(ret);
 	}
 
+	public static Result deleteDevice(String deviceName){
+		if(!checkDao()){
+			System.out.println("Device not deleted, database conf file not found");
+			return internalServerError("Device not deleted, database conf file not found");
+		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		
+		if(deviceName == null || deviceName.length() == 0){
+			System.out.println("Device not deleted, null deviceName");
+			return ok("Device not deleted, null deviceName");
+		}
+		
+		boolean result = deviceDao.deleteDevice(deviceName); 
+		
+		if(result){
+			System.out.println("Device deleted: " + deviceName);
+			return ok("Device deleted: " + deviceName);
+		}else{
+			System.out.println("Device not deleted: " + deviceName);
+			return ok("Device not deleted: " + deviceName);
+		}
+	}
+	
+	
 	private static String toCsv(List<Device> devices) {
 		StringWriter sw = new StringWriter();
 		CellProcessor[] processors = new CellProcessor[] {
@@ -166,5 +191,6 @@ public class DeviceController extends Controller {
 		}
 		return sw.getBuffer().toString();
 	}
+	
 	
 }

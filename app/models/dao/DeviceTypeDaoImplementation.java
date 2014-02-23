@@ -228,10 +228,10 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao {
 	@Override
 	public boolean deleteDeviceType(String deviceTypeName) {
 		// TODO Auto-generated method stub
-		final String SQL_DELETE_SENSOR_TYPE = "DELETE FROM CMU.COURSE_DEVICE_TYPE "
+		final String SQL_DELETE_DEVICE_TYPE = "DELETE FROM CMU.COURSE_DEVICE_TYPE "
 				+ "WHERE DEVICE_TYPE_NAME = ?";
 		try {
-			simpleJdbcTemplate.update(SQL_DELETE_SENSOR_TYPE, deviceTypeName);
+			simpleJdbcTemplate.update(SQL_DELETE_DEVICE_TYPE, deviceTypeName);
 		} catch (Exception e) {
 			return false;
 		}
