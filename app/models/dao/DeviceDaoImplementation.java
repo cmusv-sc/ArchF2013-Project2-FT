@@ -298,9 +298,14 @@ public class DeviceDaoImplementation implements DeviceDao {
 
 	@Override
 	public boolean deleteDevice(String deviceName) {
+		// delete the foreign key first
+		final String SQL_DELETE_DEVICE_LOCATION = "DELETE FROM CMU.COURSE_DEVICE_LOCATION "
+				+ "WHERE DEVICE_ID = (SELECT DEVICE_ID FROM CMU.COURSE_DEVICE WHERE URI = ?)";
+
 		final String SQL_DELETE_DEVICE = "DELETE FROM CMU.COURSE_DEVICE "
 				+ "WHERE URI = ?";
 		try {
+			simpleJdbcTemplate.update(SQL_DELETE_DEVICE_LOCATION, deviceName);
 			simpleJdbcTemplate.update(SQL_DELETE_DEVICE, deviceName);
 		} catch (Exception e) {
 			return false;

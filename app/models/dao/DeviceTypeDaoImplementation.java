@@ -227,7 +227,7 @@ public class DeviceTypeDaoImplementation implements DeviceTypeDao {
 
 	@Override
 	public boolean deleteDeviceType(String deviceTypeName) {
-		// TODO Auto-generated method stub
+		// delete the foreign key first
 		final String SQL_DELETE_DEVICE_TYPE_SENSOR_TYPE = "DELETE FROM CMU.COURSE_DEVICE_TYPE_SENSOR_TYPE "
 				+ "WHERE DEVICE_TYPE_ID = (SELECT DEVICE_TYPE_ID FROM CMU.COURSE_DEVICE_TYPE WHERE DEVICE_TYPE_NAME = ?)";
 		
