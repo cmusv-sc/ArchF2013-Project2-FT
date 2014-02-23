@@ -38,6 +38,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 //import models.cmu.sv.sensor.SensorReading;
 
+
 import com.google.gson.Gson;
 
 public class DeviceTypeController extends Controller {
@@ -54,6 +55,28 @@ public class DeviceTypeController extends Controller {
 		}
 	}
 
+	public static Result deleteDeviceType(String deviceTypeName){
+		if(deviceTypeName == null || deviceTypeName.length() == 0){
+			System.out.println("Sensor type not deleted, null sensorTypeName");
+			return ok("Sensor type not deleted, null sensorTypeName");
+		}
+		checkDao();
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		
+		if(deviceTypeDao.getDeviceType(deviceTypeName) == null){
+			System.out.println("Sensor type not deleted, sensor type does not exist: " + deviceTypeName);
+			return ok("Sensor type not deleted, sensor type does not exist: " + deviceTypeName);
+		}
+		
+		if(deviceTypeDao.deleteDeviceType(deviceTypeName)){
+			System.out.println("Sensor type deleted: " + deviceTypeName);
+			return ok("Sensor type deleted: " + deviceTypeName);
+		}else{
+			System.out.println("Sensor type not deleted: " + deviceTypeName);
+			return ok("Sensor type not deleted: " + deviceTypeName);
+		}
+	}
+	
 	public static Result addDeviceType() {
 		JsonNode json = request().body().asJson();
 		if(json == null) {

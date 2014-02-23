@@ -19,6 +19,7 @@ GET		/getAllDeviceTypes 			controllers.DeviceTypeController.getAllDeviceTypes(fo
 PUT		/updateDeviceType/:deviceTypeName 	controllers.DeviceTypeController.updateDeviceType(deviceTypeName: String, format: String="csv")
 PUT		/updateDeviceType/:deviceTypeName/csv 	controllers.DeviceTypeController.updateDeviceType(deviceTypeName: String, format: String="csv")
 PUT		/updateDeviceType/:deviceTypeName/json 	controllers.DeviceTypeController.updateDeviceType(deviceTypeName: String, format: String="json")
+DELETE	/deleteDeviceType/:deviceTypeName 		controllers.DeviceTypeController.deleteDeviceType(deviceTypeName: String)
 
 #DEVICE
 GET     /getAllDevices          controllers.DeviceController.getAllDevices(format: String = "csv")
@@ -29,6 +30,7 @@ GET     /getDevice/:uri/csv      controllers.DeviceController.getDevice(uri: Str
 GET     /getDevice/:uri/json     controllers.DeviceController.getDevice(uri: String,format: String = "json")
 POST    /addDevice               controllers.DeviceController.add()
 PUT 	/updateDevice/:deviceUri			controllers.DeviceController.updateDevice(deviceUri: String)
+DELETE	/deleteDevice/:deviceName 		controllers.DeviceController.deleteDevice(deviceName: String)
 
 # SensorType
 POST	/addSensorType 							controllers.SensorTypeController.addSensorType()

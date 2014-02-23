@@ -24,4 +24,6 @@ public interface DeviceTypeDao {
 	public List<DeviceType> getAllDeviceTypes();
 	public DeviceType getDeviceType(String deviceTypeName);
 	public DeviceType updateDeviceType(String deviceTypeName, DeviceType wrapper);
+
+	public boolean deleteDeviceType(String deviceTypeName);
 }
