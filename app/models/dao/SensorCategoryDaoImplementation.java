@@ -92,11 +92,12 @@ public class SensorCategoryDaoImplementation implements SensorCategoryDao {
 	@Override
 	public boolean deleteSensorCategory(String sensorCategoryName) {
 		// change to default sensor category
-		final String SQL_RESET_SENSOR_TYPES = "UPDATE FROM CMU.COURSE_SENSOR_TYPE "
+		final String SQL_RESET_SENSOR_TYPES = "UPDATE CMU.COURSE_SENSOR_TYPE "
+				+ "SET SENSOR_CATEGORY_ID = 0 "
 				+ "WHERE SENSOR_CATEGORY_ID = "
 				+ "(SELECT SENSOR_CATEGORY_ID FROM CMU.COURSE_SENSOR_CATEGORY "
-				+ "WHERE SENSOR_CATEGORY_NAME = ?) "
-				+ "SET SENSOR_CATEGORY_ID = 0";
+				+ "WHERE SENSOR_CATEGORY_NAME = ?) ";
+		
 		final String SQL_DELETE_SENSOR_CATEGORY = "DELETE FROM CMU.COURSE_SENSOR_CATEGORY "
 				+ "WHERE SENSOR_CATEGORY_NAME = ?";
 		try {
