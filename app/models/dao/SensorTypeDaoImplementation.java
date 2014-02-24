@@ -143,7 +143,7 @@ public class SensorTypeDaoImplementation implements SensorTypeDao{
 				sensorCategoryName = simpleJdbcTemplate.queryForObject(SQL_FIND_CATEGORY_NAME, String.class, sensorCategoryId);
 				type.setSensorCategoryName(sensorCategoryName);
 			}catch(Exception e){
-				return null;
+				type.setSensorCategoryName("");
 			}
 		}
 		
