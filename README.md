@@ -86,7 +86,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input sensor reading data in a JSON file (**please modify the timestamp to a different value**):
-              - "sampleReading.json" file contains: [{"sensorName1": "sensorName", "timestamp": 1368568896000, "value": "16", "isIndoor":true, "longitude":10, "latitude":10, "altitude", 10, "locationInterpreter":"GPS"}, {"sensorName": "sensorName2", "timestamp": 1368568896000, "value": "17", "isIndoor":true, "longitude":10, "latitude":10, "altitude", 10, "locationInterpreter":"GPS"}]
+              - "sampleReading.json" file contains: [{"sensorName": "testSensor1", "timestamp": 1368568896000, "value": "16", "isIndoor":true, "longitude":10, "latitude":10, "altitude": 10, "locationInterpreter":"GPS"}, {"sensorName": "testSensor2", "timestamp": 1368568896000, "value": "17", "isIndoor":true, "longitude":10, "latitude":10, "altitude": 10, "locationInterpreter":"GPS"}]
           2. curl -H "Content-Type: application/json" -d @sampleReading.json "http://einstein.sv.cmu.edu:9000/addSensorReading"
       - **Result**: HTTP 201 if the sensor readings have been successfully posted, HTTP 400 if failed.
     
