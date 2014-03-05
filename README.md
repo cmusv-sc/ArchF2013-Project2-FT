@@ -29,7 +29,7 @@ Currently we are providing APIs in 3 categores:
 **Category 2: Query database for sensor readings**<br/>
    - [Get sensor reading from a sensor(specified by sensorName) at a timestamp](#4)<br/>
    - [Get sensor reading from a sensor(specified by sensorName) among a timestamp range](#5)<br/>
-   - [Get current sensor readings for a sensor type in all registered devices](#6)<br/>
+   - ~~[(NO LONGER VALID)Get current sensor readings for a sensor type in all registered devices](#6)~~<br/>
    - [Get latest sensor readings for a sensor type in all registered devices](#7)
     
 **Category 3: Manage metadata**<br/>
@@ -109,19 +109,19 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 5. <a name="5"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY SENSOR NAME) AMONG A TIMESTAMP RANGE**
     - **Purpose**: Query sensor readings for a specific sensor among a specific time range. 
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu:9000/getSensorReading/<"sensorName">/<"startTime">/<"endTime">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/<"sensorName">/<"startTime">/<"endTime">/<"resultFormat">
     - **Semantics**:
         - **sensorName**: Existing sensor name.
         - **startTime**: Start time of the readings to query.
         - **endTime**: End time of the readings to query.
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReading/sensor1/1368568896000/1368568996000/csv
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/sensor1/1368568896000/1368568996000/csv
       - **Sample csv result**: (sensorName,timestamp,value)<br/>
           sensor1,1368568993000,517.0 <br/>
           ... <br/>
           sensor1,1368568896000,518.0
-      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReading/sensor1/1368568896000/1368568996000/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/sensor1/1368568896000/1368568996000/json
       - **Sample json result**: <br/>
           [{"timestamp":1368568993000,"value":517,"sensorName":"sensor1"},
           ... <br/>
@@ -129,7 +129,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
 
-6. <a name="6"></a>**GET CURRENT SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**
+6. <a name="6"></a>~~**(NO LONGER VALID)GET CURRENT SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**~~
     - **Purpose**: Query all sensor readings at a time point (within 60 seconds), of a specific sensor type contained in all registered devices.
     - **Method**: GET
     - **URL**: http://einstein.sv.cmu.edu:9000/getLastReadingsFromAllDevices/<"timestamp">/<"sensorTypeName">/<"resultFormat">
@@ -154,18 +154,18 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 7. <a name="7"></a>**GET LATEST SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**
     - **Purpose**: Query all latest sensor readings, of a specific sensor type contained in all devices.  If no reading for a sensor in the last 60 seconds, the latest stored reading of the corresponding sensor will be returned. 
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu:9000/getLastestReadingsFromAllDevices/<"sensorType">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getLatestReadingsFromAllDevices/<"sensorType">/<"resultFormat">
     - **Semantics**:
         - **sensorType**: Type of the sensor (e.g., temperature, CO2, etc.).
         - **resultFormat**: Either json or csv.
         - Note: The difference between API#7 and API#6 (lastReadingsFromAllDevices) given the current timestamp is that, API#7 returns the last readings stored for each device even if it is more than 60 seconds old.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getLastestReadingsFromAllDevices/temp/csv     
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getLatestReadingsFromAllDevices/temp/csv     
       - **Sample csv result**: (device_id,timestamp,sensorType,value) </br>
           10170203,1368568896000,temp,513.0 <br/>
           ... <br/>
           10170204,1368568889000,temp,515.0
-      - **Sample json request**: http://einstein.sv.cmu.edu:9000/lastestReadingsFromAllDevices/temp/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getLatestReadingsFromAllDevices/temp/json
       - **Sample json result**: <br/>
         [{"timestamp":1368568896000,"sensorType":"temp","value":513,"deviceId":"10170203"},
         ... <br/>
@@ -707,14 +707,4 @@ Examples:
       }
       </code>
    </pre>
-    
-To do items:
-============
-   - Provide APIs that allow users to specify human time specification (time zone?).
-      - key name of "timestamp"? in json 
-      - which apis need readable time
-   - How about when some fields are added or changed for some sensors?
-   - Rethink the design of HANA tables, to leverage HANA indexing previlege while keeping records info.
-   - Mobile sensor into the picture (location: room, GPS, configurable)?
-
 
