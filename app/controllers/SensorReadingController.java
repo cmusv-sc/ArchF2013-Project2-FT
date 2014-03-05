@@ -166,14 +166,14 @@ public class SensorReadingController extends Controller {
 		return ok(ret);
 	}
 
-	public static Result lastestReadingFromAllDevices(String sensorType, String format) {
+	public static Result latestReadingFromAllDevices(String sensorType, String format) {
 		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
 
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();
-		List<SensorReading> readings = sensorReadingDao.lastestReadingFromAllDevices(sensorType);
+		List<SensorReading> readings = sensorReadingDao.latestReadingFromAllDevices(sensorType);
 
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");

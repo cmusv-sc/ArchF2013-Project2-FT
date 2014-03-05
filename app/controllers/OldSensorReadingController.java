@@ -310,7 +310,7 @@ public class OldSensorReadingController extends Controller {
 		return dateFormat;
 
 	}	
-	public static Result lastestReadingFromAllDevices(String sensorType, String format) {
+	public static Result latestReadingFromAllDevices(String sensorType, String format) {
 		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
@@ -318,7 +318,7 @@ public class OldSensorReadingController extends Controller {
 
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();
-		List<OldSensorReading> readings = sensorReadingDao.lastestReadingFromAllDevices(sensorType);
+		List<OldSensorReading> readings = sensorReadingDao.latestReadingFromAllDevices(sensorType);
 
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");

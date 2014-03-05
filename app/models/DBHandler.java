@@ -498,7 +498,7 @@ public class DBHandler {
 		}
 	}	
 	
-	public ArrayList<OldSensorReading> lastestReadingFromAllDevices(String sensorType){
+	public ArrayList<OldSensorReading> latestReadingFromAllDevices(String sensorType){
         Connection connection = getConnection();
         try{
                 if (connection == null) return null;
@@ -529,7 +529,7 @@ public class DBHandler {
                         double rs_value = resultSet.getDouble(3);
                         readings.add(new OldSensorReading(rs_deviceId, rs_timeStamp, sensorType, rs_value));
                 }
-                System.out.println(readings.size() + " reading(s) fetched in lastest_readings_from_all_devices." + 
+                System.out.println(readings.size() + " reading(s) fetched in latest_readings_from_all_devices." + 
                                 " queryTime=" + (finishQueryTime - startTime) / 1000000 + 
                                 "ms.");
                 connection.close();

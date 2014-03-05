@@ -30,6 +30,6 @@ public interface OldSensorReadingDao {
 	
 	public List<OldSensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType);
 
-	public List<OldSensorReading> lastestReadingFromAllDevices(String sensorType);
+	public List<OldSensorReading> latestReadingFromAllDevices(String sensorType);
 
 }

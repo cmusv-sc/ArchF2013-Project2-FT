@@ -63,7 +63,7 @@ public class OldSensorReadingDaoImplementation implements OldSensorReadingDao{
 	}
 
 	@Override
-	public List<OldSensorReading> lastestReadingFromAllDevices(String sensorType) {
+	public List<OldSensorReading> latestReadingFromAllDevices(String sensorType) {
 //		final String SQL = "SELECT DEVICEID, TIMESTAMP, VALUE FROM " +
 //			"(SELECT * FROM CMU.CMU_SENSOR AS a " + 
 //			"INNER JOIN " +
