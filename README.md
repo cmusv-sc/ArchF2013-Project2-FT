@@ -100,9 +100,9 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **timestamp**: Time of the readings to query.
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReading/sensor1/1368568896000/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReading/androidAccelerometer/1395247329000/csv<br/>
       - **Sample csv result**: (sensorName,timestamp,value) </br>sensor1,1368568896000,518.0
-      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReading/sensor1/1368568896000/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReading/androidAccelerometer/1395247329000/json
       - **Sample json result**: {"timestamp":1368568896000,"sensorName":"sensor1","value":518}
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
@@ -116,12 +116,12 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **endTime**: End time of the readings to query.
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/sensor1/1368568896000/1368568996000/csv
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/androidAccelerometer/1395266600000/1395279800000/csv
       - **Sample csv result**: (sensorName,timestamp,value)<br/>
           sensor1,1368568993000,517.0 <br/>
           ... <br/>
           sensor1,1368568896000,518.0
-      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/sensor1/1368568896000/1368568996000/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/androidAccelerometer/1395266600000/1395279800000/json
       - **Sample json result**: <br/>
           [{"timestamp":1368568993000,"value":517,"sensorName":"sensor1"},
           ... <br/>
@@ -160,12 +160,12 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either json or csv.
         - Note: The difference between API#7 and API#6 (lastReadingsFromAllDevices) given the current timestamp is that, API#7 returns the last readings stored for each device even if it is more than 60 seconds old.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getLatestReadingsFromAllDevices/temp/csv     
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getLatestReadingsFromAllDevices/androidMobile/csv     
       - **Sample csv result**: (device_id,timestamp,sensorType,value) </br>
           10170203,1368568896000,temp,513.0 <br/>
           ... <br/>
           10170204,1368568889000,temp,515.0
-      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getLatestReadingsFromAllDevices/temp/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getLatestReadingsFromAllDevices/androidMobile/json
       - **Sample json result**: <br/>
         [{"timestamp":1368568896000,"sensorType":"temp","value":513,"deviceId":"10170203"},
         ... <br/>
