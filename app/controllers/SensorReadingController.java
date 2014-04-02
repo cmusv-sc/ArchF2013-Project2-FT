@@ -87,7 +87,7 @@ public class SensorReadingController extends Controller {
 		}
 	}
 	
-	public static Result searchAtTime(String sensorName, Long timeStamp, String format){
+	public static Result searchAtTimeThruDeviceUriSensorTypeName(String sensorName, Long timeStamp, String format){
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();
 		SensorReading reading = sensorReadingDao.searchReading(sensorName, timeStamp);
