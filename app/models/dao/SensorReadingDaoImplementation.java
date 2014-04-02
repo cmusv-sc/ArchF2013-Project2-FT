@@ -48,6 +48,7 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 		final String GET_SENSOR_NAME = "SELECT S.SENSOR_NAME FROM CMU.COURSE_DEVICE D, CMU.COURSE_SENSOR S, CMU.COURSE_SENSOR_TYPE ST WHERE D.DEVICE_ID=S.DEVICE_ID AND S.SENSOR_TYPE_ID=ST.SENSOR_TYPE_ID AND D.URI=? AND ST.SENSOR_TYPE_NAME=?";
 		try {
 			String sensorName = simpleJdbcTemplate.queryForObject(GET_SENSOR_NAME, ParameterizedBeanPropertyRowMapper.newInstance(String.class), deviceUri, sensorTypeName);
+			System.out.println("sensorName is " + sensorName);
 			SensorReading sensorReading = simpleJdbcTemplate.queryForObject(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), sensorName, new Timestamp(timeStamp));
 		return sensorReading;
 		} catch(Exception e) {
