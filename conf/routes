@@ -56,6 +56,10 @@ GET		/getSensorReading/:sensorName/:timeStamp			controllers.SensorReadingControl
 GET     /getSensorReading/:sensorName/:timeStamp/csv      controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "csv")
 GET		/getSensorReading/:sensorName/:timeStamp/json		controllers.SensorReadingController.searchAtTime(sensorName: String, timeStamp: Long, format: String = "json")
 
+GET		/getSensorReading/:deviceUri/:sensorTypeName/:timeStamp			controllers.SensorReadingController.searchAtTime(deviceUri: String, sensorTypeName: String, timeStamp: Long, format: String = "csv")
+GET     /getSensorReading/:deviceUri/:sensorTypeName/:timeStamp/csv      controllers.SensorReadingController.searchAtTime(deviceUri: String, sensorTypeName: String, timeStamp: Long, format: String = "csv")
+GET		/getSensorReading/:deviceUri/:sensorTypeName/:timeStamp/json		controllers.SensorReadingController.searchAtTime(deviceUri: String, sensorTypeName: String, timeStamp: Long, format: String = "json")
+
 # Old SensorReading
 #GET		/sensors/:deviceId/:timeStamp/:sensorType			controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
 #GET     /sensors/:deviceId/:timeStamp/:sensorType/csv       controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
