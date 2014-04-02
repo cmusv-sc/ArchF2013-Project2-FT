@@ -75,9 +75,9 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Method**: POST
     - **URL**: http://einstein.sv.cmu.edu:9000/addSensorReading
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
-        - **sensorName** (string, not null): Existing sensor name.
-        - **timestamp** (int, not null): Recording timestamp of the sensor reading in Unix epoch timestamp format. 
-        - **value** (string, not null): The value of the sensor reading. It is user's responsibility to calibrate the sensor readings before publishing.
+        - **sensorName** (string, **not null**): Existing sensor name.
+        - **timestamp** (int, **not null**): Recording timestamp of the sensor reading in Unix epoch timestamp format. 
+        - **value** (string, **not null**): The value of the sensor reading. It is user's responsibility to calibrate the sensor readings before publishing.
         - **isIndoor** (boolean, optional): Sent from indoor or not.
         - **longitude** (double, optional): Longitude of the sensor reading.
         - **latitude** (double, optional): Longitude of the sensor reading.
