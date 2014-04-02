@@ -59,7 +59,7 @@ Currently we are providing APIs in 3 categores:
    - [Get all devices](#39)
    - [Get a specific device](#40)
 
-**Category 4: Access Control -- under construction**<br/>
+**Category 4: Access Control**<br/>
    - [Add a user](#41)
    - [Get a user](#42)
    - [Add a sensor as a user](#43)
