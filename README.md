@@ -145,9 +145,9 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           device2,1368568889000,temp,516.0
       - **Sample json request**: http://einstein.sv.cmu.edu:9000/lastReadingsFromAllDevices/1368568896000/temp/json
       - **Sample json result**: <br/>
-          [{"timestamp":1368568896000,"sensorType":"temp","value":513,"deviceName":"device1"},
+          [{"timestamp":1368568896000,"sensorType":"temp","value":513,"deviceUri":"device1"},
           ... <br/>
-          {"timestamp":1368568889000,"sensorType":"temp","value":516,"deviceName":"device2"}]
+          {"timestamp":1368568889000,"sensorType":"temp","value":516,"deviceUri":"device2"}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
 
@@ -332,10 +332,11 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
             - **latitude** (double): Latitude.
             - **longitude** (double): Longitude.
             - **altitude** (double): Altitude.
+        - **deviceUserDefinedFields** (string): User defined fields. 
    - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input device metadata in a json file:
-              - "device.json" file contains: {"deviceTypeName": "fireimp", "location" : {"representation": "test location description", "latitude": 10, "longitude": 10, "altitude": 10}}
+              - "device.json" file contains: {"deviceUri": "fireimp", "location" : {"representation": "test location description", "latitude": 10, "longitude": 10, "altitude": 10}, "deviceUserDefinedFields" : "For production"}
           2. curl -X PUT -H "Content-Type: application/json" -d @device.json "http://einstein.sv.cmu.edu:9000/updateDevice"
       - **Result**: HTTP 200 if the device metadata have been successfully added to the database
       
