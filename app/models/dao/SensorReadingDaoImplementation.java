@@ -42,7 +42,7 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 		}
 	}
 	
-	@Override
+	@Override	
 	public SensorReading searchReading(String deviceUri, String sensorTypeName, Long timeStamp) {
 		System.out.println("deviceUri is " + deviceUri);
 		System.out.println("sensorTypeName is " + sensorTypeName);
@@ -52,7 +52,7 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 		final String SQL = "SELECT * FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_SENSOR S WHERE DSR.SENSOR_ID=S.SENSOR_ID AND S.SENSOR_NAME=? AND DSR.timeStamp<=? ORDER BY timeStamp DESC LIMIT 1";
 		final String GET_SENSOR_NAME = "SELECT S.SENSOR_NAME FROM CMU.COURSE_DEVICE D, CMU.COURSE_SENSOR S, CMU.COURSE_SENSOR_TYPE ST WHERE D.DEVICE_ID=S.DEVICE_ID AND S.SENSOR_TYPE_ID=ST.SENSOR_TYPE_ID AND D.URI=? AND ST.SENSOR_TYPE_NAME=?";
 		try {
-			String sensorName = simpleJdbcTemplate.queryForObject(GET_SENSOR_NAME, ParameterizedBeanPropertyRowMapper.newInstance(String.class), deviceUri, sensorTypeName);
+			String sensorName = simpleJdbcTemplate.queryForObject(GET_SENSOR_NAME, String.class, deviceUri, sensorTypeName);
 			System.out.println("sensorName is " + sensorName);
 			SensorReading sensorReading = simpleJdbcTemplate.queryForObject(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), sensorName, new Timestamp(timeStamp));
 		return sensorReading;
