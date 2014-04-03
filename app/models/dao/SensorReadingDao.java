@@ -30,6 +30,8 @@ public interface SensorReadingDao {
 
 	public List<SensorReading> searchReading(String sensorName, Long startTime, Long endTime);
 	
+	public List<SensorReading> searchReading(String deviceUri, String sensorTypeName, Long startTime, Long endTime);
+	
 	public List<SensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType);
 
 	public List<SensorReading> latestReadingFromAllDevices(String sensorType);

@@ -153,6 +153,31 @@ public class SensorReadingController extends Controller {
 
 		return ok(ret);
 	}
+	
+	// search readings of timestamp range [startTime, endTime]
+		public static Result searchInTimeRangeThruDeviceUriSensorTypeName(String deviceUir, String sensorTypeName, String startTime, String endTime, String format){
+			response().setHeader("Access-Control-Allow-Origin", "*");
+
+			if(!checkDao()){
+				return internalServerError("database conf file not found");
+			}
+			
+			List<SensorReading> readings = sensorReadingDao.searchReading(deviceUir, sensorTypeName, Long.valueOf(startTime), Long.valueOf(endTime));
+			if(readings == null || readings.isEmpty()){
+				return notFound("no reading found");
+			}
+			
+			String ret = new String();
+			if (format.equals("json"))
+			{			
+				ret = new Gson().toJson(readings);
+			} 
+			else {			
+				ret = toCsv(readings);
+			}
+
+			return ok(ret);
+		}
 
 	public static Result lastReadingFromAllDevices(Long timeStamp, String sensorType, String format) {
 		if(!checkDao()){

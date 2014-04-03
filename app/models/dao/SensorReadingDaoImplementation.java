@@ -44,15 +44,9 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 	
 	@Override	
 	public SensorReading searchReading(String deviceUri, String sensorTypeName, Long timeStamp) {
-		System.out.println("deviceUri is " + deviceUri);
-		System.out.println("sensorTypeName is " + sensorTypeName);
-
-		
-
 		final String SQL = "SELECT * FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_SENSOR S WHERE DSR.SENSOR_ID=S.SENSOR_ID AND S.SENSOR_NAME=? AND DSR.timeStamp<=? ORDER BY timeStamp DESC LIMIT 1";
 		try {
 			String sensorName = getSensorName(deviceUri, sensorTypeName);
-			System.out.println("sensorName is " + sensorName);
 			SensorReading sensorReading = simpleJdbcTemplate.queryForObject(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), sensorName, new Timestamp(timeStamp));
 		return sensorReading;
 		} catch(Exception e) {
@@ -86,6 +80,19 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 		final String SQL = "SELECT SENSOR_NAME, IS_INDOOR, LOCATION_INTERPRETER, TIMESTAMP, VALUE, LONGITUDE, LATITUDE, ALTITUDE FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_SENSOR S" 
 				+ " WHERE S.SENSOR_NAME = ? AND DSR.SENSOR_ID = S.SENSOR_ID AND TIMESTAMP >= ? AND TIMESTAMP <= ? ORDER BY TIMESTAMP DESC";
 		try {
+		List<SensorReading> sensorReadings = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), sensorName, new Timestamp(startTime), new Timestamp(endTime));
+		return sensorReadings;
+		}catch(Exception e) {
+			return null;
+		}
+	}
+	
+	@Override
+	public List<SensorReading> searchReading(String deviceUri, String sensorTypeName, Long startTime, Long endTime) {
+		final String SQL = "SELECT SENSOR_NAME, IS_INDOOR, LOCATION_INTERPRETER, TIMESTAMP, VALUE, LONGITUDE, LATITUDE, ALTITUDE FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_SENSOR S" 
+				+ " WHERE S.SENSOR_NAME = ? AND DSR.SENSOR_ID = S.SENSOR_ID AND TIMESTAMP >= ? AND TIMESTAMP <= ? ORDER BY TIMESTAMP DESC";
+		try {
+			String sensorName = getSensorName(deviceUri, sensorTypeName);
 		List<SensorReading> sensorReadings = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), sensorName, new Timestamp(startTime), new Timestamp(endTime));
 		return sensorReadings;
 		}catch(Exception e) {
