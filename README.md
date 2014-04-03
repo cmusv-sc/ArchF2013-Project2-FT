@@ -308,7 +308,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 
 18. <a name="14"></a>**EDIT DEVICE TYPE**
     - **Purpose**: Edit an existing device type in sensor data service platform.
-    - **Method**: POST
+    - **Method**: **PUT**
     - **URL**: http://einstein.sv.cmu.edu:9000/updateDeviceType
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **deviceTypeName** (string, not null): Name of the device type.
@@ -323,7 +323,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 
 19. <a name="15"></a>**EDIT DEVICE**
     - **Purpose**: Edit an existing device location in sensor data service platform.
-    - **Method**: POST
+    - **Method**: **PUT**
     - **URL**: http://einstein.sv.cmu.edu:9000/updateDevice
     - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **deviceUri** (string, not null): Existing device URI.
