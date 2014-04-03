@@ -28,7 +28,9 @@ Currently we are providing APIs in 3 categores:
     
 **Category 2: Query database for sensor readings**<br/>
    - [Get sensor reading from a sensor(specified by sensorName) at a timestamp](#4)<br/>
+   - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) at a timestamp](#21)<br/>
    - [Get sensor reading from a sensor(specified by sensorName) among a timestamp range](#5)<br/>
+   - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) among a timestamp range](#23)<br/>
    - ~~[(NO LONGER VALID)Get current sensor readings for a sensor type in all registered devices](#6)~~<br/>
    - [Get latest sensor readings for a sensor type in all registered devices](#7)
     
@@ -106,6 +108,22 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample json result**: {"timestamp":1368568896000,"sensorName":"sensor1","value":518}
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
+21. <a name="21"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY DEVICE URI AND SENSOR TYPE NAME) AT A TIMESTAMP**
+    - **Purpose**: Query sensor reading for a specific sensor at a specific time point.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getSensorReading/<"deviceUri">/<"sensorTypeName">/<"timestamp">/<"resultFormat">
+    - **Semantics**: 
+        - **deviceUri**: Existing device uri.
+        - **sensorTypeName**: Existing sensor type name.
+        - **timestamp**: Time of the readings to query.
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReading/23420ca4e4830bee/fireImpXAccelerometer/1395247329000/csv<br/>
+      - **Sample csv result**: (sensorName,timestamp,value) </br>sensor1,1368568896000,518.0
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReading/androidAccelerometer/1395247329000/json
+      - **Sample json result**: {"timestamp":1368568896000,"sensorName":"sensor1","value":518}
+      - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
+      
 5. <a name="5"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY SENSOR NAME) AMONG A TIMESTAMP RANGE**
     - **Purpose**: Query sensor readings for a specific sensor among a specific time range. 
     - **Method**: GET
@@ -128,6 +146,28 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           {"timestamp":1368568896000,"value": 520,"sensorName":"sensor1"}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
+22. <a name="23"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY DEVICE URI AND SENSOR TYPE NAME) BETWEEN A TIMESTAMP RANGE**
+    - **Purpose**: Query sensor readings for a specific sensor among a specific time range. 
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/<"deviceUri">/<"sensorTypeName">/<"startTime">/<"endTime">/<"resultFormat">
+    - **Semantics**:
+        - **deviceUri**: Existing device uri.
+        - **sensorTypeName**: Existing sensor type name.
+        - **startTime**: Start time of the readings to query.
+        - **endTime**: End time of the readings to query.
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/23420ca4e4830bee/fireImpXAccelerometer/1394557419000/1394643819000/csv
+      - **Sample csv result**: (sensorName,timestamp,value)<br/>
+          sensor1,1368568993000,517.0 <br/>
+          ... <br/>
+          sensor1,1368568896000,518.0
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/23420ca4e4830bee/fireImpXAccelerometer/1394557419000/1394643819000/json
+      - **Sample json result**: <br/>
+          [{"timestamp":1368568993000,"value":517,"sensorName":"sensor1"},
+          ... <br/>
+          {"timestamp":1368568896000,"value": 520,"sensorName":"sensor1"}]
+      - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
 6. <a name="6"></a>~~**(NO LONGER VALID)GET CURRENT SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**~~
     - **Purpose**: Query all sensor readings at a time point (within 60 seconds), of a specific sensor type contained in all registered devices.
