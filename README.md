@@ -310,14 +310,14 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Purpose**: Edit an existing device type in sensor data service platform.
     - **Method**: **PUT**
     - **URL**: http://einstein.sv.cmu.edu:9000/updateDeviceType
-    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
+    - **Semantics**: As a PUT method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **deviceTypeName** (string, not null): Name of the device type.
         - **deviceTypeUserDefinedFields** (string): User defined fields. 
     - **Sample Usages**:
       - **Command Line Example**: 
           1. Prepare input device type metadata in a json file:
               - "deviceType.json" file contains: {"deviceTypeName": "device 1", "deviceTypeUserDefinedFields": "For production"}
-          2. curl -H "Content-Type: application/json" -d @deviceType.json "http://einstein.sv.cmu.edu:9000/updateDeviceType"
+          2. curl -X PUT -H "Content-Type: application/json" -d @deviceType.json "http://einstein.sv.cmu.edu:9000/updateDeviceType"
       - **Result**: HTTP 200 if the device type metadata has been successfully added to the database.
 
 
@@ -325,7 +325,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Purpose**: Edit an existing device location in sensor data service platform.
     - **Method**: **PUT**
     - **URL**: http://einstein.sv.cmu.edu:9000/updateDevice
-    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
+    - **Semantics**: As a PUT method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
         - **deviceUri** (string, not null): Existing device URI.
         - **location**
             - **representation** (string): Location interpreter.
