@@ -31,6 +31,10 @@ GET     /getDevice/:uri/json     controllers.DeviceController.getDevice(uri: Str
 POST    /addDevice               controllers.DeviceController.add()
 PUT 	/updateDevice/:deviceUri			controllers.DeviceController.updateDevice(deviceUri: String)
 DELETE	/deleteDevice/:deviceName 		controllers.DeviceController.deleteDevice(deviceName: String)
+GET     /getDevicesByGeofence/:location         controllers.DeviceController.getAllDevicesByGeofence(location: String, format: String = "csv")
+GET     /getDevicesByGeofence/:location/csv      controllers.DeviceController.getAllDevicesByGeofence(location: String, format: String = "csv")
+GET     /getDevicesByGeofence/:location/json     controllers.DeviceController.getAllDevicesByGeofence(location: String, format: String = "json")
+
 
 # SensorType
 POST	/addSensorType 							controllers.SensorTypeController.addSensorType()

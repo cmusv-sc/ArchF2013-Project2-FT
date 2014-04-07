@@ -171,7 +171,7 @@ public class DeviceDaoImplementation implements DeviceDao {
 
 		return devices;
 	}
-
+	
 	@Override
 	public Device getDevice(String uri) {
 

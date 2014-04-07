@@ -18,13 +18,10 @@ package controllers;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
-
-
-//import models.DBHandler;
 import models.Device;
-import models.DeviceType;
 import models.dao.DeviceDao;
 
 import org.codehaus.jackson.JsonNode;
@@ -101,6 +98,36 @@ public class DeviceController extends Controller {
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		
 		List<models.Device> devices = deviceDao.getAllDevices();
+		if(devices == null || devices.isEmpty()){
+			return notFound("no devices found");
+		}
+		String ret = new String();
+		if (format.equals("json"))
+		{			
+			ret = new Gson().toJson(devices);		
+		} else {			
+			ret = toCsv(devices);
+		}
+		return ok(ret);
+	}
+	
+	public static Result getAllDevicesByGeofence(String location, String format) {
+		if(!checkDao()){
+			return internalServerError("database conf file not found");
+		}
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		
+		List<models.Device> devices = deviceDao.getAllDevices();
+		Iterator<Device> iter = devices.iterator();
+		
+		while (iter.hasNext()) {
+			Device device = iter.next();
+			
+			if (!location.equals(device.getLocation().getRepresentation())){
+				iter.remove();
+			}
+		}
+		
 		if(devices == null || devices.isEmpty()){
 			return notFound("no devices found");
 		}

@@ -22,6 +22,7 @@ import models.Device;
 public interface DeviceDao {
 	public boolean addDevice(String deviceTypeName, String uri, String userDefinedFields, double longitude, double latitude, double altitude, String representation);
 	public List<Device> getAllDevices();
+	public List<Device> getAllDevicesInGeofence(String location);
 	public Device getDevice(String uri);
 	public Device updateDevice(String deviceUri, Device newDevice);
 	public boolean deleteDevice(String deviceName);
