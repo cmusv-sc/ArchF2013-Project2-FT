@@ -112,6 +112,9 @@ public class DeviceController extends Controller {
 	}
 	
 	public static Result getAllDevicesByGeofence(String location, String format) {
+		if(location == null){
+			return notFound("Geofence shouldn't be empty");
+		}
 		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
