@@ -68,6 +68,10 @@ GET 	/getSensorReadingInRange/:deviceUri/:sensorTypeName/:startTime/:endTime	con
 GET 	/getSensorReadingInRange/:deviceUri/:sensorTypeName/:startTime/:endTime/csv	controllers.SensorReadingController.searchInTimeRangeThruDeviceUriSensorTypeName(deviceUri: String, sensorTypeName: String, startTime: String, endTime: String, format: String = "csv")
 GET 	/getSensorReadingInRange/:deviceUri/:sensorTypeName/:startTime/:endTime/json	controllers.SensorReadingController.searchInTimeRangeThruDeviceUriSensorTypeName(deviceUri: String, sensorTypeName: String, startTime: String, endTime: String, format: String = "json")
 
+GET     /latestReadingFromDevicesByGeofence/:location  controllers.SensorReadingController.latestReadingFromDevicesByGeofence(location:String, format: String = "csv")
+GET     /latestReadingFromDevicesByGeofence/:location/csv  controllers.SensorReadingController.latestReadingFromDevicesByGeofence(location:String, format: String = "csv")
+GET     /latestReadingFromDevicesByGeofence/:location/json controllers.SensorReadingController.latestReadingFromDevicesByGeofence(location:String, format: String = "json")
+
 
 # Old SensorReading
 #GET		/sensors/:deviceId/:timeStamp/:sensorType			controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import models.Device;
 import models.SensorReading;
 import models.dao.SensorReadingDao;
 
@@ -219,7 +220,7 @@ public class SensorReadingController extends Controller {
 
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();
-		List<SensorReading> readings = sensorReadingDao.latestReadingFromAllDevices(sensorType);
+		List<SensorReading> readings = sensorReadingDao.latestReadingFromAllDevicesBySensorType(sensorType);
 
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
@@ -235,7 +236,33 @@ public class SensorReadingController extends Controller {
 		}
 
 		return ok(ret);
-	}	
+	}
+	
+	public static Result latestReadingFromDevicesByGeofence(String location, String format) {
+		if(!checkDao()){
+			return internalServerError("database conf file not found");
+		}
+
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		List<Device> devices = DeviceController.getAllDevicesByGeofence(location);
+		
+		List<SensorReading> readings = sensorReadingDao.latestReadingFromAllDevices(devices);
+
+		if(readings == null || readings.isEmpty()){
+			return notFound("no reading found");
+		}
+		
+		String ret = new String();
+		if (format.equals("json"))
+		{			
+			ret = new Gson().toJson(readings);
+		} 
+		else {			
+			ret = toCsv(readings);
+		}
+
+		return ok(ret);
+	}
 	
 		
 	private static String toCsv(List<SensorReading> readings) {

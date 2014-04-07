@@ -144,6 +144,26 @@ public class DeviceController extends Controller {
 		return ok(ret);
 	}
 	
+	public static List<Device> getAllDevicesByGeofence(String location){
+		if(location == null || !checkDao()){
+			return null;
+		}
+		
+		List<models.Device> devices = deviceDao.getAllDevices();
+		
+//		Iterator<Device> iter = devices.iterator();
+//
+//		while (iter.hasNext()) {
+//			Device device = iter.next();
+//			
+//			if (!location.equals(device.getLocation().getRepresentation())){
+//				iter.remove();
+//			}
+//		}
+		
+		return devices;
+	}
+	
 	public static Result getDevice(String uri, String format) {
 		if(!checkDao()){
 			return internalServerError("database conf file not found");
