@@ -126,6 +126,9 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 
 	@Override
 	public List<SensorReading> latestReadingFromAllDevices(List<Device> devices) {
+		if (devices == null || devices.size() == 0) {
+			return null;
+		}
 		Set<String> deviceUris = new HashSet<String>();
 		
 		for (Device d : devices) {
