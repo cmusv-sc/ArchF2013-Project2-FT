@@ -61,6 +61,7 @@ Currently we are providing APIs in 3 categores:
    - [Get all device types](#37)
    - [Get a specific device type](#38)
    - [Get all devices](#39)
+   - [Get devices inside a specific geo-fence](#30)
    - [Get a specific device](#40)
 
 **Category 4: Access Control**<br/>
@@ -532,6 +533,19 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample json result**: [{"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "representation": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}]
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
+30. <a name="30"></a>**GET DEVICES INSIDE A SPECIFIC GEO-FENCE**
+    - **Purpose**: Query all device types.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getDevicesByGeofence/<"geo-fence">/<"resultFormat">
+    - **Semantics**: 
+        - **geo-fence**: The location representation of the device.
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getDevicesByGeofence/room129A/csv<br/>
+      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, representation, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter, device type 1, TI, 1.0, For Test, "[temp, light]", "[sensor1, sensor2]"
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getDevicesByGeofence/room129A/json
+      - **Sample json result**: [{"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "representation": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}]
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
 
 40. <a name="40"></a>**GET A SPECIFIC DEVICE**
