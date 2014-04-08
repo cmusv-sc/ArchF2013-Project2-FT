@@ -151,15 +151,15 @@ public class DeviceController extends Controller {
 		
 		List<models.Device> devices = deviceDao.getAllDevices();
 		
-//		Iterator<Device> iter = devices.iterator();
-//
-//		while (iter.hasNext()) {
-//			Device device = iter.next();
-//			
-//			if (!location.equals(device.getLocation().getRepresentation())){
-//				iter.remove();
-//			}
-//		}
+		Iterator<Device> iter = devices.iterator();
+
+		while (iter.hasNext()) {
+			Device device = iter.next();
+			
+			if (!location.equals(device.getLocation().getRepresentation())){
+				iter.remove();
+			}
+		}
 		
 		return devices;
 	}
