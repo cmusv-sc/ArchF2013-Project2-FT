@@ -16,7 +16,9 @@
 package models.dao;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import models.Device;
 import models.SensorReading;
@@ -124,9 +126,25 @@ public class SensorReadingDaoImplementation implements SensorReadingDao{
 
 	@Override
 	public List<SensorReading> latestReadingFromAllDevices(List<Device> devices) {
-		final String SQL2 = "SELECT SENSOR_NAME, IS_INDOOR, TIMESTAMP, LOCATION_INTERPRETER, VALUE, LONGITUDE, LATITUDE, ALTITUDE FROM CMU.COURSE_SENSOR CS, CMU.COURSE_DISCRETE_SENSOR_READING SR INNER JOIN (SELECT DSR.SENSOR_ID AS ID, MAX(DSR.TIMESTAMP) AS TMSTP FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_SENSOR S, CMU.COURSE_DEVICE D WHERE S.DEVICE_ID = D.DEVICE_ID AND DSR.SENSOR_ID = S.SENSOR_ID AND D.URI IN ('23420ca4e4830bee', '356489052345324.androidIMEI') GROUP BY DSR.SENSOR_ID) TMP ON SR.SENSOR_ID = TMP.ID AND SR.TIMESTAMP = TMP.TMSTP WHERE CS.SENSOR_ID = SR.SENSOR_ID";		
-		List<SensorReading> sensorReadings = simpleJdbcTemplate.query(SQL2, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class));
+		Set<String> deviceUris = new HashSet<String>();
+		
+		for (Device d : devices) {
+			deviceUris.add(d.getUri());
+		}
+		
+		final String SQL2 = "SELECT SENSOR_NAME, IS_INDOOR, TIMESTAMP, LOCATION_INTERPRETER, VALUE, LONGITUDE, LATITUDE, ALTITUDE FROM CMU.COURSE_SENSOR CS, CMU.COURSE_DISCRETE_SENSOR_READING SR INNER JOIN (SELECT DSR.SENSOR_ID AS ID, MAX(DSR.TIMESTAMP) AS TMSTP FROM CMU.COURSE_DISCRETE_SENSOR_READING DSR, CMU.COURSE_SENSOR S, CMU.COURSE_DEVICE D WHERE S.DEVICE_ID = D.DEVICE_ID AND DSR.SENSOR_ID = S.SENSOR_ID AND D.URI IN (%s) GROUP BY DSR.SENSOR_ID) TMP ON SR.SENSOR_ID = TMP.ID AND SR.TIMESTAMP = TMP.TMSTP WHERE CS.SENSOR_ID = SR.SENSOR_ID";		
+		String SQL = String.format(SQL2, preparePlaceHolders(devices.size()));
+		List<SensorReading> sensorReadings = simpleJdbcTemplate.query(SQL, ParameterizedBeanPropertyRowMapper.newInstance(SensorReading.class), deviceUris.toArray());
 		return sensorReadings;
+	}
+	
+	private String preparePlaceHolders(int length) {
+	    StringBuilder builder = new StringBuilder(length * 2 - 1);
+	    for (int i = 0; i < length; i++) {
+	        if (i > 0) builder.append(',');
+	        builder.append('?');
+	    }
+	    return builder.toString();
 	}
 
 }
