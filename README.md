@@ -521,7 +521,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 
 
 39. <a name="39"></a>**GET ALL DEVICES**
-    - **Purpose**: Query all device types.
+    - **Purpose**: Query all devices.
     - **Method**: GET
     - **URL**: http://einstein.sv.cmu.edu:9000/getAllDevices/<"resultFormat">
     - **Semantics**: 
@@ -534,7 +534,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
 30. <a name="30"></a>**GET DEVICES INSIDE A SPECIFIC GEO-FENCE**
-    - **Purpose**: Query all device types.
+    - **Purpose**: Query devices by specifying the geo-fence.
     - **Method**: GET
     - **URL**: http://einstein.sv.cmu.edu:9000/getDevicesByGeofence/<"geo-fence">/<"resultFormat">
     - **Semantics**: 
