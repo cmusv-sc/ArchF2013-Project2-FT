@@ -272,7 +272,7 @@ public class DeviceDaoImplementation implements DeviceDao {
 						SELECT_NEW_LOCATION_ID, newDevice.getLocation()
 								.getLongitude(), newDevice.getLocation()
 								.getLatitude(), newDevice.getLocation()
-								.getAltitude());
+								.getAltitude(), newDevice.getLocation().getRepresentation());
 			} else {
 				locationId = locationIds.get(0);
 			}
