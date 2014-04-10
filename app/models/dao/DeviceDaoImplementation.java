@@ -245,7 +245,7 @@ public class DeviceDaoImplementation implements DeviceDao {
 		TransactionDefinition def = new DefaultTransactionDefinition();
 		TransactionStatus status = txManager.getTransaction(def);
 
-		final String SELECT_NEW_LOCATION_ID = "select location_id from cmu.course_location where longitude = ? and latitude = ? and altitude = ? and representation = ?";
+		final String SELECT_NEW_LOCATION_ID = "select location_id from cmu.course_location where longitude = ? and latitude = ? and altitude = ? and rrrrepresentation = ?";
 		final String ADD_NEW_LOCATION = "insert into cmu.course_location values(cmu.course_location_id_seq.nextVal, ?, ?, ?, ?)";
 		try {
 
