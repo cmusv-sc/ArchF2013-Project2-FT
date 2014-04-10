@@ -245,7 +245,7 @@ public class DeviceDaoImplementation implements DeviceDao {
 		TransactionDefinition def = new DefaultTransactionDefinition();
 		TransactionStatus status = txManager.getTransaction(def);
 
-		final String SELECT_NEW_LOCATION_ID = "select location_id from cmu.course_location where longitude = ? and latitude = ? and altitude = ? and representation = ?";
+		final String SELECT_NEW_LOCATION_ID = "select location_id from cmu.course_location where longitude = ? and latitude = ? and altitude = ?";
 		final String ADD_NEW_LOCATION = "insert into cmu.course_location values(cmu.course_location_id_seq.nextVal, ?, ?, ?, ?)";
 		try {
 
@@ -261,7 +261,7 @@ public class DeviceDaoImplementation implements DeviceDao {
 
 					}, newDevice.getLocation().getLongitude(), newDevice
 							.getLocation().getLatitude(), newDevice
-							.getLocation().getAltitude(), newDevice.getLocation().getRepresentation());
+							.getLocation().getAltitude());
 			int locationId = -1;
 			if (locationIds.size() == 0) {
 				simpleJdbcTemplate.update(ADD_NEW_LOCATION, newDevice
@@ -272,7 +272,7 @@ public class DeviceDaoImplementation implements DeviceDao {
 						SELECT_NEW_LOCATION_ID, newDevice.getLocation()
 								.getLongitude(), newDevice.getLocation()
 								.getLatitude(), newDevice.getLocation()
-								.getAltitude(), newDevice.getLocation().getRepresentation());
+								.getAltitude());
 			} else {
 				locationId = locationIds.get(0);
 			}
