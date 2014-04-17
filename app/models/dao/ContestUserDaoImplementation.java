@@ -49,7 +49,7 @@ public class ContestUserDaoImplementation implements ContestUserDao{
 
 	@Override
 	public boolean updateUser(ContestUser contestUser) {
-		final String SELECT_USER = "select * from cmu.course_contest_user where userName = ? and password = ?";
+		final String SELECT_USER = "select * from cmu.course_contest_user where user_name = ? and password = ?";
 		
 		
 		final String SQL = "update cmu.course_contest_user "
