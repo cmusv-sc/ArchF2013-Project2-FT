@@ -171,7 +171,7 @@ public class DeviceDaoImplementation implements DeviceDao {
 
 		return devices;
 	}
-
+	
 	@Override
 	public Device getDevice(String uri) {
 
@@ -289,6 +289,7 @@ public class DeviceDaoImplementation implements DeviceDao {
 					newDevice.getDeviceUserDefinedFields(), "TRUE");
 
 		} catch (DataAccessException e) {
+			e.printStackTrace();
 			txManager.rollback(status);
 			return null;
 		}

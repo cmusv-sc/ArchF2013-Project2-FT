@@ -31,6 +31,10 @@ GET     /getDevice/:uri/json     controllers.DeviceController.getDevice(uri: Str
 POST    /addDevice               controllers.DeviceController.add()
 PUT 	/updateDevice/:deviceUri			controllers.DeviceController.updateDevice(deviceUri: String)
 DELETE	/deleteDevice/:deviceName 		controllers.DeviceController.deleteDevice(deviceName: String)
+GET     /getDevicesByGeofence/:location         controllers.DeviceController.getAllDevicesByGeofence(location: String, format: String = "csv")
+GET     /getDevicesByGeofence/:location/csv      controllers.DeviceController.getAllDevicesByGeofence(location: String, format: String = "csv")
+GET     /getDevicesByGeofence/:location/json     controllers.DeviceController.getAllDevicesByGeofence(location: String, format: String = "json")
+
 
 # SensorType
 POST	/addSensorType 							controllers.SensorTypeController.addSensorType()
@@ -63,6 +67,10 @@ GET		/getSensorReading/:deviceUri/:sensorTypeName/:timeStamp/json		controllers.S
 GET 	/getSensorReadingInRange/:deviceUri/:sensorTypeName/:startTime/:endTime	controllers.SensorReadingController.searchInTimeRangeThruDeviceUriSensorTypeName(deviceUri: String, sensorTypeName: String, startTime: String, endTime: String, format: String = "csv")
 GET 	/getSensorReadingInRange/:deviceUri/:sensorTypeName/:startTime/:endTime/csv	controllers.SensorReadingController.searchInTimeRangeThruDeviceUriSensorTypeName(deviceUri: String, sensorTypeName: String, startTime: String, endTime: String, format: String = "csv")
 GET 	/getSensorReadingInRange/:deviceUri/:sensorTypeName/:startTime/:endTime/json	controllers.SensorReadingController.searchInTimeRangeThruDeviceUriSensorTypeName(deviceUri: String, sensorTypeName: String, startTime: String, endTime: String, format: String = "json")
+
+GET     /latestReadingFromDevicesByGeofence/:location  controllers.SensorReadingController.latestReadingFromDevicesByGeofence(location:String, format: String = "csv")
+GET     /latestReadingFromDevicesByGeofence/:location/csv  controllers.SensorReadingController.latestReadingFromDevicesByGeofence(location:String, format: String = "csv")
+GET     /latestReadingFromDevicesByGeofence/:location/json controllers.SensorReadingController.latestReadingFromDevicesByGeofence(location:String, format: String = "json")
 
 
 # Old SensorReading

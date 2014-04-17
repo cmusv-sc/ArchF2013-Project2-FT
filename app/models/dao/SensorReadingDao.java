@@ -17,6 +17,7 @@ package models.dao;
 
 import java.util.List;
 
+import models.Device;
 import models.SensorReading;
 
 
@@ -34,6 +35,8 @@ public interface SensorReadingDao {
 	
 	public List<SensorReading> lastReadingFromAllDevices(Long timeStamp, String sensorType);
 
-	public List<SensorReading> latestReadingFromAllDevices(String sensorType);
+	public List<SensorReading> latestReadingFromAllDevicesBySensorType(String sensorType);
+	
+	public List<SensorReading> latestReadingFromAllDevices(List<Device> devices);
 
 }

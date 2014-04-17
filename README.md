@@ -28,9 +28,13 @@ Currently we are providing APIs in 3 categores:
     
 **Category 2: Query database for sensor readings**<br/>
    - [Get sensor reading from a sensor(specified by sensorName) at a timestamp](#4)<br/>
+   - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) at a timestamp](#21)<br/>
    - [Get sensor reading from a sensor(specified by sensorName) among a timestamp range](#5)<br/>
+   - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) among a timestamp range](#23)<br/>
    - ~~[(NO LONGER VALID)Get current sensor readings for a sensor type in all registered devices](#6)~~<br/>
    - [Get latest sensor readings for a sensor type in all registered devices](#7)
+   - [Get latest sensor readings from devices inside a specific geo-fence](#24)<br/>
+
     
 **Category 3: Manage metadata**<br/>
    - [Add a sensor category](#22)
@@ -57,6 +61,7 @@ Currently we are providing APIs in 3 categores:
    - [Get all device types](#37)
    - [Get a specific device type](#38)
    - [Get all devices](#39)
+   - [Get devices inside a specific geo-fence](#30)
    - [Get a specific device](#40)
 
 **Category 4: Access Control**<br/>
@@ -106,6 +111,22 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample json result**: {"timestamp":1368568896000,"sensorName":"sensor1","value":518}
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
+21. <a name="21"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY DEVICE URI AND SENSOR TYPE NAME) AT A TIMESTAMP**
+    - **Purpose**: Query sensor reading for a specific sensor at a specific time point.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getSensorReading/<"deviceUri">/<"sensorTypeName">/<"timestamp">/<"resultFormat">
+    - **Semantics**: 
+        - **deviceUri**: Existing device uri.
+        - **sensorTypeName**: Existing sensor type name.
+        - **timestamp**: Time of the readings to query.
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReading/23420ca4e4830bee/fireImpXAccelerometer/1395247329000/csv<br/>
+      - **Sample csv result**: (sensorName,timestamp,value) </br>sensor1,1368568896000,518.0
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReading/androidAccelerometer/1395247329000/json
+      - **Sample json result**: {"timestamp":1368568896000,"sensorName":"sensor1","value":518}
+      - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
+      
 5. <a name="5"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY SENSOR NAME) AMONG A TIMESTAMP RANGE**
     - **Purpose**: Query sensor readings for a specific sensor among a specific time range. 
     - **Method**: GET
@@ -128,6 +149,28 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           {"timestamp":1368568896000,"value": 520,"sensorName":"sensor1"}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
+22. <a name="23"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY DEVICE URI AND SENSOR TYPE NAME) BETWEEN A TIMESTAMP RANGE**
+    - **Purpose**: Query sensor readings for a specific sensor among a specific time range. 
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/<"deviceUri">/<"sensorTypeName">/<"startTime">/<"endTime">/<"resultFormat">
+    - **Semantics**:
+        - **deviceUri**: Existing device uri.
+        - **sensorTypeName**: Existing sensor type name.
+        - **startTime**: Start time of the readings to query.
+        - **endTime**: End time of the readings to query.
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/23420ca4e4830bee/fireImpXAccelerometer/1394557419000/1394643819000/csv
+      - **Sample csv result**: (sensorName,timestamp,value)<br/>
+          sensor1,1368568993000,517.0 <br/>
+          ... <br/>
+          sensor1,1368568896000,518.0
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/23420ca4e4830bee/fireImpXAccelerometer/1394557419000/1394643819000/json
+      - **Sample json result**: <br/>
+          [{"timestamp":1368568993000,"value":517,"sensorName":"sensor1"},
+          ... <br/>
+          {"timestamp":1368568896000,"value": 520,"sensorName":"sensor1"}]
+      - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
 6. <a name="6"></a>~~**(NO LONGER VALID)GET CURRENT SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**~~
     - **Purpose**: Query all sensor readings at a time point (within 60 seconds), of a specific sensor type contained in all registered devices.
@@ -170,6 +213,24 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         [{"timestamp":1368568896000,"sensorType":"temp","value":513,"deviceId":"10170203"},
         ... <br/>
         {"timestamp":1368568889000,"sensorType":"temp","value":515,"deviceId":"10170204"}]
+      - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
+
+24. <a name="24"></a>**GET LATEST SENSOR READINGS FROM DEVICES INSIDE A SPECIFIED GEO-FENCE**
+    - **Purpose**: Query all latest sensor readings, of all sensors contained in all devices inside a specified geo-fence.  If no reading for a sensor in the last 60 seconds, the latest stored reading of the corresponding sensor will be returned. 
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/latestReadingFromDevicesByGeofence/<"geo-fence">/<"resultFormat">
+    - **Semantics**:
+        - **geo-fence**: The location representation of the device.
+        - **resultFormat**: Either json or csv.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/latestReadingFromDevicesByGeofence/room129A/csv     
+      - **Sample csv result**: (sensorName,isIndoor,timeStamp,value,longitude,latitude,altitude,locationInterpreter) </br>
+          fireImpXAccelerometer23420ca4e4830bee,true,2014-03-13 12:18:59.0,37904,91.0,91.0,91.0,GPS <br/>
+          ... <br/>
+          fireImpZAccelerometer23420ca4e4830bee,true,2014-03-13 12:18:59.0,37904,91.0,91.0,91.0,GPS
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/latestReadingFromDevicesByGeofence/room129A/json
+      - **Sample json result**: <br/>
+        [{"sensorName":"fireImpXAccelerometer23420ca4e4830bee","isIndoor":true,"timeStamp":"Mar 13, 2014 12:18:59 PM","locationInterpreter":"GPS","value":"37904","longitude":91.0,"latitude":91.0,"altitude":91.0},{"sensorName":"fireImpZAccelerometer23420ca4e4830bee","isIndoor":true,"timeStamp":"Mar 13, 2014 12:18:59 PM","locationInterpreter":"GPS","value":"37904","longitude":91.0,"latitude":91.0,"altitude":91.0}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
 15. <a name="22"></a>**ADD SENSOR CATEGORY**
@@ -460,7 +521,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
 
 
 39. <a name="39"></a>**GET ALL DEVICES**
-    - **Purpose**: Query all device types.
+    - **Purpose**: Query all devices.
     - **Method**: GET
     - **URL**: http://einstein.sv.cmu.edu:9000/getAllDevices/<"resultFormat">
     - **Semantics**: 
@@ -472,6 +533,19 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample json result**: [{"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "representation": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}]
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
+30. <a name="30"></a>**GET DEVICES INSIDE A SPECIFIC GEO-FENCE**
+    - **Purpose**: Query devices by specifying the geo-fence.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getDevicesByGeofence/<"geo-fence">/<"resultFormat">
+    - **Semantics**: 
+        - **geo-fence**: The location representation of the device.
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getDevicesByGeofence/room129A/csv<br/>
+      - **Sample csv result**: (deviceUri, deviceUserDefinedFields, longitude, latitude, altitude, representation, deviceTypeName,manufacturer,version,deviceTypeUserDefinedFields,sensorTypeNames, sensorNames) </br>www.device.com, For test, 10, 10, 10, myInterpreter, device type 1, TI, 1.0, For Test, "[temp, light]", "[sensor1, sensor2]"
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getDevicesByGeofence/room129A/json
+      - **Sample json result**: [{"deviceUri":"www.device.com", "deviceUserDefinedFields": "For test", "longitude":10, "latitude": 10, "altitude":10, "representation": "myInterpreter", "deviceTypeName": "device type  1", "manufacturer": "TI", "version": "1.0", "deviceTypeUserDefinedFields": "For test", "sensorTypeNames":["temp", "light"], "sensorNames":["sensor1", "sensor2"]}]
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
 
 40. <a name="40"></a>**GET A SPECIFIC DEVICE**
