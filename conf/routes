@@ -112,6 +112,7 @@ GET /getUser/:userName/json						controllers.UserController.getUser(userName: St
 
 # Contest User
 POST /addContestUser								controllers.ContestUserController.addUser()
+POST /updateContestUser								controllers.ContestUserController.updateUser()
 
 # WorkFlow
 POST	/workflow/							controllers.WorkFlowRunnerController.changeInterval()
