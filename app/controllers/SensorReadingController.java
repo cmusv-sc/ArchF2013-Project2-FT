@@ -180,13 +180,14 @@ public class SensorReadingController extends Controller {
 			return ok(ret);
 		}
 
-	public static Result lastReadingFromAllDevices(Long timeStamp, String sensorType, String format) {
+		/* get all device reading in last 60 seconds*/
+	public static Result lastReadingFromAllDevices(Long timeStamp, String format) {
 		if(!checkDao()){
 			return internalServerError("database conf file not found");
 		}
 
 		response().setHeader("Access-Control-Allow-Origin", "*");
-		List<models.SensorReading> readings = sensorReadingDao.lastReadingFromAllDevices(timeStamp, sensorType);
+		List<models.SensorReading> readings = sensorReadingDao.lastReadingFromAllDevices(timeStamp);
 		if(readings == null || readings.isEmpty()){
 			return notFound("no reading found");
 		}

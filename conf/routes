@@ -72,14 +72,17 @@ GET     /latestReadingFromDevicesByGeofence/:location  controllers.SensorReading
 GET     /latestReadingFromDevicesByGeofence/:location/csv  controllers.SensorReadingController.latestReadingFromDevicesByGeofence(location:String, format: String = "csv")
 GET     /latestReadingFromDevicesByGeofence/:location/json controllers.SensorReadingController.latestReadingFromDevicesByGeofence(location:String, format: String = "json")
 
+GET		/getLastMinuteReadingsFromAllDevices/:timeStamp		controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, format: String = "csv")
+GET		/getLastMinuteReadingsFromAllDevices/:timeStamp/csv		controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, format: String = "csv")
+GET		/getLastMinuteReadingsFromAllDevices/:timeStamp/json		controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, format: String = "json")
 
 # Old SensorReading
 #GET		/sensors/:deviceId/:timeStamp/:sensorType			controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
 #GET     /sensors/:deviceId/:timeStamp/:sensorType/csv       controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
 #GET		/sensors/:deviceId/:timeStamp/:sensorType/json	controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "json")
-GET		/last_readings_from_all_devices/:timeStamp/:sensorType	controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "csv")
-GET     /last_readings_from_all_devices/:timeStamp/:sensorType/csv  controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "csv")
-GET		/last_readings_from_all_devices/:timeStamp/:sensorType/json	controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "json")
+#GET		/last_readings_from_all_devices/:timeStamp/:sensorType	controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "csv")
+#GET     /last_readings_from_all_devices/:timeStamp/:sensorType/csv  controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "csv")
+#GET		/last_readings_from_all_devices/:timeStamp/:sensorType/json	controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, sensorType:String, format: String = "json")
 
 
 # Sensor
