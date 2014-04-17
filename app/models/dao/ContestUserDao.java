@@ -20,4 +20,5 @@ import models.ContestUser;
 public interface ContestUserDao {
 //	public boolean addUser(String userName, String password, String firstName, String lastName, String middleName, String affiliation, String email, String researchArea, String goal);
 	public boolean addUser(ContestUser contestUser);
+	public boolean updateUser(ContestUser contestUser);
 }

@@ -17,6 +17,7 @@ package models.dao;
 
 import models.ContestUser;
 
+import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 public class ContestUserDaoImplementation implements ContestUserDao{
@@ -42,6 +43,25 @@ public class ContestUserDaoImplementation implements ContestUserDao{
 			simpleJdbcTemplate.update(ADD_USER, contestUser.getUserName(), contestUser.getPassword(), contestUser.getFirstName(), contestUser.getLastName(), contestUser.getMiddleName(), contestUser.getAffiliation(), contestUser.getEmail(), contestUser.getResearchArea(), contestUser.getGoal());
 			return true;
 		}catch(Exception e){
+			return false;
+		}
+	}
+
+	@Override
+	public boolean updateUser(ContestUser contestUser) {
+		final String SELECT_USER = "select * from cmu.course_contest_user where userName = ? and password = ?";
+		
+		
+		final String SQL = "update cmu.course_contest_user "
+				+ "set first_name = ?, last_name = ?, middle_name = ?, affiliation  = ?, email = ?,research_area = ?, goal = ? " + "where userName = ?";
+		try {
+			ContestUser user = simpleJdbcTemplate.queryForObject(SELECT_USER, ParameterizedBeanPropertyRowMapper.newInstance(ContestUser.class), contestUser.getUserName(), contestUser.getPassword());
+			if (user == null)
+				return false;
+			simpleJdbcTemplate.update(SQL, contestUser.getFirstName(), contestUser.getLastName(), contestUser.getMiddleName(), contestUser.getAffiliation(), contestUser.getEmail(), contestUser.getResearchArea(), contestUser.getGoal(), contestUser.getUserName());
+			return true;
+
+		} catch (Exception e) {
 			return false;
 		}
 	}
