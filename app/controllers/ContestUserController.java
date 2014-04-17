@@ -39,7 +39,7 @@ public class ContestUserController extends Controller {
 			context = new ClassPathXmlApplicationContext("application-context.xml");
 		}
 		if (contestUserDao == null) {
-			contestUserDao = (ContestUserDao) context.getBean("userDaoImplementation");
+			contestUserDao = (ContestUserDao) context.getBean("contestUserDaoImplementation");
 		}
 	}
 
