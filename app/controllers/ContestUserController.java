@@ -100,6 +100,35 @@ public class ContestUserController extends Controller {
 			return ok("user not updated: " + error.toString());
 		}
 	}
+	
+	public static Result deleteUser(String userName, String pwd) {
+		JsonNode json = request().body().asJson();
+		if(json == null) {
+			return badRequest("Expecting Json data");
+		} 
+		checkDao();
+
+		Gson gson = new Gson();
+		ContestUser user = gson.fromJson(request().body().asJson().toString(), ContestUser.class);
+
+		
+		ArrayList<String> error = new ArrayList<String>();
+		
+		boolean result = contestUserDao.deleteUser(userName, pwd);
+
+		if(!result){
+			error.add(user.getUserName());
+		}
+		// Can this error have more than one name in it? I don't understand why error needs to be a list.
+		if(error.size() == 0){
+			System.out.println("user updated");
+			return ok("user updated");
+		}
+		else{
+			System.out.println("user not updated: " + error.toString());
+			return ok("user not updated: " + error.toString());
+		}
+	}
 
 
 }

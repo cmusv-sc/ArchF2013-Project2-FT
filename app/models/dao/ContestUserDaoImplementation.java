@@ -67,6 +67,15 @@ public class ContestUserDaoImplementation implements ContestUserDao{
 		}
 	}
 	
-	
+	@Override
+	public boolean deleteUser(String userName, String pwd) {
+		final String SQL = "delete from cmu.course_contest_user where user_name = ? and password = ? ";
+		try{
+			simpleJdbcTemplate.update(SQL, userName, pwd);
+		}catch(Exception e){
+			return false;
+		}
+		return true;
+	}
 
 }
