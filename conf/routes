@@ -110,6 +110,9 @@ GET /getUser/:userName						controllers.UserController.getUser(userName: String,
 GET /getUser/:userName/csv						controllers.UserController.getUser(userName: String, format: String = "csv")
 GET /getUser/:userName/json						controllers.UserController.getUser(userName: String, format: String = "json")
 
+# Contest User
+POST /addUser								controllers.ContestUserController.addUser()
+
 # WorkFlow
 POST	/workflow/							controllers.WorkFlowRunnerController.changeInterval()
 GET		/workflow/							controllers.WorkFlowRunnerController.index(format:String = "html")
