@@ -80,4 +80,10 @@
       class="models.dao.UserDaoImplementation">
       <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
    </bean>
+   
+   <!-- Definition for userDaoImplementation bean -->
+   <bean id="contestUserDaoImplementation" 
+      class="models.dao.ContestUserDaoImplementation">
+      <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
+   </bean>
 </beans>
