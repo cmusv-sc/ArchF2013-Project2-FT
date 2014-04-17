@@ -71,6 +71,11 @@ Currently we are providing APIs in 3 categores:
    - [Get all sensors which has been added by a user](#44)
    - [Get a specific sensor which has been added by a user](#45)
 
+**Category 5: User management for contest**<br/>
+   - [Add a contest user](#51)
+   - [Update a contest user](#52)
+   - [Delete a contest user](#53)
+
 Detailed Usages:
 ----------------
 Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion from readable timestamp format to Unix epoch timestamp can be found in http://www.epochconverter.com
@@ -667,7 +672,63 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample json request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu:9000/getSensor/<"sensorName">/json
       - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "deviceUri":"www.device.com", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
+
+
+51. <a name="51"></a>**ADD A CONTEST USER**
+    - **Purpose**: Add a new contest user.
+    - **Method**: POST
+    - **URL**: http://einstein.sv.cmu.edu:9000/addContestUser
+    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
+        - **userName** (string, not null): Non existing unique user name
+        - **password** (string, not null): password
+        - **firstName** (string, optional): first name
+        - **lastName** (string, optional): last name
+        - **middleName** (string, optional): middle name
+        - **affiliation** (string, optional): affiliation
+        - **email** (string, optional): email
+        - **researchArea** (string, optional): research area
+        - **goal** (string, optional): goal
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. Prepare input contest user data in a json file:
+              - "contestUser.json" file contains: {"userName": "John", "password": "123", "firstName": "John"}
+          2. curl -H "Content-Type: application/json" -d @user.json "http://einstein.sv.cmu.edu:9000/addContestUser"
+      - **Result**: HTTP 201 if the user has been successfully added to the database, HTTP 400 if the userName is already been used or register limit has been reached.
       
+52. <a name="52"></a>**UPDATE A CONTEST USER**
+    - **Purpose**: Update a new contest user.
+    - **Method**: POST
+    - **URL**: http://einstein.sv.cmu.edu:9000/updateontestUser
+    - **Semantics**: As a POST method, the API cannot be directly executed through a web browser.  Instead, it may be executed through Rails, JQuery, Python, BASH, etc.
+        - **userName** (string, not null): Non existing unique user name
+        - **password** (string, not null): password
+        - **firstName** (string, optional): first name
+        - **lastName** (string, optional): last name
+        - **middleName** (string, optional): middle name
+        - **affiliation** (string, optional): affiliation
+        - **email** (string, optional): email
+        - **researchArea** (string, optional): research area
+        - **goal** (string, optional): goal
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. Prepare input contest user data in a json file:
+              - "contestUser.json" file contains: {"userName": "John", "password": "123", "firstName": "John", "lastName": "White"}
+          2. curl -H "Content-Type: application/json" -d @user.json "http://einstein.sv.cmu.edu:9000/updateContestUser"
+      - **Result**: HTTP 201 if the user has been successfully updated, HTTP 400 if the userName/password is wrong
+      
+53. <a name="53"></a>**DELETE A CONTEST USER**
+    - **Purpose**: Delete a contest user.
+    - **Method**: DELETE
+    - **URL**: http://einstein.sv.cmu.edu:9000/deleteContestUser/<"userName">/<"password">
+    - **Semantics**
+        - **userName** (string, not null): Contest user name
+        - **password** (string, not null): Password
+    - **Sample Usages**:
+      - **Command Line Example**: 
+          1. curl -X DELETE http://localhost:9000/deleteContestUser/John/123
+      - **Result**: HTTP 201 if the contest user has been successfully deleted
+   
+
 [1]: http://einstein.sv.cmu.edu:9000/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 
 Examples:
