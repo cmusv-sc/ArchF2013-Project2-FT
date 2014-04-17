@@ -62,6 +62,7 @@ public class ContestUserDaoImplementation implements ContestUserDao{
 			return true;
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
