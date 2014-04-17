@@ -53,7 +53,7 @@ public class ContestUserDaoImplementation implements ContestUserDao{
 		
 		
 		final String SQL = "update cmu.course_contest_user "
-				+ "set first_name = ?, last_name = ?, middle_name = ?, affiliation  = ?, email = ?,research_area = ?, goal = ? " + "where userName = ?";
+				+ "set first_name = ?, last_name = ?, middle_name = ?, affiliation  = ?, email = ?,research_area = ?, goal = ? " + "where user_name = ?";
 		try {
 			ContestUser user = simpleJdbcTemplate.queryForObject(SELECT_USER, ParameterizedBeanPropertyRowMapper.newInstance(ContestUser.class), contestUser.getUserName(), contestUser.getPassword());
 			if (user == null)
