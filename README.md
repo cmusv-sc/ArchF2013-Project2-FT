@@ -183,14 +183,14 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **URL**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/<"timestamp">/<"sensorTypeName">/<"resultFormat">
     - **Semantics**:
         - **timestamp**: Time to query the last readings of all sensors for all devices registered at the sensor data service platform.
-        - **sensorType**: Type of the sensor (e.g., temperature, CO2, etc.).
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/1395684000000/csv
-      - **Sample csv result**: (deviceUri,timestamp,sensorType,value) </br>
-          androidAccelerometer,1395683988039,0.7101593
-          ...<br>
-          androidAccelerometer,1395683991877,-0.9180145
+      - **Sample csv result**: 
+          (sensorName,timestamp,value)  
+          androidAccelerometer,1395683988039,0.7101593   
+          ...  
+          androidAccelerometer,1395683991877,-0.9180145  
       - **Sample json request**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/1395684000000/json
       - **Sample json result**: <br/>
           [{"timestamp":"2014-03-24 10:59:48.039","value":"0.7101593","sensorName":"androidAccelerometer"},

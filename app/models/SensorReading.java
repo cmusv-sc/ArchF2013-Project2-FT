@@ -33,7 +33,7 @@ public class SensorReading {
 	
 		
 	public String getCSVHeader() {
-		return "deviceUri,timestamp,sensorType,value\n";
+		return "sensorName,timestamp,value\n";
 	}
 	
 	public String toCSVString() {
