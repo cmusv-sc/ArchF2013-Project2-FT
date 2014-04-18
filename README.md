@@ -31,7 +31,7 @@ Currently we are providing APIs in 3 categores:
    - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) at a timestamp](#21)<br/>
    - [Get sensor reading from a sensor(specified by sensorName) among a timestamp range](#5)<br/>
    - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) among a timestamp range](#23)<br/>
-   - ~~[(NO LONGER VALID)Get current sensor readings for a sensor type in all registered devices](#6)~~<br/>
+   - [Get last minute's sensor readings for a sensor type in all registered devices](#6)
    - [Get latest sensor readings for a sensor type in all registered devices](#7)
    - [Get latest sensor readings from devices inside a specific geo-fence](#24)<br/>
 
@@ -177,21 +177,21 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           {"timestamp":1368568896000,"value": 520,"sensorName":"sensor1"}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
-6. <a name="6"></a>~~**(NO LONGER VALID)GET CURRENT SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**~~
+6. <a name="6"></a>**GET last minute's SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**
     - **Purpose**: Query all sensor readings at a time point (within 60 seconds), of a specific sensor type contained in all registered devices.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu:9000/getLastReadingsFromAllDevices/<"timestamp">/<"sensorTypeName">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/<"timestamp">/<"sensorTypeName">/<"resultFormat">
     - **Semantics**:
         - **timestamp**: Time to query the last readings of all sensors for all devices registered at the sensor data service platform.
         - **sensorType**: Type of the sensor (e.g., temperature, CO2, etc.).
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/lastReadingsFromAllDevices/1368568896000/temp/csv
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/1368568896000/temp/csv
       - **Sample csv result**: (deviceUri,timestamp,sensorType,value) </br>
           device1,1368568896000,temp,513.0 <br/>
           ... <br/>
           device2,1368568889000,temp,516.0
-      - **Sample json request**: http://einstein.sv.cmu.edu:9000/lastReadingsFromAllDevices/1368568896000/temp/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/1368568896000/temp/json
       - **Sample json result**: <br/>
           [{"timestamp":1368568896000,"sensorType":"temp","value":513,"deviceUri":"device1"},
           ... <br/>
