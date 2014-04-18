@@ -186,16 +186,16 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **sensorType**: Type of the sensor (e.g., temperature, CO2, etc.).
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
-      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/1368568896000/temp/csv
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/1395684000000/csv
       - **Sample csv result**: (deviceUri,timestamp,sensorType,value) </br>
-          device1,1368568896000,temp,513.0 <br/>
-          ... <br/>
-          device2,1368568889000,temp,516.0
-      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/1368568896000/temp/json
+          androidAccelerometer,1395683988039,0.7101593
+          ...<br>
+          androidAccelerometer,1395683991877,-0.9180145
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/1395684000000/json
       - **Sample json result**: <br/>
-          [{"timestamp":1368568896000,"sensorType":"temp","value":513,"deviceUri":"device1"},
+          [{"timestamp":"2014-03-24 10:59:48.039","value":"0.7101593","sensorName":"androidAccelerometer"},
           ... <br/>
-          {"timestamp":1368568889000,"sensorType":"temp","value":516,"deviceUri":"device2"}]
+          {"timestamp":"2014-03-24 10:59:48.174","value":"188.17767","sensorName":"androidOrientationVector"},{"timestamp":"2014-03-24 10:59:49.182","value":"182.88602","sensorName":"androidOrientationVector"}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
 
