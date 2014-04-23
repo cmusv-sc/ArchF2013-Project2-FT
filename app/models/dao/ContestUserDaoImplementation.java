@@ -18,8 +18,6 @@ package models.dao;
 import java.util.List;
 
 import models.ContestUser;
-import models.SensorCategory;
-import models.User;
 
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;

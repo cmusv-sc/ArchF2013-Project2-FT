@@ -139,7 +139,7 @@ public class ContestUserController extends Controller {
 		checkDao();
 		ContestUser user = contestUserDao.getUser(userName, pwd);
 		if(user == null){
-			return notFound("no devices found");
+			return notFound("no contest users found");
 		}
 		String ret = new String();
 		if (format.equals("json"))
@@ -156,7 +156,7 @@ public class ContestUserController extends Controller {
 		checkDao();
 		List<ContestUser> users = contestUserDao.getAllUsers();
 		if(users == null){
-			return notFound("no devices found");
+			return notFound("no contest users found");
 		}
 		String ret = new String();
 		if (format.equals("json"))
@@ -167,6 +167,7 @@ public class ContestUserController extends Controller {
 		}
 		return ok(ret);
 	}
+
 	
 	private static String toCsv(List<ContestUser> users) {
 		StringWriter sw = new StringWriter();
