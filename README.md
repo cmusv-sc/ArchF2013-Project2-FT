@@ -75,6 +75,8 @@ Currently we are providing APIs in 3 categores:
    - [Add a contest user](#51)
    - [Update a contest user](#52)
    - [Delete a contest user](#53)
+   - [Get all contest users](#54)
+   - [Get specific contest user](#55)
 
 Detailed Usages:
 ----------------
@@ -727,7 +729,28 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Command Line Example**: 
           1. curl -X DELETE http://localhost:9000/deleteContestUser/John/123
       - **Result**: HTTP 201 if the contest user has been successfully deleted
-   
+
+54. <a name="54"></a>**GET ALL REGISTERED CONTEST USERS**
+    - **Purpose**: Query all registered contest users.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getAllContestUsers/<"resultFormat">
+    - **Semantics**: 
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getAllContestUsers/csv<br/>
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getAllContestUsers/json
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
+
+55. <a name="55"></a>**GET SPECIFIC REGISTERED CONTEST USER**
+    - **Purpose**: Query specific registered contest user.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getContestUser/<"userName">/<"password">/<"resultFormat">
+    - **Semantics**: 
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getContestUser/John/123/csv<br/>
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getContestUser/John/123/json
+      - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
 [1]: http://einstein.sv.cmu.edu:9000/ "The Application Server running in the Smart Spaces Lab, CMUSV"
 
