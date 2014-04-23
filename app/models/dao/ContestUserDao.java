@@ -15,11 +15,14 @@
  ******************************************************************************/
 package models.dao;
 
+import java.util.List;
+
 import models.ContestUser;
 
 public interface ContestUserDao {
 	public boolean addUser(ContestUser contestUser);
 	public boolean updateUser(ContestUser contestUser);
 	public boolean deleteUser(String userName, String pwd);
-
+	public ContestUser getUser(String userName, String pwd);
+	public List<ContestUser> getAllUsers();
 }
