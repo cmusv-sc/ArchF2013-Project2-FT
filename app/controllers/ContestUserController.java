@@ -173,6 +173,13 @@ public class ContestUserController extends Controller {
 		CellProcessor[] processors = new CellProcessor[] {
 				new Optional(),
 				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional()
 				};
 		ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
 		try {
