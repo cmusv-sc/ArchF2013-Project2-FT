@@ -120,6 +120,7 @@ DELETE /deleteContestUser/:userName/:password								controllers.ContestUserCont
 GET /getContestUser/:userName/:password						controllers.ContestUserController.getUser(userName: String, password: String, format: String = "csv")
 GET /getContestUser/:userName/:password/csv						controllers.ContestUserController.getUser(userName: String, password: String, format: String = "csv")
 GET /getContestUser/:userName/:password/json						controllers.ContestUserController.getUser(userName: String, password: String, format: String = "json")
+GET /getAllContestUsers									controllers.ContestUserController.getAllUsers(format: String = "csv")
 GET /getAllContestUsers/csv									controllers.ContestUserController.getAllUsers(format: String = "csv")
 GET /getAllContestUsers/json									controllers.ContestUserController.getAllUsers(format: String = "csv")
 
