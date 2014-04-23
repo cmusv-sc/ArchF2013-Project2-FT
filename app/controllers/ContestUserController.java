@@ -154,7 +154,7 @@ public class ContestUserController extends Controller {
 	public static Result getAllUsers(String format) {
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		checkDao();
-		List<ContestUser> users = contestUserDao.getAllUser();
+		List<ContestUser> users = contestUserDao.getAllUsers();
 		if(users == null){
 			return notFound("no devices found");
 		}
