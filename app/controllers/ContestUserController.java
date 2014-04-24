@@ -14,14 +14,24 @@
  * questions.
  ******************************************************************************/
 package controllers;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import models.ContestUser;
+import models.User;
 import models.dao.ContestUserDao;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.supercsv.cellprocessor.Optional;
+import org.supercsv.cellprocessor.ift.CellProcessor;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -124,5 +134,71 @@ public class ContestUserController extends Controller {
 		}
 	}
 
+	public static Result getUser(String userName, String pwd, String format) {
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		checkDao();
+		ContestUser user = contestUserDao.getUser(userName, pwd);
+		if(user == null){
+			return notFound("no contest users found");
+		}
+		String ret = new String();
+		if (format.equals("json"))
+		{			
+			ret = new Gson().toJson(user);		
+		} else {			
+				ret = toCsv(Arrays.asList(user));
+		}
+		return ok(ret);
+	}
+	
+	public static Result getAllUsers(String format) {
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		checkDao();
+		List<ContestUser> users = contestUserDao.getAllUsers();
+		if(users == null){
+			return notFound("no contest users found");
+		}
+		String ret = new String();
+		if (format.equals("json"))
+		{			
+			ret = new Gson().toJson(users);		
+		} else {			
+				ret = toCsv(users);
+		}
+		return ok(ret);
+	}
+
+	
+	private static String toCsv(List<ContestUser> users) {
+		StringWriter sw = new StringWriter();
+		CellProcessor[] processors = new CellProcessor[] {
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional(),
+				new Optional()
+				};
+		ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
+		try {
+			final String[] header = new String[] { "userName",  "password", "firstName", "lastName", "middleName", "affiliation", "email", "researchArea", "goal"};
+			writer.writeHeader(header);
+			for (ContestUser user : users) {
+				writer.write(user, header, processors);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return sw.getBuffer().toString();
+	}
 
 }

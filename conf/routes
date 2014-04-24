@@ -117,7 +117,12 @@ GET /getUser/:userName/json						controllers.UserController.getUser(userName: St
 POST /addContestUser								controllers.ContestUserController.addUser()
 POST /updateContestUser								controllers.ContestUserController.updateUser()
 DELETE /deleteContestUser/:userName/:password								controllers.ContestUserController.deleteUser(userName: String, password: String)
-
+GET /getContestUser/:userName/:password						controllers.ContestUserController.getUser(userName: String, password: String, format: String = "csv")
+GET /getContestUser/:userName/:password/csv						controllers.ContestUserController.getUser(userName: String, password: String, format: String = "csv")
+GET /getContestUser/:userName/:password/json						controllers.ContestUserController.getUser(userName: String, password: String, format: String = "json")
+GET /getAllContestUsers									controllers.ContestUserController.getAllUsers(format: String = "csv")
+GET /getAllContestUsers/csv									controllers.ContestUserController.getAllUsers(format: String = "csv")
+GET /getAllContestUsers/json									controllers.ContestUserController.getAllUsers(format: String = "json")
 
 # WorkFlow
 POST	/workflow/							controllers.WorkFlowRunnerController.changeInterval()

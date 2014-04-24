@@ -15,6 +15,8 @@
  ******************************************************************************/
 package models.dao;
 
+import java.util.List;
+
 import models.ContestUser;
 
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
@@ -76,6 +78,30 @@ public class ContestUserDaoImplementation implements ContestUserDao{
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public ContestUser getUser(String userName, String pwd) {
+		final String GET_USER = "select * from cmu.course_contest_user where user_name = ? and password = ?";
+		try {
+			ContestUser contestUser = simpleJdbcTemplate.queryForObject(GET_USER, ParameterizedBeanPropertyRowMapper.newInstance(ContestUser.class), userName, pwd);
+			return contestUser;
+		}catch(Exception e){
+			return null;
+		}
+	}
+
+	@Override
+	public List<ContestUser> getAllUsers() {
+		final String SQL = "SELECT * FROM CMU.COURSE_CONTEST_USER";
+		try {
+			List<ContestUser> contestUsers = simpleJdbcTemplate.query(
+					SQL, ParameterizedBeanPropertyRowMapper
+							.newInstance(ContestUser.class));
+			return contestUsers;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }
