@@ -251,6 +251,9 @@ public class DeviceDaoImplementation implements DeviceDao {
 		// device user defined field should also be updated
 		final String UPDATE_DEVICE = "update cmu.course_device set DEVICE_USER_DEFINED_FIELDS = ? where uri = ?";
 
+		// update teh device location's representation
+		final String UPDATE_LOCATION_REPRESENTATION = "update cmu.course_location set representation = ? where location_id = ?";
+		
 		
 		try {
 
@@ -280,6 +283,9 @@ public class DeviceDaoImplementation implements DeviceDao {
 								.getAltitude());
 			} else {
 				locationId = locationIds.get(0);
+				// update location representation
+				simpleJdbcTemplate.update(UPDATE_LOCATION_REPRESENTATION, newDevice.getLocation().getRepresentation(),
+						locationId);
 			}
 
 			final String SELECT_DEVICE_ID = "select device_id from cmu.course_device where uri = ?";
