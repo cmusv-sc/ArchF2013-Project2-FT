@@ -27,6 +27,8 @@ import models.Device;
 import models.SensorReading;
 import models.dao.SensorReadingDao;
 
+import org.apache.hadoop.hbase.MasterNotRunningException;
+import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -40,6 +42,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import com.google.gson.Gson;
+import com.google.protobuf.ServiceException;
 
 
 public class SensorReadingController extends Controller {
@@ -57,7 +60,7 @@ public class SensorReadingController extends Controller {
 		return true;
 	}
 
-	public static Result add() {
+	public static Result add() throws MasterNotRunningException, ZooKeeperConnectionException, ServiceException, IOException {
 		JsonNode json = request().body().asJson();
 		if(json == null) {              
 			return badRequest("Expecting Json data");

@@ -15,6 +15,10 @@
  ******************************************************************************/
 package models.dao;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
@@ -23,8 +27,19 @@ import java.util.Set;
 import models.Device;
 import models.SensorReading;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.MasterNotRunningException;
+import org.apache.hadoop.hbase.ZooKeeperConnectionException;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+
+import com.google.protobuf.ServiceException;
 
 public class SensorReadingDaoImplementation implements SensorReadingDao {
 	private SimpleJdbcTemplate simpleJdbcTemplate;
@@ -68,7 +83,18 @@ public class SensorReadingDaoImplementation implements SensorReadingDao {
 	@Override
 	public boolean addReading(String sensorName, Boolean isIndoor,
 			long timestamp, String value, Double longitude, Double latitude,
-			Double altitude, String locationInterpreter) {
+			Double altitude, String locationInterpreter) throws MasterNotRunningException, ZooKeeperConnectionException, ServiceException, IOException {
+		Configuration config = HBaseConfiguration.create();
+		String hbaseZookeeperQuorum="squirtle.sv.cmu.edu";
+		int hbaseZookeeperClientPort= 2181;
+		config.set("hbase.zookeeper.quorum", hbaseZookeeperQuorum);
+		config.setInt("hbase.zookeeper.property.clientPort", hbaseZookeeperClientPort);
+		HBaseAdmin.checkHBaseAvailable(config);
+
+
+		HTable table = new HTable(config, "reading");
+		insertData(config, table, "bo.com", "temprature", sensorName, timestamp, value, isIndoor, longitude, latitude, altitude, locationInterpreter);
+		
 		try {
 			final String FETCH_SENSOR_ID = "SELECT SENSOR_ID FROM CMU.COURSE_SENSOR S WHERE S.SENSOR_NAME = ?";
 			int sensorId = simpleJdbcTemplate.queryForInt(FETCH_SENSOR_ID,
@@ -187,4 +213,32 @@ public class SensorReadingDaoImplementation implements SensorReadingDao {
 		return builder.toString();
 	}
 
+	private void insertData(Configuration config, HTable table, String deviceUri, String sensorType, String sensorName, long ts, 
+			String value,
+			boolean isIndoor, double lon, double lat, double alt, String locationInterpreter) throws IOException, NoSuchAlgorithmException {
+		
+		byte[] keyBytes = generateKeyBytes(deviceUri, sensorType, sensorName, ts);
+		
+		Put p = new Put(keyBytes);
+		p.add(Bytes.toBytes("data"), Bytes.toBytes("value"), Bytes.toBytes(value));
+		p.add(Bytes.toBytes("info"), Bytes.toBytes("isIndoor"), Bytes.toBytes(isIndoor));
+		p.add(Bytes.toBytes("info"), Bytes.toBytes("longitude"), Bytes.toBytes(lon));
+		p.add(Bytes.toBytes("info"), Bytes.toBytes("latitude"), Bytes.toBytes(lat));
+		p.add(Bytes.toBytes("info"), Bytes.toBytes("altitude"), Bytes.toBytes(alt));
+		p.add(Bytes.toBytes("info"), Bytes.toBytes("locationInterpreter"), Bytes.toBytes(locationInterpreter));
+
+
+
+
+		table.put(p);
+	}
+	
+	private byte[] generateKeyBytes(String deviceUri, String sensorType, String sensorName, long ts) throws NoSuchAlgorithmException {
+		byte[] deviceUriBytes = MessageDigest.getInstance("MD5").digest(deviceUri.getBytes()) ;
+		byte[] sensorTypeBytes = MessageDigest.getInstance("MD5").digest(sensorType.getBytes()) ;
+		byte[] sensorNameBytes = MessageDigest.getInstance("MD5").digest(sensorName.getBytes()) ;
+		byte[] tsBytes = MessageDigest.getInstance("MD5").digest(ByteBuffer.allocate(Long.SIZE).putLong(ts).array()) ;
+
+		return ArrayUtils.addAll(ArrayUtils.addAll(deviceUriBytes, sensorTypeBytes), ArrayUtils.addAll(sensorNameBytes, tsBytes));
+	}
 }
