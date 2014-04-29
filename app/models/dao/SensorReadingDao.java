@@ -34,7 +34,7 @@ public interface SensorReadingDao {
 	
 	public SensorReading searchReading(String deviceUri, String sensorTypeName, Long timeStamp);
 	
-	public boolean addReading( String sensorName, Boolean isIndoor, long timeStamp, String value, Double longitude, Double latitude, Double altitude, String locationInterpreter) throws MasterNotRunningException, ZooKeeperConnectionException, ServiceException, IOException,NoSuchAlgorithmException ;
+	public boolean addReading( String sensorName, Boolean isIndoor, long timeStamp, String value, Double longitude, Double latitude, Double altitude, String locationInterpreter);
 
 	public List<SensorReading> searchReading(String sensorName, Long startTime, Long endTime);
 	

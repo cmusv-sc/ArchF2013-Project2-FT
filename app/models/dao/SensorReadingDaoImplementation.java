@@ -83,19 +83,20 @@ public class SensorReadingDaoImplementation implements SensorReadingDao {
 	@Override
 	public boolean addReading(String sensorName, Boolean isIndoor,
 			long timestamp, String value, Double longitude, Double latitude,
-			Double altitude, String locationInterpreter) throws MasterNotRunningException, ZooKeeperConnectionException, ServiceException, IOException, NoSuchAlgorithmException {
+			Double altitude, String locationInterpreter){
 		Configuration config = HBaseConfiguration.create();
 		String hbaseZookeeperQuorum="squirtle.sv.cmu.edu";
 		int hbaseZookeeperClientPort= 2181;
 		config.set("hbase.zookeeper.quorum", hbaseZookeeperQuorum);
 		config.setInt("hbase.zookeeper.property.clientPort", hbaseZookeeperClientPort);
+		try {
 		HBaseAdmin.checkHBaseAvailable(config);
 
 
 		HTable table = new HTable(config, "reading");
 		insertData(config, table, "bo.com", "temprature", sensorName, timestamp, value, isIndoor, longitude, latitude, altitude, locationInterpreter);
 		
-		try {
+		
 			final String FETCH_SENSOR_ID = "SELECT SENSOR_ID FROM CMU.COURSE_SENSOR S WHERE S.SENSOR_NAME = ?";
 			int sensorId = simpleJdbcTemplate.queryForInt(FETCH_SENSOR_ID,
 					sensorName);

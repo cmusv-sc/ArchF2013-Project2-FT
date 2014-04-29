@@ -60,7 +60,7 @@ public class SensorReadingController extends Controller {
 		return true;
 	}
 
-	public static Result add() throws MasterNotRunningException, ZooKeeperConnectionException, ServiceException, IOException {
+	public static Result add(){
 		JsonNode json = request().body().asJson();
 		if(json == null) {              
 			return badRequest("Expecting Json data");
