@@ -85,7 +85,9 @@ public class SensorReadingDaoImplementation implements SensorReadingDao {
 			long timestamp, String value, Double longitude, Double latitude,
 			Double altitude, String locationInterpreter){
 		Configuration config = HBaseConfiguration.create();
-		String hbaseZookeeperQuorum="squirtle.sv.cmu.edu";
+//		String hbaseZookeeperQuorum="squirtle.sv.cmu.edu";
+		String hbaseZookeeperQuorum="10.0.15.86";
+
 		int hbaseZookeeperClientPort= 2181;
 		config.set("hbase.zookeeper.quorum", hbaseZookeeperQuorum);
 		config.setInt("hbase.zookeeper.property.clientPort", hbaseZookeeperClientPort);
