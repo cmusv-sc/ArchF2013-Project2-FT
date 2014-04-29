@@ -247,6 +247,14 @@ public class DeviceDaoImplementation implements DeviceDao {
 
 		final String SELECT_NEW_LOCATION_ID = "select location_id from cmu.course_location where longitude = ? and latitude = ? and altitude = ?";
 		final String ADD_NEW_LOCATION = "insert into cmu.course_location values(cmu.course_location_id_seq.nextVal, ?, ?, ?, ?)";
+		
+		// device user defined field should also be updated
+		final String UPDATE_DEVICE = "update cmu.course_device set DEVICE_USER_DEFINED_FIELDS = ? where uri = ?";
+
+		// update teh device location's representation
+		final String UPDATE_LOCATION_REPRESENTATION = "update cmu.course_location set representation = ? where location_id = ?";
+		
+		
 		try {
 
 			List<Integer> locationIds = simpleJdbcTemplate.query(
@@ -275,6 +283,9 @@ public class DeviceDaoImplementation implements DeviceDao {
 								.getAltitude());
 			} else {
 				locationId = locationIds.get(0);
+				// update location representation
+				simpleJdbcTemplate.update(UPDATE_LOCATION_REPRESENTATION, newDevice.getLocation().getRepresentation(),
+						locationId);
 			}
 
 			final String SELECT_DEVICE_ID = "select device_id from cmu.course_device where uri = ?";
@@ -287,6 +298,11 @@ public class DeviceDaoImplementation implements DeviceDao {
 			simpleJdbcTemplate.update(ADD_NEW_DEVICE_LOCATION, deviceId,
 					locationId, new Timestamp(new Date().getTime()),
 					newDevice.getDeviceUserDefinedFields(), "TRUE");
+			
+			// update the device itself
+			simpleJdbcTemplate.update(UPDATE_DEVICE,
+					newDevice.getDeviceUserDefinedFields(),
+					deviceUri);
 
 		} catch (DataAccessException e) {
 			e.printStackTrace();
