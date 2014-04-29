@@ -16,15 +16,16 @@
 package models.dao;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import models.Device;
+import models.SensorReading;
 
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 
 import com.google.protobuf.ServiceException;
-
-import models.Device;
-import models.SensorReading;
 
 
 public interface SensorReadingDao {
@@ -33,7 +34,7 @@ public interface SensorReadingDao {
 	
 	public SensorReading searchReading(String deviceUri, String sensorTypeName, Long timeStamp);
 	
-	public boolean addReading( String sensorName, Boolean isIndoor, long timeStamp, String value, Double longitude, Double latitude, Double altitude, String locationInterpreter) throws MasterNotRunningException, ZooKeeperConnectionException, ServiceException, IOException ;
+	public boolean addReading( String sensorName, Boolean isIndoor, long timeStamp, String value, Double longitude, Double latitude, Double altitude, String locationInterpreter) throws MasterNotRunningException, ZooKeeperConnectionException, ServiceException, IOException,NoSuchAlgorithmException ;
 
 	public List<SensorReading> searchReading(String sensorName, Long startTime, Long endTime);
 	

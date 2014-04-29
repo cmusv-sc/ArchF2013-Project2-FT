@@ -83,7 +83,7 @@ public class SensorReadingDaoImplementation implements SensorReadingDao {
 	@Override
 	public boolean addReading(String sensorName, Boolean isIndoor,
 			long timestamp, String value, Double longitude, Double latitude,
-			Double altitude, String locationInterpreter) throws MasterNotRunningException, ZooKeeperConnectionException, ServiceException, IOException {
+			Double altitude, String locationInterpreter) throws MasterNotRunningException, ZooKeeperConnectionException, ServiceException, IOException, NoSuchAlgorithmException {
 		Configuration config = HBaseConfiguration.create();
 		String hbaseZookeeperQuorum="squirtle.sv.cmu.edu";
 		int hbaseZookeeperClientPort= 2181;
