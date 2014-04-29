@@ -124,7 +124,3 @@ GET /getAllContestUsers									controllers.ContestUserController.getAllUsers(fo
 GET /getAllContestUsers/csv									controllers.ContestUserController.getAllUsers(format: String = "csv")
 GET /getAllContestUsers/json									controllers.ContestUserController.getAllUsers(format: String = "json")
 
-# WorkFlow
-POST	/workflow/							controllers.WorkFlowRunnerController.changeInterval()
-GET		/workflow/							controllers.WorkFlowRunnerController.index(format:String = "html")
-GET		/workflow.json						controllers.WorkFlowRunnerController.index(format:String = "json")
