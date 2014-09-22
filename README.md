@@ -130,7 +130,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
     - **Sample Usages**: 
       - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorReading/23420ca4e4830bee/fireImpXAccelerometer/1395247329000/csv<br/>
       - **Sample csv result**: (sensorName,timestamp,value) </br>sensor1,1368568896000,518.0
-      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReading/androidAccelerometer/1395247329000/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorReading/23420ca4e4830bee/fireImpXAccelerometer/1395247329000/json<br/>
       - **Sample json result**: {"timestamp":1368568896000,"sensorName":"sensor1","value":518}
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
       
@@ -179,10 +179,10 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           {"timestamp":1368568896000,"value": 520,"sensorName":"sensor1"}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
-6. <a name="6"></a>**GET last minute's SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**
+6. <a name="6"></a>**GET LAST MINUTE OF SENSOR READINGS AT A TIME POINT FOR ALL REGISTERED DEVICES**
     - **Purpose**: Query all sensor readings at a time point (within 60 seconds), of a specific sensor type contained in all registered devices.
     - **Method**: GET
-    - **URL**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/<"timestamp">/<"sensorTypeName">/<"resultFormat">
+    - **URL**: http://einstein.sv.cmu.edu:9000/getLastMinuteReadingsFromAllDevices/<"timestamp">/<"resultFormat">
     - **Semantics**:
         - **timestamp**: Time to query the last readings of all sensors for all devices registered at the sensor data service platform.
         - **resultFormat**: Either JSON or CSV.
@@ -431,9 +431,9 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**: 
       - **Result**: HTTP 200 if the sensorCategoryName exists, HTTP 404 if not found
-      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorCategoryName/sensorCategory1/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensorCategory/sensorCategory1/csv<br/>
       - **Sample csv result**: (sensorCategoryName,purpose) </br>sensorCategory1, temp
-      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorCategoryName/sensorCategory1/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensorCategory/sensorCategory1/json
       - **Sample json result**: {"sensorCategoryName":sensorCategory1,"purpose":"temp"}
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
       
@@ -488,9 +488,9 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**:  
       - **Result**: HTTP 200 if the sensorName exists, HTTP 404 if not found
-      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/sensor1/getSensor/csv<br/>
+      - **Sample csv request**: http://einstein.sv.cmu.edu:9000/getSensor/<"sensorName">/csv<br/>
       - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor1, for test, www.device.com, Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
-      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensor/<"sensorName">/json
+      - **Sample json request**: http://einstein.sv.cmu.edu:9000/getSensor/sensor1/json
       - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "deviceUri":"www.device.com", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
@@ -669,9 +669,9 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
         - **sensorName**: Sensor name
         - **resultFormat**: Either JSON or CSV.
     - **Sample Usages**:  
-      - **Sample csv request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu:9000/sensor1/getSensor/csv<br/>
+      - **Sample csv request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu:9000/getSensor/<"sensorName">/csv<br/>
       - **Sample csv result**: (sensorName, sensorUserDefinedFields, deviceUri, sensorTypeName, manufacturer,version,maxValue,minValue,unit,interpreter,sensorTypeUserDefinedFields, sensorCategoryName) </br>sensor1, for test, www.device.com, Humidity, Motorola, 1.0, 100, 0, Percentage, MyInterpreter, Testing only, Environment
-      - **Sample json request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu:9000/getSensor/<"sensorName">/json
+      - **Sample json request**: curl -H "Authorization:John" http://einstein.sv.cmu.edu:9000/getSensor/sensor1/json
       - **Sample json result**: {"sensorName": "sensor1", "sensorUserDefinedFields": "for test", "deviceUri":"www.device.com", "sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment"}
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
