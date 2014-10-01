@@ -93,7 +93,7 @@ GET 	/getSensor/:sensorName/json			controllers.SensorController.getSensor(sensor
 GET 	/getSensor/:sensorName/csv			controllers.SensorController.getSensor(sensorName: String, format: String="csv")
 GET 	/getAllSensors						controllers.SensorController.getAllSensors(format: String="csv")
 GET     /getAllSensorsReduced                                   controllers.SensorController.getAllSensorsReduced(format: String="csv")
-GET     /getAllSensorsReduced/json                              controllers.SensorController.getAllSensorsReduced(format: String="json)
+GET     /getAllSensorsReduced/json                              controllers.SensorController.getAllSensorsReduced(format: String="json")
 GET     /getAllSensorsReduced/csv                               controllers.SensorController.getAllSensorsReduced(format: String="csv")
 GET 	/getAllSensors/json					controllers.SensorController.getAllSensors(format: String="json")
 GET 	/getAllSensors/csv					controllers.SensorController.getAllSensors(format: String="csv")

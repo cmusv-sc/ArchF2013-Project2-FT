@@ -26,6 +26,7 @@ public interface SensorDao {
 	public Sensor getSensor(String sensorName);
 	public Sensor getSensor(String sensorName, String userName);
 	public List<Sensor> getAllSensors();
+	public List<Sensor> getAllSensorsReduced();
 	public List<Sensor> getAllSensors(String userName);
 	public boolean deleteSensor(String sensorName);
 }

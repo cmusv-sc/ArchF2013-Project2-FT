@@ -79,7 +79,6 @@ public class SensorReadingController extends Controller {
 		}
 		
 		if(error.size() == 0){          
-			System.out.println("saved");    
 			return created("saved");             
 		}
 		else{

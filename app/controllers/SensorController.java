@@ -225,6 +225,7 @@ public class SensorController extends Controller {
                 String ret = "";
                 if(format.equals("json")){
                         ret = new Gson().toJson(sensors);
+                }
                 else{
                         ret = toCsv(sensors);
                 }
