@@ -108,49 +108,51 @@ public class SensorReadingController extends Controller {
 		return ok(ret);
 	}
 
-  public static Result getLatestSensorReading(String sensorName){
+  public static Result getLatestSensorReading(String sensorName, String format){
     response().setHeader("Access-Control-Allow-Origin", "*");
     checkDao();
 
     long current_time = System.currentTimeMillis();
 
-    // Current implementation returns the latest time with a given timestamp
-    SensorReading reading = sensorReadingDao.searchReading(sensorName, current_time);
+    // Since sensor data is not indexed on timestamp, getting the latest value
+    // is extremely inefficient as we need to sort
+    // A hack is to assume that the sensor is active and has given data within the last minute
+    List<SensorReading> readings = sensorReadingDao.searchReading(sensorName, current_time-60000, current_time);
 
-    if(reading == null){
+    if(readings == null){
       return notFound("No reading found");
     }
 
     String ret = "";
     if(format.equals("json")){
-      ret = new Gson().toJson(reading);
+      ret = new Gson().toJson(readings.get(0));
     }
     else{
-      ret = toCsv(Arrays.asList(reading));
+      ret = toCsv(Arrays.asList(readings.get(0)));
     }
 
     return ok(ret);
   }
 
-  public static Result getLastMinuteSensorReadings(String sensorName){
+  public static Result getLastMinuteSensorReadings(String sensorName, String format){
     response().setHeader("Access-Control-Allow-Origin", "*");
     checkDao();
 
     long current_time = System.currentTimeMillis();
 
     // Current implementation returns the latest time with a given timestamp
-    SensorReading reading = sensorReadingDao.searchReading(sensorName, current_time-60000, current_time);
+    List<SensorReading> readings = sensorReadingDao.searchReading(sensorName, current_time-60000, current_time);
 
-    if(reading == null){
-      return notFound("No reading found");
+    if(readings == null){
+      return notFound("No readings found");
     }
 
     String ret = "";
     if(format.equals("json")){
-      ret = new Gson().toJson(reading);
+      ret = new Gson().toJson(readings);
     }
     else{
-      ret = toCsv(Arrays.asList(reading));
+      ret = toCsv(readings);
     }
 
     return ok(ret);
