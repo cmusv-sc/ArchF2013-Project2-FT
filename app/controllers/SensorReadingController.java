@@ -107,6 +107,55 @@ public class SensorReadingController extends Controller {
 
 		return ok(ret);
 	}
+
+  public static Result getLatestSensorReading(String sensorName){
+    response().setHeader("Access-Control-Allow-Origin", "*");
+    checkDao();
+
+    long current_time = System.currentTimeMillis();
+
+    // Current implementation returns the latest time with a given timestamp
+    SensorReading reading = sensorReadingDao.searchReading(sensorName, current_time);
+
+    if(reading == null){
+      return notFound("No reading found");
+    }
+
+    String ret = "";
+    if(format.equals("json")){
+      ret = new Gson().toJson(reading);
+    }
+    else{
+      ret = toCsv(Arrays.asList(reading));
+    }
+
+    return ok(ret);
+  }
+
+  public static Result getLastMinuteSensorReadings(String sensorName){
+    response().setHeader("Access-Control-Allow-Origin", "*");
+    checkDao();
+
+    long current_time = System.currentTimeMillis();
+
+    // Current implementation returns the latest time with a given timestamp
+    SensorReading reading = sensorReadingDao.searchReading(sensorName, current_time-60000, current_time);
+
+    if(reading == null){
+      return notFound("No reading found");
+    }
+
+    String ret = "";
+    if(format.equals("json")){
+      ret = new Gson().toJson(reading);
+    }
+    else{
+      ret = toCsv(Arrays.asList(reading));
+    }
+
+    return ok(ret);
+    
+  }
 	
 	public static Result searchAtTimeThruDeviceUriSensorTypeName(String deviceUir, String sensorTypeName, Long timeStamp, String format){
 		response().setHeader("Access-Control-Allow-Origin", "*");
