@@ -209,6 +209,28 @@ public class SensorController extends Controller {
 		}
 		return ok(ret);
 	}
+
+        public static Result getAllSensorsReduced(String format) {
+                if(!checkDao()){
+                        return internalServerError("Database conf file not found");
+                }
+                response().setHeader("Access-Control-Allow-Origin", "*");
+
+                List<Sensor> sensors = sensorDao.getAllSensorsReduced();
+
+                if(sensors.isEmpty()){
+                        return notFound("No sensors found");
+                }
+
+                String ret = "";
+                if(format.equals("json")){
+                        ret = new Gson().toJson(sensors);
+                else{
+                        ret = toCsv(sensors);
+                }
+
+                return ok(ret);
+        }
 	
 	public static Result deleteSensor(String sensorName){
 		if(!checkDao()){

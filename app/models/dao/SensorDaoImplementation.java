@@ -195,6 +195,20 @@ public class SensorDaoImplementation implements SensorDao{
 			return null;
 		}
 	}
+        
+	public List<Sensor> getAllSensorsReduced() {
+		final String SQL = "SELECT s.SENSOR_NAME, s.USER_DEFINED_FIELDS, st.SENSOR_TYPE_NAME, sc.SENSOR_CATEGORY_NAME"
+                                 + "FROM CMU.COURSE_SENSOR s, CMU.COURSE_SENSOR_TYPE st, CMU.COURSE_SENSOR_CATEGORY sc" 
+                                 + "WHERE s.sensor_type_id = st.sensor_type_id and st.sensor_category_id = sc.sensor_category_id";
+		try{
+			List<Sensor> sensors = simpleJdbcTemplate.query(SQL, 
+					ParameterizedBeanPropertyRowMapper.newInstance(Sensor.class));
+
+			return sensors;
+		}catch(EmptyResultDataAccessException e){
+			return null;
+		}
+	}
 	
 	@Override
 	public List<Sensor> getAllSensors(String userName) {
