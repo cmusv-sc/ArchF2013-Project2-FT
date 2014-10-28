@@ -30,7 +30,7 @@ Currently we are providing APIs in 3 categores:
    - [Get sensor reading from a sensor(specified by sensorName) at a timestamp](#4)<br/>
    - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) at a timestamp](#21)<br/>
    - [Get sensor reading from a sensor(specified by sensorName) among a timestamp range](#5)<br/>
-   - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) among a timestamp range](#25)<br/>
+   - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) between a timestamp range](#25)<br/>
    - [Get last minute's sensor readings for a specific sensor](#26)
    - [Get last minute's sensor readings for a sensor type in all registered devices](#6)
    - [Get latest sensor reading for a specific sensor](#27)
@@ -498,8 +498,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample json result**: [{"sensorName": "sensor01", "sensorUserDefinedFields": "for test", "deviceUri": "www.device.com/001","sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment", "purpose": "test only"}]
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
-   - [Get all sensors (reduced)](#28)
-35. <a name="35"></a>**GET ALL SENSORS (REDUCED)**
+28. <a name="28"></a>**GET ALL SENSORS (REDUCED)**
     - **Purpose**: Query all sensors and returns a subset of the information (for faster performance).
     - **Method**: GET
     - **URL**: http://einstein.sv.cmu.edu:9000/getAllSensorsReduced/<"resultFormat">
