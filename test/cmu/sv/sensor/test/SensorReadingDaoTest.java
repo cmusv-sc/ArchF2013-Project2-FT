@@ -28,7 +28,7 @@ import org.junit.Test;
 
 @Ignore
 public class SensorReadingDaoTest extends AbstractTest{
-	
+	/*
 	private static OldSensorReadingDaoImplementation sensorReadingDao;
 	
 	@BeforeClass
@@ -81,5 +81,5 @@ public class SensorReadingDaoTest extends AbstractTest{
 		reading = sensorReadingDao.searchReading("device3", new Long(1383927321), "light");
 		assertEquals("device3,1383927321,light,200.0", reading.toCSVString());
 	}
-
+	*/
 }

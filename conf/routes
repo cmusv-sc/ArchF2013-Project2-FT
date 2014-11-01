@@ -107,6 +107,17 @@ GET		/getAllSensorCategories/csv							controllers.SensorCategoryController.getA
 GET		/getAllSensorCategories/json						controllers.SensorCategoryController.getAllSensorCategories(format: String="json")
 DELETE	/deleteSensorCategory/:sensorCategoryName	 		controllers.SensorCategoryController.deleteSensorCategory(sensorCategoryName: String)
 
+# Climate Service
+POST	/addClimateService									controllers.ClimateServiceController.addClimateService()
+POST	/updateClimateService								controllers.ClimateServiceController.updateClimateService()
+GET		/getClimateService/:climateServiceName				controllers.ClimateServiceController.getClimateService(climateServiceName: String, format: String="csv")
+GET		/getClimateService/:climateServiceName/json			controllers.ClimateServiceController.getClimateService(climateServiceName: String, format: String="json")
+GET		/getClimateService/:climateServiceName/csv			controllers.ClimateServiceController.getClimateService(climateServiceName: String, format: String="csv")
+GET		/getAllClimateServices								controllers.ClimateServiceController.getAllClimateServices(format: String="csv")
+GET		/getAllClimateServices/csv							controllers.ClimateServiceController.getAllClimateServices(format: String="csv")
+GET		/getAllClimateServices/json						controllers.ClimateServiceController.getAllClimateServices(format: String="json")
+DELETE	/deleteClimateService/:climateServiceName	 		controllers.ClimateServiceController.deleteClimateService(climateServiceName: String)
+
 # User
 POST /addUser								controllers.UserController.addUser()
 GET /getUser/:userName						controllers.UserController.getUser(userName: String, format: String = "csv")
