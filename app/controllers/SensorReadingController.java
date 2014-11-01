@@ -79,7 +79,6 @@ public class SensorReadingController extends Controller {
 		}
 		
 		if(error.size() == 0){          
-			System.out.println("saved");    
 			return created("saved");             
 		}
 		else{
@@ -108,6 +107,57 @@ public class SensorReadingController extends Controller {
 
 		return ok(ret);
 	}
+
+  public static Result getLatestSensorReading(String sensorName, String format){
+    response().setHeader("Access-Control-Allow-Origin", "*");
+    checkDao();
+
+    long current_time = System.currentTimeMillis();
+
+    // Since sensor data is not indexed on timestamp, getting the latest value
+    // is extremely inefficient as we need to sort
+    // A hack is to assume that the sensor is active and has given data within the last minute
+    List<SensorReading> readings = sensorReadingDao.searchReading(sensorName, current_time-60000, current_time);
+
+    if(readings == null){
+      return notFound("No reading found");
+    }
+
+    String ret = "";
+    if(format.equals("json")){
+      ret = new Gson().toJson(readings.get(0));
+    }
+    else{
+      ret = toCsv(Arrays.asList(readings.get(0)));
+    }
+
+    return ok(ret);
+  }
+
+  public static Result getLastMinuteSensorReadings(String sensorName, String format){
+    response().setHeader("Access-Control-Allow-Origin", "*");
+    checkDao();
+
+    long current_time = System.currentTimeMillis();
+
+    // Current implementation returns the latest time with a given timestamp
+    List<SensorReading> readings = sensorReadingDao.searchReading(sensorName, current_time-60000, current_time);
+
+    if(readings == null){
+      return notFound("No readings found");
+    }
+
+    String ret = "";
+    if(format.equals("json")){
+      ret = new Gson().toJson(readings);
+    }
+    else{
+      ret = toCsv(readings);
+    }
+
+    return ok(ret);
+    
+  }
 	
 	public static Result searchAtTimeThruDeviceUriSensorTypeName(String deviceUir, String sensorTypeName, Long timeStamp, String format){
 		response().setHeader("Access-Control-Allow-Origin", "*");

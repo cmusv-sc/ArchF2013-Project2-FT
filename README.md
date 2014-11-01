@@ -30,8 +30,10 @@ Currently we are providing APIs in 3 categores:
    - [Get sensor reading from a sensor(specified by sensorName) at a timestamp](#4)<br/>
    - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) at a timestamp](#21)<br/>
    - [Get sensor reading from a sensor(specified by sensorName) among a timestamp range](#5)<br/>
-   - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) among a timestamp range](#23)<br/>
+   - [Get sensor reading from a sensor(specified by deviceUri and sensorTypeName) between a timestamp range](#25)<br/>
+   - [Get last minute's sensor readings for a specific sensor](#26)
    - [Get last minute's sensor readings for a sensor type in all registered devices](#6)
+   - [Get latest sensor reading for a specific sensor](#27)
    - [Get latest sensor readings for a sensor type in all registered devices](#7)
    - [Get latest sensor readings from devices inside a specific geo-fence](#24)<br/>
 
@@ -57,6 +59,7 @@ Currently we are providing APIs in 3 categores:
    - [Get all sensor types](#33)
    - [Get a specific sensor type](#34)
    - [Get all sensors](#35)
+   - [Get all sensors (reduced)](#28)
    - [Get a specific sensor](#36)
    - [Get all device types](#37)
    - [Get a specific device type](#38)
@@ -156,7 +159,7 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           {"timestamp":1368568896000,"value": 520,"sensorName":"sensor1"}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
-22. <a name="23"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY DEVICE URI AND SENSOR TYPE NAME) BETWEEN A TIMESTAMP RANGE**
+25. <a name="25"></a>**GET SENSOR READING FROM A SENSOR(SPECIFIED BY DEVICE URI AND SENSOR TYPE NAME) BETWEEN A TIMESTAMP RANGE**
     - **Purpose**: Query sensor readings for a specific sensor among a specific time range. 
     - **Method**: GET
     - **URL**: http://einstein.sv.cmu.edu:9000/getSensorReadingInRange/<"deviceUri">/<"sensorTypeName">/<"startTime">/<"endTime">/<"resultFormat">
@@ -178,7 +181,15 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           ... <br/>
           {"timestamp":1368568896000,"value": 520,"sensorName":"sensor1"}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
-
+26. <a name="26"></a>**GET LAST MINUTE'S SENSOR READINGS FOR A SPECIFIC SENSOR**
+    - **Purpose**: Query the last minute of sensor readings based on sensor name.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getLastMinuteSensorReadings/<"sensorName">/<"resultFormat">
+    - **Semantics**:
+        - **sensorName**: Existing sensor name
+        - **resultFormat**: Either JSON or CSV
+    - **Sample Usages**: 
+      - TODO
 6. <a name="6"></a>**GET LAST MINUTE OF SENSOR READINGS AT A TIME POINT FOR ALL REGISTERED DEVICES**
     - **Purpose**: Query all sensor readings at a time point (within 60 seconds), of a specific sensor type contained in all registered devices.
     - **Method**: GET
@@ -200,6 +211,15 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
           {"timestamp":"2014-03-24 10:59:48.174","value":"188.17767","sensorName":"androidOrientationVector"},{"timestamp":"2014-03-24 10:59:49.182","value":"182.88602","sensorName":"androidOrientationVector"}]
       - **Result**: HTTP 200 if returned successfully, HTTP 404 if not found.
 
+27. <a name="27"></a>**GET LATEST SENSOR READING FOR A SPECIFIC SENSOR**
+    - **Purpose**: Query the lastest sensor reading for a specific sensor.
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getLatestSensorReading/<"sensorName">/<"resultFormat">
+    - **Semantics**:
+        - **sensorName**: Existing sensor name
+        - **resultFormat**: Either JSON or CSV
+    - **Sample Usages**: 
+      - TODO
 
 7. <a name="7"></a>**GET LATEST SENSOR READINGS AT A TIME POINT FOR A TYPE OF SENSOR IN ALL REGISTERED DEVICES**
     - **Purpose**: Query all latest sensor readings, of a specific sensor type contained in all devices.  If no reading for a sensor in the last 60 seconds, the latest stored reading of the corresponding sensor will be returned. 
@@ -478,6 +498,14 @@ Note: all TimeStamps are in Unix epoch time format to millisecond. Conversion fr
       - **Sample json result**: [{"sensorName": "sensor01", "sensorUserDefinedFields": "for test", "deviceUri": "www.device.com/001","sensorTypeName": "Humidity", "manufacturer": "Motorola", "version": "1.0", "maximumValue": 100, "minimumValue": 0, "unit": "Percentage", "interpreter": "MyInterpreter", "sensorTypeUserDefinedFields": "Testing only", "sensorCategoryName": "Environment", "purpose": "test only"}]
       - **Result**: HTTP 200 if successful, HTTP 404 if failed.
 
+28. <a name="28"></a>**GET ALL SENSORS (REDUCED)**
+    - **Purpose**: Query all sensors and returns a subset of the information (for faster performance).
+    - **Method**: GET
+    - **URL**: http://einstein.sv.cmu.edu:9000/getAllSensorsReduced/<"resultFormat">
+    - **Semantics**: 
+        - **resultFormat**: Either JSON or CSV.
+    - **Sample Usages**: 
+      TODO
 
 36. <a name="36"></a>**GET A SPECIFIC SENSOR**
     - **Purpose**: Query a specific sensor.

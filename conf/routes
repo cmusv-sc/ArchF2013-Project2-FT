@@ -76,6 +76,13 @@ GET		/getLastMinuteReadingsFromAllDevices/:timeStamp		controllers.SensorReadingC
 GET		/getLastMinuteReadingsFromAllDevices/:timeStamp/csv		controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, format: String = "csv")
 GET		/getLastMinuteReadingsFromAllDevices/:timeStamp/json		controllers.SensorReadingController.lastReadingFromAllDevices(timeStamp: Long, format: String = "json")
 
+GET     /getLatestSensorReading/:sensorName                             controllers.SensorReadingController.getLatestSensorReading(sensorName:String, format:String="csv")
+GET     /getLatestSensorReading/:sensorName/csv                         controllers.SensorReadingController.getLatestSensorReading(sensorName:String, format:String="csv")
+GET     /getLatestSensorReading/:sensorName/json                        controllers.SensorReadingController.getLatestSensorReading(sensorName:String, format:String="json")
+GET     /getLastMinuteSensorReadings/:sensorName                        controllers.SensorReadingController.getLastMinuteSensorReadings(sensorName:String, format:String="csv")
+GET     /getLastMinuteSensorReadings/:sensorName/csv                    controllers.SensorReadingController.getLastMinuteSensorReadings(sensorName:String, format:String="csv")
+GET     /getLastMinuteSensorReadings/:sensorName/json                   controllers.SensorReadingController.getLastMinuteSensorReadings(sensorName:String, format:String="json")
+
 # Old SensorReading
 #GET		/sensors/:deviceId/:timeStamp/:sensorType			controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
 #GET     /sensors/:deviceId/:timeStamp/:sensorType/csv       controllers.SensorReadingController.searchAtTime(deviceId: String, timeStamp: String, sensorType: String, format: String = "csv")
@@ -92,6 +99,9 @@ GET 	/getSensor/:sensorName				controllers.SensorController.getSensor(sensorName
 GET 	/getSensor/:sensorName/json			controllers.SensorController.getSensor(sensorName: String, format: String="json")
 GET 	/getSensor/:sensorName/csv			controllers.SensorController.getSensor(sensorName: String, format: String="csv")
 GET 	/getAllSensors						controllers.SensorController.getAllSensors(format: String="csv")
+GET     /getAllSensorsReduced                                   controllers.SensorController.getAllSensorsReduced(format: String="csv")
+GET     /getAllSensorsReduced/json                              controllers.SensorController.getAllSensorsReduced(format: String="json")
+GET     /getAllSensorsReduced/csv                               controllers.SensorController.getAllSensorsReduced(format: String="csv")
 GET 	/getAllSensors/json					controllers.SensorController.getAllSensors(format: String="json")
 GET 	/getAllSensors/csv					controllers.SensorController.getAllSensors(format: String="csv")
 DELETE  /deleteSensor/:sensorName     		controllers.SensorController.deleteSensor(sensorName: String)
