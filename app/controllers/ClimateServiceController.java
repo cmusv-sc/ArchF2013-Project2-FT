@@ -225,7 +225,7 @@ public class ClimateServiceController extends Controller {
 	private static String toCsv(List<ClimateService> categories) {
 		StringWriter sw = new StringWriter();
 		CellProcessor[] processors = new CellProcessor[] {
-				new Optional(),	new Optional()};
+				new Optional(),	new Optional(),	new Optional()};
 		ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
 		
 		try {
