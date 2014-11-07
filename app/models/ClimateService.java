@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Carnegie Mellon University Silicon Valley. 
+ * Copyright (c) 2014 Carnegie Mellon University Silicon Valley. 
  * All rights reserved. 
  * 
  * This program and the accompanying materials are made available
@@ -33,7 +33,7 @@ public class ClimateService {
 		return purpose;
 	}
 
-	public void setPurpose(String url) {
+	public void setPurpose(String purpose) {
 		this.purpose = purpose;
 	}
 

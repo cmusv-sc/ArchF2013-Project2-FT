@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Carnegie Mellon University Silicon Valley. 
+ * Copyright (c) 2014 Carnegie Mellon University Silicon Valley. 
  * All rights reserved. 
  * 
  * This program and the accompanying materials are made available
@@ -21,9 +21,8 @@ import models.ClimateService;
 
 public interface ClimateServiceDao {
 	public boolean addClimateService(String climateServiceName, String purpose, String url);
+	public boolean deleteClimateService(String climateServiceName);
 	public boolean updateClimateService(String climateServiceName, String purpose, String url);
 	public List<ClimateService> getAllClimateServices();
 	public ClimateService getClimateService(String climateServiceName);
-	public boolean deleteClimateService(String climateServiceName);
-	public boolean createClimateServiceTable();
 }

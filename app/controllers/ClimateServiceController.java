@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Carnegie Mellon University Silicon Valley. 
+ * Copyright (c) 2014 Carnegie Mellon University Silicon Valley. 
  * All rights reserved. 
  * 
  * This program and the accompanying materials are made available
@@ -32,8 +32,6 @@ import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
-
-//import app.models.dao.String;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -58,79 +56,74 @@ public class ClimateServiceController extends Controller {
 		return true;
 	}
 	
-	public static Result addClimateService() {
+	public static Result addClimateService() {	
 		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+		
 		JsonNode json = request().body().asJson();
 		if(json == null) {
 			System.out.println("Climate service not saved, expecting Json data");
 			return badRequest("Climate service not saved, expecting Json data");
 		}
 		
-		if(!checkDao()){
+		if(!checkDao()) {
 			System.out.println("Climate service not saved, database conf file not found");
 			return internalServerError("Climate service not saved, database conf file not found");
-		}
+		}	
 		
-		// Parse JSON FIle 
+		// Parse JSON File 
 		String climateServiceName = json.findPath("climateServiceName").getTextValue();
 		String purpose = json.findPath("purpose").getTextValue();
 		String url = json.findPath("url").getTextValue();
 		
-		if(climateServiceName == null || climateServiceName.length() == 0){
+		if(climateServiceName == null || climateServiceName.length() == 0) {
 			System.out.println("Climate service not saved, null name");
 			return ok("Climate service not saved, null name");
 		}
+		
+		boolean result = climateServiceDao.addClimateService(climateServiceName, purpose, url);
 
-
-
-		boolean result;
-		try {
-			result = climateServiceDao.addClimateService(climateServiceName, purpose, url);
-
-		} catch(Exception e) {
-			climateServiceDao.createClimateServiceTable();
-			result = climateServiceDao.addClimateService(climateServiceName, purpose, url);
-		}
 //		TODO API document says it should return a HTTP 201 here. However, Play does not have a class for it
 //		Is HTTP 200 (implemented by Result.Ok) fine?
-		if(result){
+		if(result) {
 			System.out.println("Climate service saved: " + climateServiceName);
 			return created("Climate service saved: " + climateServiceName);
-		}else{
+		} else {
 			System.out.println("Climate service not saved: " + climateServiceName);
 			return badRequest("Climate service not saved: " + climateServiceName);
 		}
 	}
 	
 	public static Result updateClimateService() {
+		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+		
 		JsonNode json = request().body().asJson();
 		if(json == null) {
 			System.out.println("Climate service not saved, expecting Json data");
 			return badRequest("Climate service not saved, expecting Json data");
 		}
 		
-		if(!checkDao()){
+		if(!checkDao()) {
 			System.out.println("Climate service not updated, database conf file not found");
 			return internalServerError("Climate service not updated, database conf file not found");
 		}
 
-//		Parse JSON FIle 
+		//Parse JSON File 
 		String climateServiceName = json.findPath("climateServiceName").getTextValue();
 		String purpose = json.findPath("purpose").getTextValue();
 		String url = json.findPath("url").getTextValue();
 		
-		if(climateServiceName == null || climateServiceName.length() == 0){
+		if(climateServiceName == null || climateServiceName.length() == 0) {
 			System.out.println("Climate service not updated, null climateServiceName");
 			return ok("Climate service not updated: null climateServiceName");
-		} else if(purpose == null || purpose.length() == 0){
+		} else if(purpose == null || purpose.length() == 0) {
 			System.out.println("Climate service not updated, null purpose: " + climateServiceName);
 			return ok("Climate service not updated: null purpose: " + climateServiceName);
-		} else if(url == null || url.length() == 0){
+		} else if(url == null || url.length() == 0) {
 			System.out.println("Climate service not updated, null url: " + climateServiceName);
 			return ok("Climate service not updated: null url: " + climateServiceName);
 		}
 		
-//		Return error message if the ClimateService is not found 
+		//Return error message if the ClimateService is not found 
 		if(climateServiceDao.getClimateService(climateServiceName) == null){
 			System.out.println("Climate service not updated, climate service not found: " + climateServiceName);
 			return ok("Climate service not updated, Climate service not found: " + climateServiceName); 
@@ -138,26 +131,28 @@ public class ClimateServiceController extends Controller {
 		
 		boolean result = climateServiceDao.updateClimateService(climateServiceName, purpose, url);
 
-		if(result){
+		if(result) {
 			System.out.println("Climate service updated: " + climateServiceName);
 			return ok("Climate service updated: " + climateServiceName);
-		}else{
+		} else {
 			System.out.println("Climate service not updated: " + climateServiceName);
 			return ok("Climate service not updated: " + climateServiceName);
 		}
 	}
 	
 	public static Result getClimateService(String climateServiceName, String format) {
-		if(climateServiceName == null || climateServiceName.length() == 0){
+		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+		
+		if(climateServiceName == null || climateServiceName.length() == 0) {
 			System.out.println("Climate service not found, null climateServiceName");
 			return ok("Climate service not found, null climateServiceName");
 		}
 		
-		if(!checkDao()){
+		if(!checkDao()) {
 			System.out.println("Climate service not found, database conf file not found");
 			return internalServerError("Climate service not found, database conf file not found");
 		}
-		response().setHeader("Access-Control-Allow-Origin", "*");
+		
 		
 		ClimateService ClimateService = climateServiceDao.getClimateService(climateServiceName);
 		if(ClimateService == null){
@@ -176,11 +171,10 @@ public class ClimateServiceController extends Controller {
 	public static Result getAllClimateServices(String format) {
 		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
 
-		if(!checkDao()){
+		if(!checkDao()) {
 			System.out.println("Climate service not found, database conf file not found");
 			return internalServerError("Climate service not found, database conf file not found");
-		}
-		response().setHeader("Access-Control-Allow-Origin", "*");
+		}	
 		
 		List<ClimateService> categories = climateServiceDao.getAllClimateServices();
 		
@@ -199,6 +193,8 @@ public class ClimateServiceController extends Controller {
 	}
 	
 	public static Result deleteClimateService(String climateServiceName){
+		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+		
 		if(climateServiceName == null || climateServiceName.length() == 0){
 			System.out.println("Climate service not deleted, null climateServiceName");
 			return ok("Climate service not deleted, null climateServiceName");
@@ -208,20 +204,19 @@ public class ClimateServiceController extends Controller {
 			System.out.println("Climate service not deleted, database conf file not found");
 			return internalServerError("Climate service not deleted, database conf file not found");
 		}
-		response().setHeader("Access-Control-Allow-Origin", "*");
 		
-//		Return error message if the ClimateService is not found 
-		if(climateServiceDao.getClimateService(climateServiceName) == null){
+		//Return error message if the ClimateService is not found 
+		if(climateServiceDao.getClimateService(climateServiceName) == null) {
 			System.out.println("Climate service not deleted, Climate service not found: " + climateServiceName);
 			return ok("Climate service not deleted, Climate service not found: " + climateServiceName); 
 		}
 		
 		boolean result = climateServiceDao.deleteClimateService(climateServiceName);
 		
-		if(result){
+		if(result) {
 			System.out.println("Climate service is deleted: " + climateServiceName);
 			return ok("Climate service is deleted: " + climateServiceName);
-		}else{
+		}else {
 			System.out.println("Climate service is not deleted: " + climateServiceName);
 			return ok("Climate service is not deleted: " + climateServiceName);
 		}
