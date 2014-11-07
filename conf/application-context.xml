@@ -69,6 +69,12 @@
       <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
    </bean>
    
+   <!-- Definition for climateServiceDaoImplementation bean -->
+   <bean id="climateServiceDaoImplementation" 
+      class="models.dao.ClimateServiceDaoImplementation">
+      <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
+   </bean>
+   
    <!-- Definition for sensorReadingDaoImplementation bean -->
    <bean id="sensorReadingDaoImplementation" 
       class="models.dao.SensorReadingDaoImplementation">

@@ -51,7 +51,7 @@ public class SensorCategoryController extends Controller {
 			if (sensorCategoryDao == null) {
 				sensorCategoryDao = (SensorCategoryDao) context.getBean("sensorCategoryDaoImplementation");
 			}
-		}catch(Exception e){
+		} catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
