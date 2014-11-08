@@ -28,7 +28,7 @@ public class ClimateServiceDaoImplementation implements ClimateServiceDao {
 	@Override
 	public boolean addClimateService(String climateServiceName, String purpose, String url) {
 		// TODO need to use this in production for SAP HANA
-		final String SQL_SEQUENCE = "SELECT CMU.COURSE_SENSOR_CATEGORY_ID_SEQ.NEXTVAL FROM DUMMY";
+		final String SQL_SEQUENCE = "SELECT CMU.COURSE_CLIMATE_SERVICE_ID_SEQ.NEXTVAL FROM DUMMY";
 		int climateServiceId = simpleJdbcTemplate.queryForInt(SQL_SEQUENCE);
 
 		// TODO need to use this in production for SAP HANA
