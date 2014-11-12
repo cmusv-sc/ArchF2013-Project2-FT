@@ -26,25 +26,25 @@ public class ClimateServiceDaoImplementation implements ClimateServiceDao {
 	private SimpleJdbcTemplate simpleJdbcTemplate;
 
 	@Override
-	public boolean addClimateService(String climateServiceName, String purpose, String url) {
+	public boolean addClimateService(String climateServiceName, String purpose, String url, String scenario,
+			String creatorId, String createTime, String versionNo, String rootServiceId) {
 		// TODO need to use this in production for SAP HANA
 		final String SQL_SEQUENCE = "SELECT CMU.COURSE_CLIMATE_SERVICE_ID_SEQ.NEXTVAL FROM DUMMY";
 		int climateServiceId = simpleJdbcTemplate.queryForInt(SQL_SEQUENCE);
 
 		// TODO need to use this in production for SAP HANA
 		final String SQL = "INSERT INTO CMU.COURSE_CLIMATE_SERVICE "
-				+ "(CLIMATE_SERVICE_ID, CLIMATE_SERVICE_NAME, PURPOSE, URL) VALUES (?, ?, ?, ?)";
+				+ "(CLIMATE_SERVICE_ID, CLIMATE_SERVICE_NAME, PURPOSE, URL, SCENARIO, CREATORID, "
+				+ "CREATETIME, VERSIONNO, ROOTSERVICEID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-		// for test only
-		// final String SQL =
-		// "INSERT INTO CMU.COURSE_CLIMATE_SERVICE (CLIMATE_SERVICE_ID, CLIMATE_SERVICE_NAME, PURPOSE, URL) VALUES (next value for CMU.COURSE_CLIMATE_SERVICE_ID_SEQ, ?, ?, ?)";
 		try {
 			// TODO need to use this in production for SAP HANA
 			simpleJdbcTemplate.update(SQL, climateServiceId,
-					climateServiceName, purpose, url);
-			// for test only
-			// simpleJdbcTemplate.update(SQL, climateServiceName, purpose, url);
+					climateServiceName, purpose, url, scenario, creatorId, 
+						createTime, versionNo, rootServiceId);
+
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -59,19 +59,24 @@ public class ClimateServiceDaoImplementation implements ClimateServiceDao {
 			simpleJdbcTemplate.update(SQL_DELETE_CLIMATE_SERVICE,
 					climateServiceName);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;
 	}
 	
 	@Override
-	public boolean updateClimateService(String climateServiceName,
-			String purpose, String url) {
+	public boolean updateClimateService(String climateServiceName, String purpose, String url, 
+			String scenario, String creatorId, String createTime, String versionNo, 
+				String rootServiceId) {
 		final String SQL = "UPDATE CMU.COURSE_CLIMATE_SERVICE "
-				+ "SET PURPOSE = ?, URL = ? " + "WHERE CLIMATE_SERVICE_NAME = ?";
+				+ "SET PURPOSE = ?, URL = ?, SCENARIO = ?, CREATORID = ?, "
+				+ "CREATETIME = ?, VERSIONNO = ?, ROOTSERVICEID = ? " + "WHERE CLIMATE_SERVICE_NAME = ?";
 		try {
-			simpleJdbcTemplate.update(SQL, purpose, url, climateServiceName);
+			simpleJdbcTemplate.update(SQL, purpose, url, scenario, creatorId, createTime, 
+					versionNo, rootServiceId, climateServiceName);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -86,6 +91,7 @@ public class ClimateServiceDaoImplementation implements ClimateServiceDao {
 							.newInstance(ClimateService.class));
 			return climateServices;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -100,6 +106,7 @@ public class ClimateServiceDaoImplementation implements ClimateServiceDao {
 					ClimateServiceName);
 			return climateService;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

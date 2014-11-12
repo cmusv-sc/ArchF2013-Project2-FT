@@ -74,13 +74,19 @@ public class ClimateServiceController extends Controller {
 		String climateServiceName = json.findPath("climateServiceName").getTextValue();
 		String purpose = json.findPath("purpose").getTextValue();
 		String url = json.findPath("url").getTextValue();
+		String scenario = json.findPath("scenario").getTextValue();
+		String creatorId = json.findPath("creatorId").getTextValue();
+		String createTime = json.findPath("createTime").getTextValue();
+		String versionNo = json.findPath("versionNo").getTextValue();
+		String rootServiceId = json.findPath("rootServiceId").getTextValue();
 		
 		if(climateServiceName == null || climateServiceName.length() == 0) {
 			System.out.println("Climate service not saved, null name");
 			return ok("Climate service not saved, null name");
 		}
 		
-		boolean result = climateServiceDao.addClimateService(climateServiceName, purpose, url);
+		boolean result = climateServiceDao.addClimateService(climateServiceName, purpose, url, scenario, 
+				creatorId, createTime, versionNo, rootServiceId);
 
 //		TODO API document says it should return a HTTP 201 here. However, Play does not have a class for it
 //		Is HTTP 200 (implemented by Result.Ok) fine?
@@ -111,6 +117,11 @@ public class ClimateServiceController extends Controller {
 		String climateServiceName = json.findPath("climateServiceName").getTextValue();
 		String purpose = json.findPath("purpose").getTextValue();
 		String url = json.findPath("url").getTextValue();
+		String scenario = json.findPath("scenario").getTextValue();
+		String creatorId = json.findPath("creatorId").getTextValue();
+		String createTime = json.findPath("createTime").getTextValue();
+		String versionNo = json.findPath("versionNo").getTextValue();
+		String rootServiceId = json.findPath("rootServiceId").getTextValue();
 		
 		if(climateServiceName == null || climateServiceName.length() == 0) {
 			System.out.println("Climate service not updated, null climateServiceName");
@@ -121,6 +132,18 @@ public class ClimateServiceController extends Controller {
 		} else if(url == null || url.length() == 0) {
 			System.out.println("Climate service not updated, null url: " + climateServiceName);
 			return ok("Climate service not updated: null url: " + climateServiceName);
+		} else if(scenario == null || scenario.length() == 0) {
+			System.out.println("Climate service not updated, null scenario: " + climateServiceName);
+			return ok("Climate service not updated: null scenario: " + climateServiceName);
+		} else if(creatorId == null || creatorId.length() == 0) {
+			System.out.println("Climate service not updated, null creatorId: " + climateServiceName);
+			return ok("Climate service not updated: null creatorId: " + climateServiceName);
+		} else if(versionNo == null || versionNo.length() == 0) {
+			System.out.println("Climate service not updated, null versionNo: " + climateServiceName);
+			return ok("Climate service not updated: null versionNo: " + climateServiceName);
+		} else if(rootServiceId == null || rootServiceId.length() == 0) {
+			System.out.println("Climate service not updated, null rootServiceId: " + climateServiceName);
+			return ok("Climate service not updated: null rootServiceId: " + climateServiceName);
 		}
 		
 		//Return error message if the ClimateService is not found 
@@ -129,7 +152,8 @@ public class ClimateServiceController extends Controller {
 			return ok("Climate service not updated, Climate service not found: " + climateServiceName); 
 		}
 		
-		boolean result = climateServiceDao.updateClimateService(climateServiceName, purpose, url);
+		boolean result = climateServiceDao.updateClimateService(climateServiceName, purpose, url, scenario, 
+				creatorId, createTime, versionNo, rootServiceId);
 
 		if(result) {
 			System.out.println("Climate service updated: " + climateServiceName);
@@ -176,18 +200,18 @@ public class ClimateServiceController extends Controller {
 			return internalServerError("Climate service not found, database conf file not found");
 		}	
 		
-		List<ClimateService> categories = climateServiceDao.getAllClimateServices();
+		List<ClimateService> climateServices = climateServiceDao.getAllClimateServices();
 		
-		if(categories == null || categories.isEmpty()){
+		if(climateServices == null || climateServices.isEmpty()){
 			System.out.println("No Climate service found");
 			return notFound("No Climate service found");
 		}
 		
 		String ret = new String();
 		if (format.equals("json")){
-			ret = new Gson().toJson(categories);
+			ret = new Gson().toJson(climateServices);
 		} else {
-			ret = toCsv(categories);
+			ret = toCsv(climateServices);
 		}
 		return ok(ret);
 	}
@@ -222,17 +246,19 @@ public class ClimateServiceController extends Controller {
 		}
 	}
 	
-	private static String toCsv(List<ClimateService> categories) {
+	private static String toCsv(List<ClimateService> climateServices) {
 		StringWriter sw = new StringWriter();
 		CellProcessor[] processors = new CellProcessor[] {
-				new Optional(),	new Optional(),	new Optional()};
+				new Optional(),	new Optional(),	new Optional(), new Optional(),	new Optional(),	new Optional(),
+					new Optional(),	new Optional()};
 		ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
 		
 		try {
-			final String[] header = new String[] {"climateServiceName", "purpose", "url"};
+			final String[] header = new String[] {"climateServiceName", "purpose", "url", 
+					"scenario", "creatorId", "createTime", "versionNo", "rootServiceId"};
 			writer.writeHeader(header);
-			for(ClimateService category : categories){
-				writer.write(category, header, processors);
+			for(ClimateService climateService : climateServices){
+				writer.write(climateService, header, processors);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

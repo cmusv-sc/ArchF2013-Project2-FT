@@ -20,9 +20,11 @@ import java.util.List;
 import models.ClimateService;
 
 public interface ClimateServiceDao {
-	public boolean addClimateService(String climateServiceName, String purpose, String url);
+	public boolean addClimateService(String climateServiceName, String purpose, String url, String scenario,
+			String creatorId, String createTime, String versionNo, String rootServiceId);
 	public boolean deleteClimateService(String climateServiceName);
-	public boolean updateClimateService(String climateServiceName, String purpose, String url);
+	public boolean updateClimateService(String climateServiceName, String purpose, String url, String scenario,
+			String creatorId, String createTime, String versionNo, String rootServiceId);
 	public List<ClimateService> getAllClimateServices();
 	public ClimateService getClimateService(String climateServiceName);
 }

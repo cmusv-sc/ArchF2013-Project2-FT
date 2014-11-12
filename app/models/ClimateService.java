@@ -20,7 +20,12 @@ public class ClimateService {
 	protected String climateServiceName;
 	private String purpose;
 	private String url;
-	
+	private String scenario;
+	private String creatorId;
+	private String createTime;
+	private String versionNo; 
+	private String rootServiceId;
+
 	public String getClimateServiceName() {
 		return climateServiceName;
 	}
@@ -36,12 +41,53 @@ public class ClimateService {
 	public void setPurpose(String purpose) {
 		this.purpose = purpose;
 	}
-
+	
 	public String getUrl() {
 		return url;
 	}
-	
+
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	
+	public String getScenario() {
+		return scenario;
+	}
+
+	public void setScenario(String scenario) {
+		this.scenario = scenario;
+	}
+	
+	public String getCreatorId() {
+		return creatorId;
+	}
+	
+	public void setCreatorId(String creatorId) {
+		this.creatorId = creatorId;
+	}
+	
+	public String getCreateTime() {
+		return createTime;
+	}
+	
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+	
+	public String getVersionNo() {
+		return versionNo;
+	}
+	
+	public void setVersionNo(String versionNo) {
+		this.versionNo = versionNo;
+	}
+	
+	public String getRootServiceId() {
+		return rootServiceId;
+	}
+	
+	public void setRootServiceId(String rootServiceId) {
+		this.rootServiceId = rootServiceId;
+	}
+
 }
