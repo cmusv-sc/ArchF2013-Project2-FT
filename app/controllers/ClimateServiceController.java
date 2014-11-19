@@ -21,7 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import models.ClimateService;
+import models.ServiceExecutionLog;
 import models.dao.ClimateServiceDao;
+import models.dao.ServiceExecutionLogDao;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
@@ -40,14 +42,21 @@ import com.google.gson.Gson;
 public class ClimateServiceController extends Controller {
 	private static ApplicationContext context;
 	private static ClimateServiceDao climateServiceDao;
+	private static ServiceExecutionLogDao serviceExecutionLogDao;
 	
-	private static boolean checkDao(){
+	private static boolean checkDao() {
 		try{
 			if (context == null) {
 				context = new ClassPathXmlApplicationContext("application-context.xml");
 			}
 			if (climateServiceDao == null) {
 				climateServiceDao = (ClimateServiceDao) context.getBean("climateServiceDaoImplementation");
+				System.out.println("Step1");
+			}
+			if (serviceExecutionLogDao == null) {
+				serviceExecutionLogDao = (ServiceExecutionLogDao) context.getBean("serviceExecutionLogDaoImplementation");
+				System.out.println("Step2" + serviceExecutionLogDao);
+				
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -178,19 +187,79 @@ public class ClimateServiceController extends Controller {
 		}
 		
 		
-		ClimateService ClimateService = climateServiceDao.getClimateService(climateServiceName);
-		if(ClimateService == null){
+		ClimateService climateService = climateServiceDao.getClimateService(climateServiceName);
+		if(climateService == null){
 			System.out.println("Climate service not found: " + climateServiceName);
 			return notFound("Climate service not found: " + climateServiceName);
 		}
 		String ret = new String();
 		if (format.equals("json")){
-			ret = new Gson().toJson(ClimateService);
+			ret = new Gson().toJson(climateService);
 		} else {
-			ret = toCsv(Arrays.asList(ClimateService));
+			ret = toCsv(Arrays.asList(climateService));
 		}
 		return ok(ret);
 	}
+	
+	public static Result addServiceExecutionLog(String serviceId, String userId, String purpose, String serviceConfigurationId, String datasetLogId, String executionStartTime, String executionEndTime) {
+		if(!checkDao()) {
+			System.out.println("Climate service not saved, database conf file not found");
+			return internalServerError("Climate service not saved, database conf file not found");
+		}	
+		
+		if(serviceId == null || serviceId.length() == 0) {
+			System.out.println("Service Execution Log not saved, null serviceId");
+			return ok("Service Execution Log not saved, null serviceId");
+		}
+		
+		boolean result = serviceExecutionLogDao.addServiceExecutionLog(serviceId, userId, purpose, 
+			serviceConfigurationId, datasetLogId, executionStartTime, executionEndTime);
+
+//		TODO API document says it should return a HTTP 201 here. However, Play does not have a class for it
+//		Is HTTP 200 (implemented by Result.Ok) fine?
+		if(result) {
+			System.out.println("Climate service saved: " + serviceId);
+			return created("Climate service saved: " + serviceId);
+		} else {
+			System.out.println("Climate service not saved: " + serviceId);
+			return badRequest("Climate service not saved: " + serviceId);
+		}
+	}
+	
+/*	public static Result getServiceExecutionLogs(String userId, String startTime, String endTime, String format) {
+		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+		
+		if(userId == null || userId.length() == 0) {
+			System.out.println("Service Execution Log not found, null userId");
+			return ok("Service Execution Log not found, null userId");
+		} else if(startTime == null || startTime.length() == 0) {
+			System.out.println("Service Execution Log not found, null startTime");
+			return ok("Service Execution Log not found, null startTime");
+		} else if(endTime == null || endTime.length() == 0) {
+			System.out.println("Service Execution Log not found, null endTime");
+			return ok("Service Execution Log not found, null endTime");
+		}
+		
+		if(!checkDao()) {
+			System.out.println("Climate service not found, database conf file not found");
+			return internalServerError("Climate service not found, database conf file not found");
+		}
+
+		List<ServiceExecutionLog> serviceExecutionLogs =serviceExecutionLogDao.getServiceExecutionLogs(userId, startTime, endTime);
+		
+		if(serviceExecutionLogs == null || serviceExecutionLogs.isEmpty()){
+			System.out.println("No Service Execution Log found");
+			return notFound("No Service Execution Log found");
+		}
+		
+		String ret = new String();
+		if (format.equals("json")){
+			ret = new Gson().toJson(serviceExecutionLogs);
+		} else {
+			ret = toCsv(serviceExecutionLogs);
+		}
+		return ok(ret);
+	} */
 	
 	public static Result getAllClimateServices(String format) {
 		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");

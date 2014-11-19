@@ -33,7 +33,7 @@ public class WorkFlowRunner {
 			this.handler = new MessageBusHandler();
 		}
 		
-		public boolean notifyVirtualDevice(int value){
+		public boolean notifyVirtualDevice(int value) throws Exception {
 			return handler.publishToListener(this.topic, this.virtualDeviceID, value);
 		}
 		

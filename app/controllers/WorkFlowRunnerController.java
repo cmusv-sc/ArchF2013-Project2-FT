@@ -33,7 +33,7 @@ public class WorkFlowRunnerController  extends Controller  {
 		}
 		return ok(runner.render("Virtual_Device",WFRunner.computeThreshold(), 1));
 	  }
-	public static Result changeInterval(){
+	public static Result changeInterval() throws Exception {
 		WorkFlowRunner WFRunner = new WorkFlowRunner("WFRun", "virtual_device", "Interval");
 		JsonNode json = request().body().asJson();
 		 if(json == null) {

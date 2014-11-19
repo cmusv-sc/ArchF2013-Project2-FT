@@ -73,7 +73,7 @@ public class MessageBusHandler {
 		}
 		return json;
 	}
-	public boolean isTopicExists(String topic){
+	public boolean isTopicExists(String topic) throws Exception {
 		String path = "catalog/topics";
 		HttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(serverUrl + path);
@@ -123,7 +123,7 @@ public class MessageBusHandler {
 		}
 	    return jsonMeta;
 	}
-	public boolean addTopic(String topic){
+	public boolean addTopic(String topic) throws Exception {
 		String path = "catalog/topics";
 		HttpClient client = new DefaultHttpClient();
 		 HttpPost post = new HttpPost(serverUrl + path);
@@ -182,7 +182,7 @@ public class MessageBusHandler {
 		builder.append(reading.getValue());
 		return builder.toString(); 
 	}
-	public boolean publishToListener(String topic, String deviceID, int value){
+	public boolean publishToListener(String topic, String deviceID, int value) throws Exception {
 		String url = "http://message-peer-listener.herokuapp.com/publish";
 		HttpClient client = new DefaultHttpClient();
 		
@@ -212,7 +212,7 @@ public class MessageBusHandler {
 	      //Reading Content
 	    
 	}
-	public boolean publish(OldSensorReading reading){
+	public boolean publish(OldSensorReading reading) throws Exception {
 		if(!isTopicExists(reading.getSensorType())){
 			addTopic(reading.getSensorType());
 		}

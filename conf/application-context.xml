@@ -75,6 +75,12 @@
       <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
    </bean>
    
+   <!-- Definition for serviceExecutionLogDaoImplementation bean -->
+   <bean id="serviceExecutionLogDaoImplementation" 
+      class="models.dao.ServiceExecutionLogDaoImplementation">
+      <property name="simpleJdbcTemplate"  ref="simpleJdbcTemplate" />    
+   </bean>
+   
    <!-- Definition for sensorReadingDaoImplementation bean -->
    <bean id="sensorReadingDaoImplementation" 
       class="models.dao.SensorReadingDaoImplementation">

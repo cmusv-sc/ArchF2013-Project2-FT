@@ -55,7 +55,7 @@ public class OldSensorReadingController extends Controller {
 		return true;
 	}
 
-	public static Result add(Boolean publish) {
+	public static Result add(Boolean publish) throws Exception {
 		JsonNode json = request().body().asJson();
 		if(json == null) {              
 			return badRequest("Expecting Json data");
