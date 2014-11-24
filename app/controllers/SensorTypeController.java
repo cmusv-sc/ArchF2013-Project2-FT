@@ -15,15 +15,10 @@
  ******************************************************************************/
 package controllers;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import models.SensorType;
 import models.dao.SensorTypeDao;
-
-import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.supercsv.cellprocessor.Optional;
@@ -31,11 +26,13 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
-
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
 
 public class SensorTypeController extends Controller {
 	private static ApplicationContext context;
@@ -68,15 +65,15 @@ public class SensorTypeController extends Controller {
 		}
 
 		// Parse JSON File
-		String sensorTypeName = json.findPath("sensorTypeName").getTextValue();
-		String manufacturer = json.findPath("manufacturer").getTextValue();
-		String version = json.findPath("version").getTextValue();
-		Double maxValue = json.findPath("maximumValue").getDoubleValue();
-		Double minValue = json.findPath("minimumValue").getDoubleValue();
-		String unit = json.findPath("unit").getTextValue();
-		String interpreter = json.findPath("interpreter").getTextValue();
-		String sensorTypeUserDefinedFields = json.findPath("sensorTypeUserDefinedFields").getTextValue();
-		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
+		String sensorTypeName = json.findPath("sensorTypeName").textValue();
+		String manufacturer = json.findPath("manufacturer").textValue();
+		String version = json.findPath("version").textValue();
+		Double maxValue = json.findPath("maximumValue").doubleValue();
+		Double minValue = json.findPath("minimumValue").doubleValue();
+		String unit = json.findPath("unit").textValue();
+		String interpreter = json.findPath("interpreter").textValue();
+		String sensorTypeUserDefinedFields = json.findPath("sensorTypeUserDefinedFields").textValue();
+		String sensorCategoryName = json.findPath("sensorCategoryName").textValue();
 		
 		if(sensorTypeName == null || sensorTypeName.length() == 0){
 			System.out.println("Sensor type not saved, null sensorTypeName");
@@ -111,8 +108,8 @@ public class SensorTypeController extends Controller {
 		}
 
 		// Parse JSON File
-		String sensorTypeName = json.findPath("sensorTypeName").getTextValue();
-		String userDefinedFields = json.findPath("sensorTypeUserDefinedFields").getTextValue();
+		String sensorTypeName = json.findPath("sensorTypeName").textValue();
+		String userDefinedFields = json.findPath("sensorTypeUserDefinedFields").textValue();
 		
 		if(sensorTypeName == null || sensorTypeName.length() == 0){
 			System.out.println("Sensor type not updated, null sensorTypeName");

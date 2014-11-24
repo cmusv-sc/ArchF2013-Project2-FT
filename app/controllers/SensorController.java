@@ -14,16 +14,10 @@
  * questions.
  ******************************************************************************/
 package controllers;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import models.Sensor;
 import models.dao.SensorDao;
-
-import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.supercsv.cellprocessor.Optional;
@@ -31,12 +25,15 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
-
 import play.mvc.Controller;
 import play.mvc.Result;
-//import models.cmu.sv.sensor.SensorReading;
 
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
+
+//import models.cmu.sv.sensor.SensorReading;
 
 public class SensorController extends Controller {
 		
@@ -70,11 +67,11 @@ public class SensorController extends Controller {
 		}
 
 		// Parse JSON FIle 
-		String sensorTypeName = json.findPath("sensorTypeName").getTextValue();
-		String deviceUri = json.findPath("deviceUri").getTextValue();
-		String sensorName = json.findPath("sensorName").getTextValue();
-		String userDefinedFields = json.findPath("sensorUserDefinedFields").getTextValue();
-		String userName = json.findPath("userName").getTextValue();
+		String sensorTypeName = json.findPath("sensorTypeName").textValue();
+		String deviceUri = json.findPath("deviceUri").textValue();
+		String sensorName = json.findPath("sensorName").textValue();
+		String userDefinedFields = json.findPath("sensorUserDefinedFields").textValue();
+		String userName = json.findPath("userName").textValue();
 
 		if(sensorName == null || sensorName.length() == 0){
 			System.out.println("Sensor not saved, null sensorName");
@@ -120,8 +117,8 @@ public class SensorController extends Controller {
 		}
 
 //		Parse JSON File 
-		String sensorName = json.findPath("sensorName").getTextValue();
-		String userDefinedFields = json.findPath("sensorUserDefinedFields").getTextValue();
+		String sensorName = json.findPath("sensorName").textValue();
+		String userDefinedFields = json.findPath("sensorUserDefinedFields").textValue();
 		
 		if(sensorName == null || sensorName.length() == 0){
 			System.out.println("Sensor not saved, null sensorName");
@@ -133,7 +130,7 @@ public class SensorController extends Controller {
 			return ok("Sensor not updated, null userDefinedFields: " + sensorName);
 		}
 		
-		boolean result = sensorDao.updateSensor(sensorName, userDefinedFields);
+		boolean result = sensorDao.updateSensor(sensorName, userDefinedFields)  ;
 
 		if (result) {
 			System.out.println("Sensor updated: " + sensorName);

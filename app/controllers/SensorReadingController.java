@@ -15,19 +15,12 @@
  ******************************************************************************/
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import helper.Wrapper;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import models.Device;
 import models.SensorReading;
 import models.dao.SensorReadingDao;
-
-import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.supercsv.cellprocessor.Optional;
@@ -35,11 +28,14 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
-
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class SensorReadingController extends Controller {

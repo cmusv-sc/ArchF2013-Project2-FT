@@ -27,7 +27,7 @@ public class jdemo {
 		Connection connection = null;
 		//load properties
 		Properties prop = new Properties();
-		String serverIP = "209.129.244.23";
+		String serverIP = "grey.sv.cmu.edu";
 		String serverPort = "30015";
 		String dbUser= "system";
 		String dbPassword = "cmuHANA0413";

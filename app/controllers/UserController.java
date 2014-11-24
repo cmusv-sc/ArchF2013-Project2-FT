@@ -14,16 +14,10 @@
  * questions.
  ******************************************************************************/
 package controllers;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import models.User;
 import models.dao.UserDao;
-
-import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.supercsv.cellprocessor.Optional;
@@ -31,12 +25,16 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
-
 import play.mvc.Controller;
 import play.mvc.Result;
-//import models.cmu.sv.sensor.SensorReading;
 
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+//import models.cmu.sv.sensor.SensorReading;
 
 public class UserController extends Controller {
 		

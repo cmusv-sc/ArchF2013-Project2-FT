@@ -15,16 +15,10 @@
  ******************************************************************************/
 package controllers;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import models.Device;
 import models.dao.DeviceDao;
-
-import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.supercsv.cellprocessor.Optional;
@@ -32,12 +26,15 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
-
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.defaultpages.error;
 
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class DeviceController extends Controller {
 	private static ApplicationContext context;
@@ -69,7 +66,7 @@ public class DeviceController extends Controller {
 		 boolean result = deviceDao.addDevice(device.getDeviceTypeName(), device.getUri(), device.getDeviceUserDefinedFields(), device.getLocation().getLongitude(), device.getLocation().getLatitude(), device.getLocation().getAltitude(), device.getLocation().getRepresentation());
 		 
 		 if(!result){
-			System.err.println(device.getUri() + " is not saved: " + error.toString());
+			System.err.println(device.getUri() + " is not saved: " + error.productPrefix());
 			return badRequest("device not saved");
 		 } 
          return created("device saved");		 

@@ -14,20 +14,14 @@
  * questions.
  ******************************************************************************/
 package controllers;
-import java.util.*;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import models.DBHandler;
-import models.MessageBusHandler;
-//import models.cmu.sv.sensor.SensorReading;
-import helper.Utils;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-import java.sql.Timestamp;
-
-import org.codehaus.jackson.JsonNode;
-
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.util.ArrayList;
+
+//import models.cmu.sv.sensor.SensorReading;
 
 public class MetadataController extends Controller {
 	private static DBHandler dbHandler = null;
@@ -48,10 +42,10 @@ public class MetadataController extends Controller {
 		}
 
 		// Parse JSON FIle 
-		String deviceTypeName= json.findPath("device_type_name").getTextValue();
-		String manufacturer = json.findPath("manufacturer").getTextValue();
-		String version = json.findPath("version").getTextValue();
-		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
+		String deviceTypeName= json.findPath("device_type_name").textValue();
+		String manufacturer = json.findPath("manufacturer").textValue();
+		String version = json.findPath("version").textValue();
+		String userDefinedFields = json.findPath("user_defined_fields").textValue();
 		ArrayList<String> error = new ArrayList<String>();
 
 		boolean result = dbHandler.addDeviceType(deviceTypeName, manufacturer, version, userDefinedFields);
@@ -80,15 +74,15 @@ public class MetadataController extends Controller {
 		}
 
 		// Parse JSON FIle 
-		String deviceType= json.findPath("device_type").getTextValue();
-		String deviceAgent= json.findPath("device_agent").getTextValue();
-		String networkAddress = json.findPath("network_address").getTextValue();
-		String locationDescription = json.findPath("location_description").getTextValue();
-		String latitude = json.findPath("latitude").getTextValue();
-		String longitude = json.findPath("longitude").getTextValue();
-		String altitude = json.findPath("altitude").getTextValue();
-		String positionFormatSystem = json.findPath("position_format_system").getTextValue();
-		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
+		String deviceType= json.findPath("device_type").textValue();
+		String deviceAgent= json.findPath("device_agent").textValue();
+		String networkAddress = json.findPath("network_address").textValue();
+		String locationDescription = json.findPath("location_description").textValue();
+		String latitude = json.findPath("latitude").textValue();
+		String longitude = json.findPath("longitude").textValue();
+		String altitude = json.findPath("altitude").textValue();
+		String positionFormatSystem = json.findPath("position_format_system").textValue();
+		String userDefinedFields = json.findPath("user_defined_fields").textValue();
 		ArrayList<String> error = new ArrayList<String>();
 
 		boolean result = dbHandler.addDeviceNew(deviceType, deviceAgent, networkAddress, locationDescription, latitude, longitude, altitude, positionFormatSystem, userDefinedFields);
@@ -117,8 +111,8 @@ public class MetadataController extends Controller {
 		}
 
 		// Parse JSON FIle 
-		String sensorType = json.findPath("sensor_type").getTextValue();
-		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
+		String sensorType = json.findPath("sensor_type").textValue();
+		String userDefinedFields = json.findPath("user_defined_fields").textValue();
 		ArrayList<String> error = new ArrayList<String>();
 
 		boolean result = dbHandler.addSensorType(sensorType, userDefinedFields);
@@ -147,10 +141,10 @@ public class MetadataController extends Controller {
 		}
 
 		// Parse JSON FIle 
-		String printName= json.findPath("print_name").getTextValue();
-		String sensorType= json.findPath("sensor_type").getTextValue();
-		String deviceId = json.findPath("device_id").getTextValue();
-		String userDefinedFields = json.findPath("user_defined_fields").getTextValue();
+		String printName= json.findPath("print_name").textValue();
+		String sensorType= json.findPath("sensor_type").textValue();
+		String deviceId = json.findPath("device_id").textValue();
+		String userDefinedFields = json.findPath("user_defined_fields").textValue();
 		ArrayList<String> error = new ArrayList<String>();
 
 		boolean result = dbHandler.addSensor(printName, sensorType, deviceId, userDefinedFields);
@@ -181,8 +175,8 @@ public class MetadataController extends Controller {
 			if (sql_json == null) {
 				return badRequest("Expect sql in valid json");
 			}
-			String sql = sql_json.findPath("sql").getTextValue();
-			int number_of_result_columns = sql_json.findPath("number_of_result_columns").getIntValue();			
+			String sql = sql_json.findPath("sql").textValue();
+			int number_of_result_columns = sql_json.findPath("number_of_result_columns").intValue();
 			resultStr = dbHandler.runQuery(sql, number_of_result_columns);
 		} catch(Exception e){
 			e.printStackTrace();
