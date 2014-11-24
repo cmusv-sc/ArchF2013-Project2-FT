@@ -15,15 +15,10 @@
  ******************************************************************************/
 package controllers;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import models.SensorCategory;
 import models.dao.SensorCategoryDao;
-
-import org.codehaus.jackson.JsonNode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.supercsv.cellprocessor.Optional;
@@ -31,13 +26,15 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
-
-
-//import app.models.dao.String;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
+
+//import app.models.dao.String;
 
 public class SensorCategoryController extends Controller {
 	private static ApplicationContext context;
@@ -72,8 +69,8 @@ public class SensorCategoryController extends Controller {
 		}
 		
 		// Parse JSON FIle 
-		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
-		String purpose = json.findPath("purpose").getTextValue();
+		String sensorCategoryName = json.findPath("sensorCategoryName").textValue();
+		String purpose = json.findPath("purpose").textValue();
 		
 		if(sensorCategoryName == null || sensorCategoryName.length() == 0){
 			System.out.println("Sensor category not saved, null name");
@@ -106,8 +103,8 @@ public class SensorCategoryController extends Controller {
 		}
 
 //		Parse JSON FIle 
-		String sensorCategoryName = json.findPath("sensorCategoryName").getTextValue();
-		String purpose = json.findPath("purpose").getTextValue();
+		String sensorCategoryName = json.findPath("sensorCategoryName").textValue();
+		String purpose = json.findPath("purpose").textValue();
 		
 		if(sensorCategoryName == null || sensorCategoryName.length() == 0){
 			System.out.println("Sensor category not updated, null sensorCategoryName");

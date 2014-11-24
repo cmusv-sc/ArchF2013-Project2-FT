@@ -15,27 +15,20 @@
  ******************************************************************************/
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import helper.Utils;
+import models.MessageBusHandler;
+import models.OldSensorReading;
+import models.dao.OldSensorReadingDao;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import play.mvc.Controller;
+import play.mvc.Result;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import models.MessageBusHandler;
-import models.OldSensorReading;
-import models.dao.OldSensorReadingDao;
-
-import org.codehaus.jackson.JsonNode;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import play.mvc.Controller;
-import play.mvc.Result;
+import java.util.*;
 //import models.cmu.sv.sensor.SensorReading;
 
 
@@ -65,14 +58,14 @@ public class OldSensorReadingController extends Controller {
 		}
 		
 		// Parse JSON FIle
-		String deviceId = json.findPath("id").getTextValue();
-		Long timeStamp = json.findPath("timestamp").getLongValue();
-		Iterator<String> it = json.getFieldNames();
+		String deviceId = json.findPath("id").textValue();
+		Long timeStamp = json.findPath("timestamp").longValue();
+		Iterator<String> it = json.fieldNames();
 		ArrayList<String> error = new ArrayList<String>();
 		while(it.hasNext()){            
 			String sensorType = it.next();  
 			if(sensorType == "id" || sensorType == "timestamp") continue;
-			double value = json.findPath(sensorType).getDoubleValue();
+			double value = json.findPath(sensorType).doubleValue();
 			if(!sensorReadingDao.addReading(deviceId, timeStamp, sensorType, value)){            
 				error.add(sensorType + ", " + deviceId + ", " + timeStamp.toString() + ", " + value + "\n");
 			}
