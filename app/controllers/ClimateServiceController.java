@@ -269,41 +269,42 @@ public class ClimateServiceController extends Controller {
         }
     }
 	
-/*public static Result getServiceExecutionLogs(String userId, String startTime, String endTime, String format) {
-		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-		
-		if(userId == null || userId.length() == 0) {
-			System.out.println("Service Execution Log not found, null userId");
-			return ok("Service Execution Log not found, null userId");
-		} else if(startTime == null || startTime.length() == 0) {
-			System.out.println("Service Execution Log not found, null startTime");
-			return ok("Service Execution Log not found, null startTime");
-		} else if(endTime == null || endTime.length() == 0) {
-			System.out.println("Service Execution Log not found, null endTime");
-			return ok("Service Execution Log not found, null endTime");
-		}
-		
-		if(!checkDao()) {
-			System.out.println("Climate service not found, database conf file not found");
-			return internalServerError("Climate service not found, database conf file not found");
-		}
+public static Result getServiceExecutionLogs(String userId, String startTime, String endTime, String format) {
+    response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
 
-		List<ServiceExecutionLog> serviceExecutionLogs =serviceExecutionLogDao.getServiceExecutionLogs(userId, startTime, endTime);
+    if(!checkDao()) {
+        System.out.println("Search failed, database conf file not found");
+        return internalServerError("Search failed, database conf file not found");
+    }
+
+    if(userId == null || userId.length() == 0) {
+        System.out.println("User ID not saved, null name");
+        return ok("User ID not saved, null name");
+    }
+
+    if(startTime == null || endTime == null) {
+        System.out.println("Time not specified");
+        return ok("Time not specified");
+    }
+    // TODO May handle time format from the frontend here
+
+    // Currently the startTime/endTime is a number String
+	List<ServiceExecutionLog> serviceExecutionLogs =serviceExecutionLogDao.getServiceExecutionLogs(userId, startTime, endTime);
 		
-		if(serviceExecutionLogs == null || serviceExecutionLogs.isEmpty()){
-			System.out.println("No Service Execution Log found");
-			return notFound("No Service Execution Log found");
-		}
+	if(serviceExecutionLogs == null || serviceExecutionLogs.isEmpty()){
+		System.out.println("No Service Execution Log found");
+		return notFound("No Service Execution Log found");
+	}
 		
 		String ret = new String();
 		if (format.equals("json")){
 			ret = new Gson().toJson(serviceExecutionLogs);
 		} else {
-			ret = toCsv(serviceExecutionLogs);
+			ret = executionLogToCsv(serviceExecutionLogs);
 		}
 		return ok(ret);
 	}
-	*/
+
 
     public static Result getAllServiceExecutionLogs(String format) {
         response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");

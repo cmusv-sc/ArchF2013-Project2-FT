@@ -133,6 +133,9 @@ GET		/addServiceExecutionLog/:serviceId/:userId/:purpose/:serviceConfigurationId
 GET     /getAllServiceExecutionLogs/json                     controllers.ClimateServiceController.getAllServiceExecutionLogs(format: String="json")
 GET     /getAllServiceExecutionLogs                          controllers.ClimateServiceController.getAllServiceExecutionLogs(format: String="csv")
 GET     /getAllServiceExecutionLogs/csv                      controllers.ClimateServiceController.getAllServiceExecutionLogs(format: String="csv")
+GET     /getServiceExecutionLogs/:userId/:startTime/:endTime/json controllers.ClimateServiceController.getServiceExecutionLogs(userId: String, startTime: String, endTime: String, format: String="json")
+GET     /getServiceExecutionLogs/:userId/:startTime/:endTime/csv controllers.ClimateServiceController.getServiceExecutionLogs(userId: String, startTime: String, endTime: String, format: String="csv")
+GET     /getServiceExecutionLogs/:userId/:startTime/:endTime controllers.ClimateServiceController.getServiceExecutionLogs(userId: String, startTime: String, endTime: String, format: String="csv")
 
 # User
 POST /addUser								controllers.UserController.addUser()
