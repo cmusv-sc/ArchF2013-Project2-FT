@@ -125,11 +125,13 @@ GET		/getClimateService/:climateServiceName/json			controllers.ClimateServiceCon
 GET		/getClimateService/:climateServiceName/csv			controllers.ClimateServiceController.getClimateService(climateServiceName: String, format: String="csv")
 GET		/getAllClimateServices								controllers.ClimateServiceController.getAllClimateServices(format: String="csv")
 GET		/getAllClimateServices/csv							controllers.ClimateServiceController.getAllClimateServices(format: String="csv")
-GET		/getAllClimateServices/json						controllers.ClimateServiceController.getAllClimateServices(format: String="json")
+GET		/getAllClimateServices/json						    controllers.ClimateServiceController.getAllClimateServices(format: String="json")
 DELETE	/deleteClimateService/:climateServiceName	 		controllers.ClimateServiceController.deleteClimateService(climateServiceName: String)
 
 GET		/addServiceExecutionLog/:serviceId/:userId/:purpose/:serviceConfigurationId/:datasetLogId/:executionStartTime/:executionEndTime		controllers.ClimateServiceController.addServiceExecutionLog(serviceId: String, userId: String, purpose: String, serviceConfigurationId: String, datasetLogId: String, executionStartTime: String, executionEndTime: String)
-
+GET     /getAllServiceExecutionLogs/json                     controllers.ClimateServiceController.getAllServiceExecutionLogs(format: String="json")
+GET     /getAllServiceExecutionLogs                          controllers.ClimateServiceController.getAllServiceExecutionLogs(format: String="csv")
+GET     /getAllServiceExecutionLogs/csv                      controllers.ClimateServiceController.getAllServiceExecutionLogs(format: String="csv")
 
 # User
 POST /addUser								controllers.UserController.addUser()

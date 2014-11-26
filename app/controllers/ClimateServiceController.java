@@ -226,7 +226,7 @@ public class ClimateServiceController extends Controller {
 		}
 	}
 	
-/*	public static Result getServiceExecutionLogs(String userId, String startTime, String endTime, String format) {
+/*public static Result getServiceExecutionLogs(String userId, String startTime, String endTime, String format) {
 		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
 		
 		if(userId == null || userId.length() == 0) {
@@ -259,7 +259,32 @@ public class ClimateServiceController extends Controller {
 			ret = toCsv(serviceExecutionLogs);
 		}
 		return ok(ret);
-	} */
+	}
+	*/
+
+    public static Result getAllServiceExecutionLogs(String format) {
+        response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+
+        if(!checkDao()) {
+            System.out.println("Climate service not found, database conf file not found");
+            return internalServerError("Climate service not found, database conf file not found");
+        }
+
+        List<ServiceExecutionLog> executionLogs = serviceExecutionLogDao.getAllServiceExecutionLogs();
+
+        if(executionLogs == null || executionLogs.isEmpty()){
+            System.out.println("No Climate service found");
+            return notFound("No Climate service found");
+        }
+
+        String ret = new String();
+        if (format.equals("json")){
+            ret = new Gson().toJson(executionLogs);
+        } else {
+            ret = executionLogToCsv(executionLogs);
+        }
+        return ok(ret);
+    }
 	
 	public static Result getAllClimateServices(String format) {
 		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
@@ -340,4 +365,30 @@ public class ClimateServiceController extends Controller {
 		}
 		return sw.getBuffer().toString();
 	}
+
+    private static String executionLogToCsv(List<ServiceExecutionLog> executionLogs) {
+        StringWriter sw = new StringWriter();
+        CellProcessor[] processors = new CellProcessor[] {
+                new Optional(),	new Optional(),	new Optional(), new Optional(),	new Optional(),	new Optional(),
+                new Optional(),	new Optional()};
+        ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
+
+        try {
+            final String[] header = new String[] {"serviceExecutionLogId", "serviceId", "userId",
+                    "purpose", "serviceConfigurationId", "datasetLogId", "executionStartTime", "executionEndTime"};
+            writer.writeHeader(header);
+            for(ServiceExecutionLog log : executionLogs){
+                writer.write(log, header, processors);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sw.getBuffer().toString();
+    }
 }
