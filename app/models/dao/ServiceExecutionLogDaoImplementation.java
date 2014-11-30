@@ -50,6 +50,37 @@ public class ServiceExecutionLogDaoImplementation implements ServiceExecutionLog
 		}
 		return true;
 	}
+
+    @Override
+    public List<ServiceExecutionLog> getAllServiceExecutionLogs() {
+        final String SQL = "SELECT * FROM CMU.COURSE_SERVICE_EXECUTION_LOG";
+        try {
+            List<ServiceExecutionLog> executionLogs = simpleJdbcTemplate.query(
+                    SQL, ParameterizedBeanPropertyRowMapper
+                            .newInstance(ServiceExecutionLog.class));
+            return executionLogs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<ServiceExecutionLog> getServiceExecutionLogs(String userId, String startTime, String endTime) {
+        final String SQL = "SELECT * FROM CMU.COURSE_SERVICE_EXECUTION_LOG WHERE USERID="
+                +"? AND EXECUTIONSTARTTIME>=? AND EXECUTIONSTARTTIME<=?";
+        try {
+            List<ServiceExecutionLog> executionLogs = simpleJdbcTemplate.query(
+                    SQL, ParameterizedBeanPropertyRowMapper
+                            .newInstance(ServiceExecutionLog.class), userId, startTime, endTime);
+            return executionLogs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 /*	
 // ToDo: the following methods need to be modified
 	@Override

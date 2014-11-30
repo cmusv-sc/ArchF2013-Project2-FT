@@ -15,4 +15,7 @@ public interface ServiceExecutionLogDao {
 	public List<ServiceExecutionLog> getServiceExecutionLogs(String userId, 
 						String executionStartTime, String executionEndTime);
 	public ServiceExecutionLog getServiceExecutionLog(String serviceExecutionLogId);*/
+    public List<ServiceExecutionLog> getAllServiceExecutionLogs();
+    public List<ServiceExecutionLog> getServiceExecutionLogs(String userId,
+                                                             String startTime, String endTime);
 }
