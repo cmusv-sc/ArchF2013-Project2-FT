@@ -72,9 +72,13 @@ public class OldSensorReadingController extends Controller {
 
 			if(publish){                    
 				MessageBusHandler mb = new MessageBusHandler();
-				if(!mb.publish(new models.OldSensorReading(deviceId, timeStamp, sensorType, value))){       
-					error.add("publish failed");    
-				}                               
+				try {
+					if(!mb.publish(new OldSensorReading(deviceId, timeStamp, sensorType, value))){
+						error.add("publish failed");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		if(error.size() == 0){          

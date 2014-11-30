@@ -40,7 +40,12 @@ public class WorkFlowRunnerController  extends Controller  {
 			    return badRequest("Expecting Json data");
 		 } 
 		 int newInterval = json.findPath("interval").asInt();
-		 boolean result = WFRunner.notifyVirtualDevice(newInterval);
-		 return ok(String.valueOf(result));
+		boolean result = false;
+		try {
+			result = WFRunner.notifyVirtualDevice(newInterval);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ok(String.valueOf(result));
 	}
 }
