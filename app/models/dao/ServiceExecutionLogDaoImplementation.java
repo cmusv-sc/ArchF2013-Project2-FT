@@ -19,6 +19,7 @@ import java.util.List;
 
 import models.ServiceExecutionLog;
 
+import models.ServiceParamter;
 import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
@@ -78,6 +79,44 @@ public class ServiceExecutionLogDaoImplementation implements ServiceExecutionLog
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public List<ServiceParamter> getAllServiceParameters() {
+        final String SQL = "SELECT * FROM CMU.COURSE_PARAMETER";
+        try {
+            List<ServiceParamter> parameters = simpleJdbcTemplate.query(
+                    SQL, ParameterizedBeanPropertyRowMapper
+                            .newInstance(ServiceParamter.class));
+            return parameters;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean addServiceParameter(String serviceId, String parameterDateType, String parameterRange, String parameterNumeration, String parameterRule, String parameterPurpose) {
+
+        // TODO need to use this in production for SAP HANA
+        final String SQL_SEQUENCE = "SELECT CMU.COURSE_CLIMATE_SERVICE_ID_SEQ.NEXTVAL FROM DUMMY";
+        int serviceParameterId = simpleJdbcTemplate.queryForInt(SQL_SEQUENCE);
+
+        // TODO need to use this in production for SAP HANA
+        final String SQL = "INSERT INTO CMU.COURSE_PARAMETER "
+                + "(PARAMETERID, SERVICEID, PARAMETERDATATYPE, PARAMETERRANGE, PARAMETERENUMERATION, PARAMETERRULE, PARAMETERPURPOSE"
+                + " ) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            // TODO need to use this in production for SAP HANA
+            simpleJdbcTemplate.update(SQL, serviceParameterId, serviceId, parameterDateType, parameterRange, parameterNumeration,
+                    parameterRule, parameterPurpose);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
 

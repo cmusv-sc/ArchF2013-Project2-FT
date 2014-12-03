@@ -22,6 +22,7 @@ import java.util.List;
 
 import models.ClimateService;
 import models.ServiceExecutionLog;
+import models.ServiceParamter;
 import models.dao.ClimateServiceDao;
 import models.dao.ServiceExecutionLogDao;
 
@@ -226,6 +227,49 @@ public class ClimateServiceController extends Controller {
 		}
 	}
 
+    public static Result addServiceParameter(){
+        response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+
+        JsonNode json = request().body().asJson();
+        if(json == null) {
+            System.out.println("Service execution log not saved, expecting Json data");
+            return badRequest("Service execution log not saved, expecting Json data");
+        }
+
+        if(!checkDao()) {
+            System.out.println("Service execution log not saved, database conf file not found");
+            return internalServerError("Service execution log not saved, database conf file not found");
+        }
+
+        // Parse JSON File
+//        String serviceExecutionLogId = json.findPath("serviceExecutionLogId").getTextValue();
+        String serviceId = json.findPath("serviceId").getTextValue();
+        String parameterDateType = json.findPath("parameterdatatype").getTextValue();
+        String parameterRange = json.findPath("parameterrange").getTextValue();
+        String parameterNumeration = json.findPath("parameterenumeration").getTextValue();
+        String parameterRule = json.findPath("parameterrule").getTextValue();
+        String parameterPurpose = json.findPath("parameterpurpose").getTextValue();
+        //String executionEndTime = json.findPath("executionEndTime").getTextValue();
+
+        if(serviceId == null || serviceId.length() == 0) {
+            System.out.println("Service ID not saved, null name");
+            return ok("Service ID not saved, null name");
+        }
+
+        boolean result = serviceExecutionLogDao.addServiceParameter(serviceId, parameterDateType, parameterRange, parameterNumeration,
+                parameterRule, parameterPurpose);
+
+//		TODO API document says it should return a HTTP 201 here. However, Play does not have a class for it
+//		Is HTTP 200 (implemented by Result.Ok) fine?
+        if(result) {
+            System.out.println("Execution of service saved: " + serviceId);
+            return created("Execution of service saved: " + serviceId);
+        } else {
+            System.out.println("Execution of service not saved: " + serviceId);
+            return badRequest("Execution of service not saved: " + serviceId);
+        }
+    }
+
     public static Result addServiceExecutionLogUsingPost(){
         response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
 
@@ -329,6 +373,30 @@ public static Result getServiceExecutionLogs(String userId, String startTime, St
         }
         return ok(ret);
     }
+
+    public static Result getAllServiceParameters(String format) {
+        response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+
+        if(!checkDao()) {
+            System.out.println("Climate service not found, database conf file not found");
+            return internalServerError("Climate service not found, database conf file not found");
+        }
+
+        List<ServiceParamter> parameters = serviceExecutionLogDao.getAllServiceParameters();
+
+        if(parameters == null || parameters.isEmpty()){
+            System.out.println("No Climate service parameter found");
+            return notFound("No Climate service parameter found");
+        }
+
+        String ret = new String();
+        if (format.equals("json")){
+            ret = new Gson().toJson(parameters);
+        } else {
+            ret = parameterToCsv(parameters);
+        }
+        return ok(ret);
+    }
 	
 	public static Result getAllClimateServices(String format) {
 		response().setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
@@ -422,6 +490,32 @@ public static Result getServiceExecutionLogs(String userId, String startTime, St
                     "purpose", "serviceConfigurationId", "datasetLogId", "executionStartTime", "executionEndTime"};
             writer.writeHeader(header);
             for(ServiceExecutionLog log : executionLogs){
+                writer.write(log, header, processors);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sw.getBuffer().toString();
+    }
+
+    private static String parameterToCsv(List<ServiceParamter> parameters){
+        StringWriter sw = new StringWriter();
+        CellProcessor[] processors = new CellProcessor[] {
+                new Optional(),	new Optional(),	new Optional(), new Optional(),	new Optional(),	new Optional(),
+                new Optional()};
+        ICsvBeanWriter writer = new CsvBeanWriter(sw, CsvPreference.STANDARD_PREFERENCE);
+
+        try {
+            final String[] header = new String[] {"parameterId", "serviceId", "parameterDataType",
+                    "parameterRange", "parameterEnumeration", "parameterRule", "parameterPurpose"};
+            writer.writeHeader(header);
+            for(ServiceParamter log : parameters){
                 writer.write(log, header, processors);
             }
         } catch (IOException e) {
