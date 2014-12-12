@@ -3,6 +3,7 @@ package models.dao;
 import java.util.List;
 
 import models.ServiceExecutionLog;
+import models.ServiceParamter;
 
 public interface ServiceExecutionLogDao {
 	public boolean addServiceExecutionLog(String serviceId, String userId, String purpose, 
@@ -18,4 +19,7 @@ public interface ServiceExecutionLogDao {
     public List<ServiceExecutionLog> getAllServiceExecutionLogs();
     public List<ServiceExecutionLog> getServiceExecutionLogs(String userId,
                                                              String startTime, String endTime);
+    public List<ServiceParamter> getAllServiceParameters();
+    public boolean addServiceParameter(String serviceId, String parameterDateType, String parameterRange, String parameterNumeration,
+                                                     String parameterRule, String parameterPurpose);
 }
