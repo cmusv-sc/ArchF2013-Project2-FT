@@ -51,7 +51,8 @@ public class DatasetDaoImplemetation implements DatasetDao {
 
     @Override
     public List<SearchDataset> getDataSets(int limit) {
-        String selectQuery = "SELECT data_id, keyword FROM gcmd.datasetkeywords LIMIT "+limit;
+//        String selectQuery = "SELECT data_id, keyword FROM gcmd.datasets LIMIT "+limit;
+		String selectQuery = "SELECT data_id, keyword, url, description,title FROM gcmd.datasets";
 
         try {
             List<SearchDataset> searchResults = simpleJdbcTemplate.query(
@@ -89,7 +90,8 @@ public class DatasetDaoImplemetation implements DatasetDao {
     }
 
     private static String getMultiKeywordQuery(String[] keywords) {
-        StringBuilder keywordListSQL = new StringBuilder("SELECT distinct data_id FROM gcmd.datasetkeywords where ");
+//        StringBuilder keywordListSQL = new StringBuilder("SELECT distinct data_id FROM gcmd.datasets where ");
+		StringBuilder keywordListSQL = new StringBuilder("SELECT data_id, keyword, url, description,title FROM gcmd.datasets where ");
         String keywordBefore = "keyword like ( '%' || '";
         String keywordAfter = "' || '%' ) ";
         boolean first = true;
@@ -108,7 +110,11 @@ public class DatasetDaoImplemetation implements DatasetDao {
     }
 
     private static String getSingleKeywordQuery(String keyword) {
-        return "SELECT distinct data_id FROM gcmd.datasetkeywords where keyword like ( '%' || '" + keyword + "' || '%' )";
+//        return "SELECT distinct data_id FROM gcmd.datasets where keyword like ( '%' || '" + keyword + "' || '%' ) OR description like ( '%' || '" + keyword + "' || '%' )";
+		return "SELECT data_id, keyword, url, description,title FROM gcmd.datasets " +
+				"where keyword like ( '%' || '" + keyword + "' || '%' ) " +
+				"OR description like ( '%' || '" + keyword + "' || '%' ) " +
+				"OR title like ( '%' || '" + keyword + "' || '%' )";
     }
 
 

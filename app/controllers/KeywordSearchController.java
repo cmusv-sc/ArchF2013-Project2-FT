@@ -36,21 +36,22 @@ public class KeywordSearchController extends Controller {
     public static Result getDatasetByKeyword(String format, String keyword) {
         response().setHeader("Access-Control-Allow-Origin", "*");
         checkDao();
-        List<String> resultData = datasetDao.searchDatasetIDByKeyword(keyword);
-//        List<SearchDataset> resultData = datasetDao.searchDatasetsByKeyword(keyword);
+//        List<String> resultData = datasetDao.searchDatasetIDByKeyword(keyword);
+        List<SearchDataset> resultData = datasetDao.searchDatasetsByKeyword(keyword);
 
         if (resultData == null || resultData.isEmpty()) {
             return notFound("no data sets found");
         }
 
-        //String ret = new Gson().toJson(resultData);
-        StringBuilder retStr = new StringBuilder();
-        for (String str : resultData) {
-            retStr.append(str);
-            retStr.append("\t");
-        }
-
-        return ok(retStr.toString());
+        String ret = new Gson().toJson(resultData);
+//        StringBuilder retStr = new StringBuilder();
+//        for (String str : resultData) {
+//            retStr.append(str);
+//            retStr.append("\t");
+//        }
+//
+//        return ok(retStr.toString());
+		return ok(ret);
     }
 
     /**
@@ -62,21 +63,22 @@ public class KeywordSearchController extends Controller {
         checkDao();
         String[] keywords = request().body().asText().split("\t");
 
-//        List<SearchDataset> resultData = datasetDao.searchDatasetsByKeywordList(keywords);
-        List<String> resultData = datasetDao.searchDatasetIDByKeywordList(keywords);
+        List<SearchDataset> resultData = datasetDao.searchDatasetsByKeywordList(keywords);
+//        List<String> resultData = datasetDao.searchDatasetIDByKeywordList(keywords);
 
         if (resultData == null || resultData.isEmpty()) {
             return notFound("no data sets found");
         }
 
-        //String ret = new Gson().toJson(resultData);
-        StringBuilder retStr = new StringBuilder();
-        for (String str : resultData) {
-            retStr.append(str);
-            retStr.append("\t");
-        }
+        String ret = new Gson().toJson(resultData);
+//        StringBuilder retStr = new StringBuilder();
+//        for (String str : resultData) {
+//            retStr.append(str);
+//            retStr.append("\t");
+//        }
 
-        return ok(retStr.toString());
+//        return ok(retStr.toString());
+		return ok(ret);
     }
 
     public static Result getKeywordTree() {
